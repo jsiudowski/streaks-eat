@@ -34,8 +34,27 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 
-setupIonicReact();
+/* Page Variables 
+These are the variables that have to be imported from their respective file directory.
+  We are importing constants from the files that are created. 
+*/
+import Login from './pages/Login';
+import AboutUs from './pages/AboutUs';
+import Dashboard from './pages/Dashboard';
+import MyProfile from './pages/MyProfile';
+import Locations from './pages/Locations';
+import Map from './pages/Map';
+import EventList from './pages/EventList';
+import DolanScience from './pages/BuildingPages/DolanScience';
+import OmalleyCenter from './pages/BuildingPages/OmalleyCenter';
+import Boler from './pages/BuildingPages/Boler';
+import LSC from './pages/BuildingPages/LSC';
+import SIH from './pages/BuildingPages/SIH';
+import EventCreation from './pages/EventCreation';
 
+
+
+setupIonicReact();
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -44,16 +63,26 @@ const App: React.FC = () => {
           <Menu />
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
-              <Redirect to="/folder/Inbox" />
+              <Redirect to="/pages/Dashboard" />
             </Route>
-            <Route path="/folder/:name" exact={true}>
-              <Page />
-            </Route>
+            <Route path="/pages/Login" component={Login}></Route>
+            <Route path="/pages/Dashboard" component={Dashboard}></Route>
+            <Route path="/pages/AboutUs" component={AboutUs}></Route>
+            <Route path="/pages/MyProfile" component={MyProfile}></Route>
+            <Route path="/pages/Locations" component={Locations}></Route>
+            <Route path="/pages/Map" component={Map}></Route>
+            <Route path="/pages/EventList" component={EventList}></Route>
+            <Route path="/pages/BuildingPages/DolanScience" component={DolanScience}></Route>
+            <Route path="/pages/BuildingPages/OmalleyCenter" component={OmalleyCenter}></Route>
+            <Route path="/pages/BuildingPages/Boler" component={Boler}></Route>
+            <Route path="/pages/BuildingPages/LSC" component={LSC}></Route>
+            <Route path="/pages/BuildingPages/SIH" component={SIH}></Route>
+            <Route path="/pages/EventCreation" component={EventCreation}></Route>
+
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
     </IonApp>
   );
 };
-
 export default App;

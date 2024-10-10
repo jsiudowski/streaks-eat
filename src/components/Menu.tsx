@@ -1,3 +1,4 @@
+
 import {
   IonContent,
   IonIcon,
@@ -11,7 +12,7 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { alertCircleOutline, archiveOutline, archiveSharp, bookmarkOutline, calendarOutline, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, mapOutline, navigate, paperPlaneOutline, paperPlaneSharp, personOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 
 interface AppPage {
@@ -21,47 +22,62 @@ interface AppPage {
   title: string;
 }
 
+/* 
+This is for creating a new page/tab for the menu. We start with a:
+
+Title: Name of the page itself.
+URL: Creates the URL for the page which is gathered from App.tsx,
+    In the first constant, we pull the dashboard from the pages folder, as that is where the file is stashed in the structure. 
+iosIcon: Gives Icon for the page/navmenu.
+mdIcon: Displays the Icon in the nav menu,
+    These Icons can be automatically imported from Visual Studio Code's detection with Ionic Framework.
+    These Icons can be found at: 
+    https://ionic.io/ionicons?_gl=1*fg72an*_gcl_au*NjU5NTk5ODk0LjE3MjUzNzcyNzg.*_ga*MTYxNDQ5MzI0Ni4xNzI1Mzc3Mjc4*_ga_REH9TJF6KF*MTcyNzE4NzQ1OS4yLjAuMTcyNzE4NzQ2MS4wLjAuMA.
+*/
 const appPages: AppPage[] = [
   {
-    title: 'Inbox',
-    url: '/folder/Inbox',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
+    title: 'Dashboard',
+    url: '/pages/dashboard',
+    iosIcon: homeOutline,
+    mdIcon: homeOutline
   },
   {
-    title: 'Outbox',
-    url: '/folder/Outbox',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
+    title: 'Event List',
+    url: '/pages/EventList',
+    iosIcon: calendarOutline,
+    mdIcon: calendarOutline
   },
   {
-    title: 'Favorites',
-    url: '/folder/Favorites',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp
+    title: 'Locations',
+    url: '/pages/Locations',
+    iosIcon: navigate,
+    mdIcon: navigate
   },
   {
-    title: 'Archived',
-    url: '/folder/Archived',
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp
+    title: 'Map',
+    url: '/pages/Map',
+    iosIcon: mapOutline,
+    mdIcon: mapOutline
   },
   {
-    title: 'Trash',
-    url: '/folder/Trash',
-    iosIcon: trashOutline,
-    mdIcon: trashSharp
+    title: 'My Profile',
+    url: '/pages/MyProfile',
+    iosIcon: personOutline,
+    mdIcon: personOutline
   },
   {
-    title: 'Spam',
-    url: '/folder/Spam',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
+    title: 'About Us',
+    url: '/pages/AboutUs',
+    iosIcon: alertCircleOutline,
+    mdIcon: alertCircleOutline
   }
 ];
 
-const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
+//const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+
+
+// This is the rendering of the side menu with all of the tabs. 
 const Menu: React.FC = () => {
   const location = useLocation();
 
@@ -69,8 +85,8 @@ const Menu: React.FC = () => {
     <IonMenu contentId="main" type="overlay">
       <IonContent>
         <IonList id="inbox-list">
-          <IonListHeader>Inbox</IonListHeader>
-          <IonNote>hi@ionicframework.com</IonNote>
+          <IonListHeader>Cut-Back Crumbs</IonListHeader>
+          <IonNote>Welcome!</IonNote>
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
@@ -83,7 +99,7 @@ const Menu: React.FC = () => {
           })}
         </IonList>
 
-        <IonList id="labels-list">
+        {/* <IonList id="labels-list">
           <IonListHeader>Labels</IonListHeader>
           {labels.map((label, index) => (
             <IonItem lines="none" key={index}>
@@ -91,7 +107,7 @@ const Menu: React.FC = () => {
               <IonLabel>{label}</IonLabel>
             </IonItem>
           ))}
-        </IonList>
+        </IonList> */}
       </IonContent>
     </IonMenu>
   );

@@ -1,0 +1,14 @@
+.ion-card-responsive {
+    margin: 10px;
+  }
+  
+  .ion-card-responsive img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  @media (max-width: 768px) {
+    .ion-card-responsive {
+      margin: 5px;
+    }
+  }
