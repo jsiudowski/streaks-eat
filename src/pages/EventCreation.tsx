@@ -17,7 +17,7 @@ const EventCreation: React.FC = () => {
           <IonContent>
             <IonList>
                 <IonListHeader>
-                    <IonLabel><h3>Location</h3></IonLabel>
+                    <IonLabel class="center"><h1>Location</h1></IonLabel>
                 </IonListHeader>
                 <IonList>
                 <IonSelect justify='start' placeholder="Building">
@@ -36,7 +36,7 @@ const EventCreation: React.FC = () => {
 
                 <IonList>
                     <IonListHeader>
-                        <IonLabel>Allergies Checklist:</IonLabel>
+                        <IonLabel class="center"><h1>Allergies Checklist:</h1></IonLabel>
                     </IonListHeader>
                     <IonList>
                         <IonItem>
