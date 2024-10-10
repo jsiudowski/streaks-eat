@@ -18,7 +18,7 @@ const MyProfile: React.FC = () => {
           <IonContent>
           <IonList>
               <IonListHeader>
-                <IonLabel>My General Profile</IonLabel>
+                <IonLabel class="center"><h1>My General Profile</h1></IonLabel>
               </IonListHeader>
             <IonList>
               <IonItem>
@@ -38,7 +38,7 @@ const MyProfile: React.FC = () => {
 
           <IonList>
           <IonListHeader>
-                <IonLabel>Allergies</IonLabel>
+                <IonLabel class="center"><h1>Allergies</h1></IonLabel>
             </IonListHeader>
             <IonList>
               <IonItem>
