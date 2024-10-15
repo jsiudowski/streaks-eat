@@ -12,6 +12,8 @@ import {
   IonList,
 } from '@ionic/react';
 import './Map.css';
+import JCUMAP from './Photos/JCUMAP.png' ;
+
 
 const Map: React.FC = () => {
   return (
@@ -28,7 +30,7 @@ const Map: React.FC = () => {
       <IonContent className="ion-padding">
         {/* Image Section */}
         <IonCard className="ion-card-responsive img">
-          <img src="src/pages/Photos/JCUMAP.png" alt="Map of John Carroll" />
+          <img src={JCUMAP} alt="Map of John Carroll" />
         </IonCard>
 
         {/* Numbered List Section */}
