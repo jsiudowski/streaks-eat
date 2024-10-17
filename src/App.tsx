@@ -2,7 +2,6 @@ import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/r
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 import Menu from './components/Menu';
-import Page from './pages/Page';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -39,6 +38,7 @@ These are the variables that have to be imported from their respective file dire
   We are importing constants from the files that are created. 
 */
 import Login from './pages/Login';
+import Register from './pages/Register';
 import AboutUs from './pages/AboutUs';
 import Dashboard from './pages/Dashboard';
 import MyProfile from './pages/MyProfile';
@@ -52,8 +52,6 @@ import LSC from './pages/BuildingPages/LSC';
 import SIH from './pages/BuildingPages/SIH';
 import EventCreation from './pages/EventCreation';
 
-
-
 setupIonicReact();
 const App: React.FC = () => {
   return (
@@ -65,7 +63,8 @@ const App: React.FC = () => {
             <Route path="/" exact={true}>
               <Redirect to="/pages/Dashboard" />
             </Route>
-            <Route path="/pages/Login" component={Login}></Route>
+            <Route path="/pages/Login" component={Login} exact ></Route>
+            <Route path="/pages/Register" component={Register} exact></Route>
             <Route path="/pages/Dashboard" component={Dashboard}></Route>
             <Route path="/pages/AboutUs" component={AboutUs}></Route>
             <Route path="/pages/MyProfile" component={MyProfile}></Route>
