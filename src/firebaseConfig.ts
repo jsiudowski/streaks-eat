@@ -2,6 +2,8 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore/lite';
+
 const config = {
     apiKey: "AIzaSyCyQOeqqsDjQFDdpJTden1kiVrEv8EOq88",
     authDomain: "streakseat.firebaseapp.com",
@@ -15,6 +17,15 @@ const config = {
 // Initialize Firebase
 const app = firebase.initializeApp(config);
 const analytics = getAnalytics(app);
+const db = getFirestore(app);
+
+// Get a list of events from your database
+export async function getEvents() {
+  const eventsCol = collection(db, 'events');
+  const eventSnapshot = await getDocs(eventsCol);
+  const eventList = eventSnapshot.docs.map(doc => doc.data());
+  return eventList;
+}
 
 export async function loginUser(username: string, password: string) {
 

@@ -31,7 +31,7 @@ const Login: React.FC = () => {
                 <IonInput placeholder='Password?' onIonChange={(e: any) => setPassword(e.target.value)}/>
               <IonButton onClick={LoginUser}>Login</IonButton>
 
-              <p>New here? Create an account! <Link to="/Register">Register</Link></p>
+              <p>New here? Create an account! <Link to="/pages/Register">Register</Link></p>
             </IonContent>
         </IonPage>
     );

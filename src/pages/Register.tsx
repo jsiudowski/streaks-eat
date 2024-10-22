@@ -23,6 +23,7 @@ const Register: React.FC = () => {
 
         const res = await registerUser(username, password)
         console.log(username, password, cpassword)
+
         setBusy(false)
     }
 
@@ -40,7 +41,7 @@ const Register: React.FC = () => {
                 <IonInput placeholder='Confirm Password?' onIonChange={(e: any) => setCPassword(e.target.value)}/>
               <IonButton onClick={Register}>Register</IonButton>
 
-              <p>Already have an account? <Link to="/Login">Login</Link></p>
+              <p>Already have an account? <Link to="/pages/Login">Login</Link></p>
             </IonContent>
         </IonPage>
     );

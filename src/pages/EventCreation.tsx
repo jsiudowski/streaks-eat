@@ -3,6 +3,7 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { useParams } from 'react-router';
 
 const EventCreation: React.FC = () => {
+    
     return (
         <IonPage>
             <IonHeader>

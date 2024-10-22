@@ -11,9 +11,9 @@ const Dashboard: React.FC = () =>  {
                 <IonTitle>STREAKS EAT!</IonTitle>
               </IonToolbar>
             </IonHeader>
-            <IonContent>
-              <IonButton routerLink="/Login">Login</IonButton>
-              <IonButton routerLink="/Register" color="secondary">Register</IonButton>
+            <IonContent className='align-content: center'>
+              <IonButton routerLink="/pages/Login">Login</IonButton>
+              <IonButton routerLink="/pages/Register" color="secondary">Register</IonButton>
             </IonContent>
         </IonPage>
     );
