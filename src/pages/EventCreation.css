@@ -6,3 +6,11 @@
     width: 50%;
     font-weight: 700
   }
+
+.checkbox-flex {
+  display: flex;
+  justify-content: center;
+  align-content: center; 
+  align-items: center;
+  width: 20px;
+}

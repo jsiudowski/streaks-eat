@@ -1,9 +1,23 @@
-import { IonButtons, IonFab, IonFabButton, IonHeader, IonIcon, IonMenuButton, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react';
+import {IonCard, IonCardSubtitle, IonCardTitle, IonCardContent, IonCardHeader, IonButtons, IonFab, IonFabButton, IonHeader, IonIcon, IonMenuButton, IonPage, IonRouterLink, IonTitle, IonToolbar, IonContent } from '@ionic/react';
 import React from 'react';
 import './EventList.css';
 import { add } from 'ionicons/icons';
+import { useLocation } from 'react-router-dom';
 
 const EventList: React.FC = () => {
+    
+    interface CardDetails {
+        title: string;
+        subtitle: string;
+        content: string;
+    }
+    interface LocationState {
+        cardDetails: CardDetails;
+    }
+
+    const location = useLocation<LocationState>();
+    const cardDetails = location.state?.cardDetails;
+
     return (
         <IonPage>
             <IonHeader>
@@ -14,6 +28,18 @@ const EventList: React.FC = () => {
                     <IonTitle>List of Events</IonTitle>
                 </IonToolbar>
             </IonHeader>
+
+            <IonContent>
+                {cardDetails ? (
+                    <div>
+                        <p>Title: {cardDetails.title}</p>
+                        <p>Subtitle: {cardDetails.subtitle}</p>
+                        <p>Content: {cardDetails.content}</p>
+                    </div>
+                ) : (
+                    <p>No event details provided.</p>
+                )}
+            </IonContent>
 
             <IonFab slot="fixed" horizontal="end" vertical="bottom">
                 <IonRouterLink routerLink="/pages/EventCreation">
