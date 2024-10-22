@@ -1,9 +1,36 @@
-import React from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonInput, IonLabel, IonListHeader, IonCardTitle, IonCheckbox, IonGrid, IonCol, IonRow } from '@ionic/react';
+import React, { useState } from 'react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonInput, IonLabel, IonListHeader, IonCardTitle, IonCheckbox, IonGrid, IonCol, IonRow, IonButton } from '@ionic/react';
 import { useParams } from 'react-router';
 import './MyProfile.css'
 
 const MyProfile: React.FC = () => {
+
+  const [activeAllergies, setActiveAllergies] = useState<string[]>([]);
+
+    const toggleAllergy = (allergy: string) => {
+        setActiveAllergies((prev) => {
+            if (prev.includes(allergy)) {
+                return prev.filter(item => item !== allergy); // Remove if already active
+            } else {
+                return [...prev, allergy]; // Add if not active
+            }
+        });
+    };
+
+    const allergyOptions = [
+        "Dairy", 
+        "Egg", 
+        "Fish", 
+        "Peanuts",
+        "Sesame", 
+        "Shellfish", 
+        "Soy", 
+        "Tree Nuts",
+        "Wheat", 
+        "Gluten"
+    ];
+
+
     return (
         <IonPage>
             <IonHeader>
@@ -48,74 +75,29 @@ const MyProfile: React.FC = () => {
             <IonLabel class="center"><h1>My Allergies:</h1></IonLabel>
           </IonListHeader>
 
-            <IonGrid>
-              <IonRow class="ion-justify-content-center">
-                <IonCol size="4">
-                  <IonItem>
-                    <IonCheckbox>Dairy</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-                <IonCol size="4">
-                  <IonItem>
-                    <IonCheckbox>Egg</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-              </IonRow>
-
-              <IonRow class="ion-justify-content-center">
-                <IonCol size="5">
-                  <IonItem>
-                    <IonCheckbox>Fish</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-                <IonCol size="5">
-                  <IonItem>
-                    <IonCheckbox>Peanuts</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-              </IonRow>
-
-              <IonRow class="ion-justify-content-center">
-                <IonCol size="5">
-                  <IonItem>
-                    <IonCheckbox>Sesame</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-                <IonCol size="5">
-                  <IonItem>
-                    <IonCheckbox>Shellfish</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-              </IonRow>
-
-              <IonRow class="ion-justify-content-center">
-                <IonCol size="5">
-                  <IonItem>
-                    <IonCheckbox>Soy</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-                <IonCol size="5">
-                  <IonItem>
-                    <IonCheckbox>Tree Nuts</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-              </IonRow>
-
-              <IonRow class="ion-justify-content-center">
-                <IonCol size="4">
-                  <IonItem>
-                    <IonCheckbox>Wheat</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-                <IonCol size="4">
-                  <IonItem>
-                    <IonCheckbox>Gluten</IonCheckbox>
-                  </IonItem>
-                </IonCol>
-              </IonRow>
+          <IonGrid>
+            {allergyOptions.map((allergy, index) => (
+              index % 2 === 0 ? (
+                <IonRow key={index} class="ion-justify-content-center">
+                  <IonCol size="5">
+                    <IonButton
+                      expand="full"
+                      color={activeAllergies.includes(allergy) ? "secondary" : "light"}
+                      onClick={() => toggleAllergy(allergy)}
+                      >{allergy}</IonButton>
+                  </IonCol>
+                  {allergyOptions[index + 1] && (
+                    <IonCol size="5">
+                      <IonButton
+                        expand="full"
+                        color={activeAllergies.includes(allergyOptions[index + 1]) ? "secondary" : "light"}
+                        onClick={() => toggleAllergy(allergyOptions[index + 1])}
+                        > {allergyOptions[index + 1]} </IonButton>
+                    </IonCol>
+                  )}
+                  </IonRow>) : null
+              ))}
             </IonGrid>
-
-
           </IonContent>
         </IonPage>
     );

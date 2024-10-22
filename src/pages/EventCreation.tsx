@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { IonButtons, IonContent, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonGrid, IonIcon, IonHeader, IonMenuButton, IonPage, IonFab, IonFabButton, IonTitle, IonToolbar, IonList, IonItem, IonInput, IonLabel, IonListHeader, IonCardTitle, IonCheckbox, IonSelectOption, IonSelect, IonRow, IonCol } from '@ionic/react';
-import { add } from 'ionicons/icons';
+import { IonButtons, IonContent, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonGrid, IonIcon, IonHeader, IonMenuButton, IonPage, IonFab, IonFabButton, IonTitle, IonToolbar, IonList, IonItem, IonInput, IonLabel, IonListHeader, IonCardTitle, IonCheckbox, IonSelectOption, IonSelect, IonRow, IonCol, IonButton } from '@ionic/react';
+import { add, addSharp } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
+import './EventCreation.css'
 
 const EventCreation: React.FC = () => {
   const history = useHistory();
@@ -26,9 +27,8 @@ const EventCreation: React.FC = () => {
     'Other'
   ];
 
-
-  // Handle checkbox selection
-  const handleAllergyChange = (allergy: string) => {
+  // Handle button selection
+  const toggleAllergy = (allergy: string) => {
     setAllergies((prev) => {
       if (prev.includes(allergy)) {
         return prev.filter((item) => item !== allergy);
@@ -110,7 +110,6 @@ const EventCreation: React.FC = () => {
             </IonRow>
           </IonGrid>
 
-
            {/* Allergy Checkboxes */}
               <IonListHeader>
                 <IonLabel class="center"><h1>Allergies Checklist:</h1></IonLabel>
@@ -120,37 +119,34 @@ const EventCreation: React.FC = () => {
               <IonGrid>
                 {allergyOptions.map((allergy, index) => (
                   index % 2 == 0 ? (
-                    <IonRow key={index} class="ion-justify-content-center">
-                      <IonCol size="5">
-                        <IonItem>
-                          <IonCheckbox
-                            checked={allergies.includes(allergy)}
-                            onIonChange={() => handleAllergyChange(allergy)}
-                          />
-                          {allergy}
-                        </IonItem>
-                      </IonCol>
-                      {allergyOptions[index + 1] && (
-                        <IonCol size="5">
-                          <IonItem>
-                            <IonCheckbox
-                              checked={allergies.includes(allergyOptions[index + 1])}
-                              onIonChange={() => handleAllergyChange(allergyOptions[index + 1])}
-                            />
-                            {allergyOptions[index + 1]}
-                          </IonItem>
-                        </IonCol>
-                      )}
-                    </IonRow>
-                  ) : null
-                ))}
-              </IonGrid>
+                <IonRow key={index} class="ion-justify-content-center">
+                  <IonCol size="5">
+                    <IonButton
+                      expand="full"
+                      color={allergies.includes(allergy) ? "secondary" : "light"}
+                      onClick={() => toggleAllergy(allergy)}
+                      > {allergy} </IonButton>
+                  </IonCol>
+
+                  {allergyOptions[index + 1] && (
+                  <IonCol size="5">
+                    <IonButton
+                      expand="full"
+                      color={allergies.includes(allergyOptions[index + 1]) ? "secondary" : "light"}
+                      onClick={() => toggleAllergy(allergyOptions[index + 1])}
+                      > {allergyOptions[index + 1]} </IonButton>
+                  </IonCol>
+                )}
+              </IonRow>
+            ) : null
+          ))}
+        </IonGrid>
 
           {/*   Button For Event Creation   */}
         <IonFab slot="fixed" horizontal="end" vertical="bottom">
-          <IonFabButton className="addEventCard" onClick={addEventCard}>
-            <IonIcon icon={add} color="white" aria-label="Create Event" />
-          </IonFabButton>
+          <IonButton size="large" className="createEventButton" onClick={addEventCard}>
+            <span className="icon-circle"><IonIcon icon={addSharp}/> </span> Create Event
+          </IonButton>
         </IonFab>
       </IonContent>
     </IonPage>

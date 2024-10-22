@@ -1,7 +1,7 @@
-import { IonCard, IonCardSubtitle, IonCardTitle, IonCardContent, IonCardHeader, IonButtons, IonFab, IonFabButton, IonHeader, IonIcon, IonMenuButton, IonPage, IonRouterLink, IonTitle, IonToolbar, IonContent } from '@ionic/react';
+import { IonCard, IonCardSubtitle, IonCardTitle, IonCardContent, IonCardHeader, IonButtons, IonFab, IonFabButton, IonHeader, IonIcon, IonMenuButton, IonPage, IonRouterLink, IonTitle, IonToolbar, IonContent, IonButton } from '@ionic/react';
 import React, { useState, useEffect } from 'react';
 import './EventList.css';
-import { add } from 'ionicons/icons';
+import { add, addSharp } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
 
 interface CardDetails {
@@ -19,7 +19,7 @@ const EventList: React.FC = () => {
     const newCardDetails = location.state?.cardDetails;
   
     if (newCardDetails) {
-      setEvents((prevEvents) => [...prevEvents, newCardDetails]);
+      setEvents((prevEvents) => [newCardDetails, ...prevEvents]);
     }
   }, [location.state]);
   
@@ -54,9 +54,9 @@ const EventList: React.FC = () => {
 
       <IonFab slot="fixed" horizontal="end" vertical="bottom">
         <IonRouterLink routerLink="/pages/EventCreation">
-          <IonFabButton className="add-event">
-            <IonIcon icon={add} color="white" aria-label="add event" />
-          </IonFabButton>
+          <IonButton size="large" className="addEventButton">
+            <span className="icon-circle"><IonIcon icon={addSharp}/> </span> Add Event
+          </IonButton>
         </IonRouterLink>
       </IonFab>
     </IonPage>
