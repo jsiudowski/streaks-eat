@@ -1,51 +1,65 @@
-import { IonButtons, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react';
-import React, { useState } from 'react';
-import './EventList.css';
-import { add } from 'ionicons/icons';
-import { getEvents } from '../firebaseConfig';
+import React, { useEffect, useState } from 'react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonLoading } from '@ionic/react';
+import { getEvents } from '../firebaseConfig'; // Adjust the import path as needed
 
 const EventList: React.FC = () => {
-    
-    const [busy, setBusy] = useState<boolean>(false)
-    var ListOfEvents = new Array<any>
-    
-    async function GetEvents() {
-        setBusy(true)
-        const res = await getEvents();
-        ListOfEvents = res;
-        setBusy(false)
+    const [events, setEvents] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const eventsData = await getEvents();
+                setEvents(eventsData);
+            } catch (err) {
+                setError('Failed to load events');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEvents();
+    }, []);
+
+    if (loading) {
+        return (
+            <IonLoading isOpen={loading} message={'Loading events...'} />
+        );
+    }
+
+    if (error) {
+        return (
+            <IonContent>
+                <p>{error}</p>
+            </IonContent>
+        );
     }
 
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonMenuButton />
-                    </IonButtons>
-                    <IonTitle>List of Events</IonTitle>
+                    <IonTitle>Event List</IonTitle>
                 </IonToolbar>
             </IonHeader>
-
-            
-            <IonList>
-                <IonListHeader>
-                    <IonLabel>Events Around Campus!</IonLabel>
-                </IonListHeader>
-                <IonItem *ngFor="#item of product_categories">
-                    {{item.name}}
-                </IonItem>
-            </IonList>
-
-            <IonFab slot="fixed" horizontal="end" vertical="bottom">
-                <IonRouterLink routerLink="/pages/EventCreation">
-                    <IonFabButton className="add-event">
-                        <IonIcon icon={add} color="white" aria-label="add event" />
-                    </IonFabButton>
-                </IonRouterLink>
-            </IonFab>
+            <IonContent>
+                <IonList>
+                    {events.map((event, index) => (
+                        <IonItem key={index}>
+                            <IonLabel>
+                                <h2>{event.Building}</h2>
+                                <p>{event.RoomNumber}</p>
+                                <p>{event.Allergens}</p>
+                                <p>{event.FoodDescription}</p>
+                                <p>{event.TimeCreated}</p>
+                            </IonLabel>
+                        </IonItem>
+                    ))}
+                </IonList>
+            </IonContent>
         </IonPage>
     );
-}
+};
 
 export default EventList;

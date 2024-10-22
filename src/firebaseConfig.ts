@@ -3,6 +3,7 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore/lite';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const config = {
     apiKey: "AIzaSyCyQOeqqsDjQFDdpJTden1kiVrEv8EOq88",
@@ -10,14 +11,27 @@ const config = {
     projectId: "streakseat",
     storageBucket: "streakseat.appspot.com",
     messagingSenderId: "946747688782",
-    appId: "1:946747688782:web:ca5fe4398e760e24cbc01f",
-    measurementId: "G-V3MHX0XZGQ"
-}
+    appId: "1:946747688782:web:419bcf45db5f80d8cbc01f",
+    measurementId: "G-6YRW2L2BYY"
+  };
 
 // Initialize Firebase
 const app = firebase.initializeApp(config);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
+
+const auth = getAuth();
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+    const uid = user.uid;
+    // ...
+  } else {
+    // User is signed out
+    // ...
+  }
+});
 
 // Get a list of events from your database
 export async function getEvents() {
