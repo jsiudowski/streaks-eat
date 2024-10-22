@@ -6,3 +6,10 @@
     width: 50%;
     font-weight: 700
   }
+
+  .check-Col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
