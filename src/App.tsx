@@ -51,6 +51,7 @@ import Boler from './pages/BuildingPages/Boler';
 import LSC from './pages/BuildingPages/LSC';
 import SIH from './pages/BuildingPages/SIH';
 import EventCreation from './pages/EventCreation';
+import EventDetails from './pages/EventDetails';
 
 
 
@@ -78,7 +79,7 @@ const App: React.FC = () => {
             <Route path="/pages/BuildingPages/LSC" component={LSC}></Route>
             <Route path="/pages/BuildingPages/SIH" component={SIH}></Route>
             <Route path="/pages/EventCreation" component={EventCreation}></Route>
-
+            <Route path="/pages/EventDetails" component={EventDetails}></Route>
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

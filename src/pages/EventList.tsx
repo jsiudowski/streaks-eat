@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import './EventList.css';
 import { add, addSharp } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+
 
 interface CardDetails {
   title: string;
@@ -14,6 +16,9 @@ const EventList: React.FC = () => {
   const location = useLocation<{ cardDetails?: CardDetails }>();
   const [events, setEvents] = useState<CardDetails[]>([]);
 
+  const history = useHistory();
+
+
   // When the page is loaded, check if there is new event data from location.state
   useEffect(() => {
     const newCardDetails = location.state?.cardDetails;
@@ -22,7 +27,15 @@ const EventList: React.FC = () => {
       setEvents((prevEvents) => [newCardDetails, ...prevEvents]);
     }
   }, [location.state]);
-  
+
+
+  const handleCardClick = (event: CardDetails) => {
+    history.push({
+      pathname: '/pages/EventDetails',
+      state: { event } // Pass the entire event object
+    });
+  };
+
 
   return (
     <IonPage>
@@ -38,14 +51,14 @@ const EventList: React.FC = () => {
       <IonContent>
         {events.length > 0 ? (
           events.map((event, index) => (
-            <IonCard key={index}>
-              <IonCardHeader>
-                <IonCardSubtitle>{event.subtitle}</IonCardSubtitle>
-                 <IonCardTitle>{event.title}</IonCardTitle>
-              </IonCardHeader>
-            <IonCardContent>{event.content}</IonCardContent>
+              <IonCard key={index} onClick={() => handleCardClick(event)}>
+                <IonCardHeader>
+                  <IonCardSubtitle>{event.subtitle}</IonCardSubtitle>
+                  <IonCardTitle>{event.title}</IonCardTitle>
+                </IonCardHeader>
+              <IonCardContent>{event.content}</IonCardContent>
 
-            </IonCard>
+              </IonCard>
           ))
         ) : (
           <p>No events to display.</p>
