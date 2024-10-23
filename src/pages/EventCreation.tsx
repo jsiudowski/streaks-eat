@@ -1,8 +1,14 @@
+import { IonButton, IonButtons, IonCol, IonContent, IonFab, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonListHeader, IonMenuButton, IonPage, IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
+import { addSharp } from 'ionicons/icons';
 import React, { useState } from 'react';
-import { IonButtons, IonContent, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonGrid, IonIcon, IonHeader, IonMenuButton, IonPage, IonFab, IonFabButton, IonTitle, IonToolbar, IonList, IonItem, IonInput, IonLabel, IonListHeader, IonCardTitle, IonCheckbox, IonSelectOption, IonSelect, IonRow, IonCol, IonButton } from '@ionic/react';
-import { add, addSharp } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import './EventCreation.css'
+import Buildings from '../Data/RoomsEdited.json';
+import './EventCreation.css';
+
+// Define the type for the structure of the JSON data
+type BuildingsData = {
+  [buildingName: string]: string[] | null; // Maps each building name to an array of room names or null
+};
 
 const EventCreation: React.FC = () => {
   const history = useHistory();
@@ -12,6 +18,8 @@ const EventCreation: React.FC = () => {
   const [roomNumber, setRoomNumber] = useState<string>('');
   const [EventName, setEventName] = useState<string>('');
   const [allergies, setAllergies] = useState<string[]>([]);
+  const [selectedBuilding, setSelectedBuilding] = useState<string | undefined>(undefined);
+  const [selectedRoom, setSelectedRoom] = useState<string | undefined>(undefined);
 
   const allergyOptions = [
     'Dairy',
@@ -27,7 +35,7 @@ const EventCreation: React.FC = () => {
     'Other'
   ];
 
-  // Handle button selection
+  // Handle button selection for allergies
   const toggleAllergy = (allergy: string) => {
     setAllergies((prev) => {
       if (prev.includes(allergy)) {
@@ -57,6 +65,20 @@ const EventCreation: React.FC = () => {
     setRoomNumber('');
     setEventName('');
     setAllergies([]);
+    setSelectedBuilding(undefined);
+    setSelectedRoom(undefined);
+  };
+
+  // Use type assertion to tell TypeScript the shape of the data
+  const buildingsData = Buildings as BuildingsData; // Explicitly cast the imported JSON to BuildingsData type
+
+  const handleBuildingChange = (e: any) => {
+    setSelectedBuilding(e.detail.value);
+    setSelectedRoom(undefined); // Reset room when the building changes
+  };
+
+  const handleRoomChange = (e: any) => {
+    setSelectedRoom(e.detail.value);
   };
 
   return (
@@ -71,70 +93,88 @@ const EventCreation: React.FC = () => {
       </IonHeader>
 
       <IonContent>
-          <IonListHeader>
-            <IonLabel class="center"><h1>Event Name:</h1></IonLabel>
-          </IonListHeader>
-          <IonGrid>
-            <IonItem>
-              <IonInput label="Event Name" labelPlacement="floating"
-                placeholder="What is the name of your event?"
-                value={EventName}
-                onIonInput={e => setEventName((e.target as unknown as HTMLInputElement).value)}
-              />
-            </IonItem>
-          </IonGrid>
+        {/* Event Name Input */}
+        <IonListHeader>
+          <IonLabel className="center"><h1>Event Name:</h1></IonLabel>
+        </IonListHeader>
+        <IonGrid>
+          <IonItem>
+            <IonInput label="Event Name" labelPlacement="floating"
+              placeholder="What is the name of your event?"
+              value={EventName}
+              onIonInput={e => setEventName((e.target as unknown as HTMLInputElement).value)}
+            />
+          </IonItem>
+        </IonGrid>
 
-          <IonListHeader>
-            <IonLabel class="center"><h1>Event Locations:</h1></IonLabel>
-          </IonListHeader>
-          <IonListHeader>
-            <IonLabel class="center"><p>Please Set Building & Room Number !</p></IonLabel>
-          </IonListHeader>
+        {/* Building Select Dropdown */}
+        <IonListHeader>
+          <IonLabel className="Rooms"><h1>Location</h1></IonLabel>
+        </IonListHeader>
+        <IonItem>
+          <IonSelect
+            justify="start"
+            placeholder="Building"
+            value={selectedBuilding}
+            onIonChange={handleBuildingChange}
+          >
+            {/* Dynamically create IonSelectOption for each building */}
+            {Object.keys(buildingsData).map((buildingName, index) => (
+              <IonSelectOption key={index} value={buildingName}>
+                {buildingName}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonItem>
 
-          <IonGrid>
-            <IonRow class="ion-justify-content-center">
-              <IonCol size="5">
-                <IonSelect label="Building" labelPlacement="floating" placeholder="Building" value={building} onIonChange={e => setBuilding(e.detail.value!)}>
-                  <IonSelectOption value="Apple">Apple</IonSelectOption>
-                  <IonSelectOption value="Banana">Banana</IonSelectOption>
-                  <IonSelectOption value="Orange">Orange</IonSelectOption>
-                </IonSelect>
-              </IonCol>
-              <IonCol size="5">
-                <IonSelect label="Room Number" labelPlacement="floating" placeholder="Room Number" value={roomNumber} onIonChange={e => setRoomNumber(e.detail.value!)}>
-                  <IonSelectOption value="101">101</IonSelectOption>
-                  <IonSelectOption value="102">102</IonSelectOption>
-                  <IonSelectOption value="103">103</IonSelectOption>
-                </IonSelect>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
+        {/* Room Select Dropdown, shown only if a building is selected */}
+        {selectedBuilding && buildingsData[selectedBuilding] && (
+          <IonItem>
+            <IonSelect
+              justify="start"
+              placeholder="Room Number"
+              value={selectedRoom}
+              onIonChange={handleRoomChange}
+            >
+              {/* Dynamically create IonSelectOption for rooms in the selected building */}
+              {buildingsData[selectedBuilding]?.map((room, roomIndex) => (
+                <IonSelectOption key={roomIndex} value={room}>
+                  {room}
+                </IonSelectOption>
+              ))}
+            </IonSelect>
+          </IonItem>
+        )}
 
-           {/* Allergy Checkboxes */}
-              <IonListHeader>
-                <IonLabel class="center"><h1>Allergies Checklist:</h1></IonLabel>
-              </IonListHeader>
+        {/* Allergy Checkboxes */}
+        <IonListHeader>
+          <IonLabel className="center"><h1>Allergies Checklist:</h1></IonLabel>
+        </IonListHeader>
 
-              {/*  Actual Grid Format For "2-Col-Per-Row"  */}
-              <IonGrid>
-                {allergyOptions.map((allergy, index) => (
-                  index % 2 == 0 ? (
-                <IonRow key={index} class="ion-justify-content-center">
-                  <IonCol size="5">
-                    <IonButton
-                      expand="full"
-                      color={allergies.includes(allergy) ? "secondary" : "light"}
-                      onClick={() => toggleAllergy(allergy)}
-                      > {allergy} </IonButton>
-                  </IonCol>
+        {/* Actual Grid Format For "2-Col-Per-Row" */}
+        <IonGrid>
+          {allergyOptions.map((allergy, index) => (
+            index % 2 === 0 ? (
+              <IonRow key={index} className="ion-justify-content-center">
+                <IonCol size="5">
+                  <IonButton
+                    expand="full"
+                    color={allergies.includes(allergy) ? "secondary" : "light"}
+                    onClick={() => toggleAllergy(allergy)}
+                  > 
+                    {allergy} 
+                  </IonButton>
+                </IonCol>
 
-                  {allergyOptions[index + 1] && (
+                {allergyOptions[index + 1] && (
                   <IonCol size="5">
                     <IonButton
                       expand="full"
                       color={allergies.includes(allergyOptions[index + 1]) ? "secondary" : "light"}
                       onClick={() => toggleAllergy(allergyOptions[index + 1])}
-                      > {allergyOptions[index + 1]} </IonButton>
+                    > 
+                      {allergyOptions[index + 1]} 
+                    </IonButton>
                   </IonCol>
                 )}
               </IonRow>
@@ -142,10 +182,10 @@ const EventCreation: React.FC = () => {
           ))}
         </IonGrid>
 
-          {/*   Button For Event Creation   */}
+        {/* Button For Event Creation */}
         <IonFab slot="fixed" horizontal="end" vertical="bottom">
           <IonButton size="large" className="createEventButton" onClick={addEventCard}>
-            <span className="icon-circle"><IonIcon icon={addSharp}/> </span> Create Event
+            <span className="icon-circle"><IonIcon icon={addSharp} /> </span> Create Event
           </IonButton>
         </IonFab>
       </IonContent>
