@@ -12,7 +12,9 @@ import {
     IonRouterLink,
     IonButton,
     IonFab,
-    IonIcon
+    IonIcon,
+    IonButtons,
+    IonMenuButton
 } from '@ionic/react';
 import { getEvents } from '../firebaseConfig'; // Adjust the import path as needed
 import { addSharp } from 'ionicons/icons';
@@ -88,6 +90,9 @@ const EventList: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot="start">
+                        <IonMenuButton />
+                    </IonButtons>
                     <IonTitle>Event List</IonTitle>
                 </IonToolbar>
             </IonHeader>

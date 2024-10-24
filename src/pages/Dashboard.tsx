@@ -7,9 +7,12 @@ const Dashboard: React.FC = () =>  {
     return (
         <IonPage>
             <IonHeader>
-              <IonToolbar>
-                <IonTitle>STREAKS EAT!</IonTitle>
-              </IonToolbar>
+                <IonToolbar>
+                    <IonButtons slot="start">
+                        <IonMenuButton />
+                    </IonButtons>
+                    <IonTitle>STREAKS EAT!</IonTitle>
+                </IonToolbar>
             </IonHeader>
             <IonContent className='align-content: center'>
               <IonButton routerLink="/pages/Login">Login</IonButton>

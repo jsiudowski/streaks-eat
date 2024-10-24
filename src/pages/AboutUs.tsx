@@ -26,8 +26,8 @@ const AboutUs: React.FC = () => {
           </IonHeader>
           <IonCard>
             <IonCardHeader>
-                <IonCardTitle>Welcome to Cut-Back Crumbs!</IonCardTitle>
-                <IonCardSubtitle>Developed by Abedelhadi Tawil, Jon Siudowski, Alyssa Augustein, and Gavin Weiser.</IonCardSubtitle>
+                <IonCardTitle>Welcome to Streaks Eat!</IonCardTitle>
+                <IonCardSubtitle>A John Carroll University App Developed by Abedelhadi Tawil, Jon Siudowski, Alyssa Augustein, and Gavin Weiser.</IonCardSubtitle>
             </IonCardHeader>
 
             <IonCardContent>This app will strive to reduce food waste and decrease food insecurity, through the use of a mobile event calendar with real-time notifications.</IonCardContent>
