@@ -18,11 +18,19 @@ import {
   IonRow,
   IonCol,
   IonIcon,
+  IonGrid,
 } from '@ionic/react';
 import { addSharp } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { addEvents } from '../firebaseConfig'; // Import Firestore configuration
 import './EventCreation.css';
+import Buildings from '../Data/RoomsEdited.json';
+
+// Define the type for the structure of the JSON data
+type BuildingsData = {
+    [buildingName: string]: string[] | null; // Maps each building name to an array of room names or null
+  };
+  
 
 const EventCreation: React.FC = () => {
   const history = useHistory();
@@ -32,6 +40,7 @@ const EventCreation: React.FC = () => {
   const [roomNumber, setRoomNumber] = useState<string>('');
   const [eventName, setEventName] = useState<string>('');
   const [allergens, setAllergens] = useState<number[]>([]); // Keep the allergens as a number array
+  const[foodItems, setFoodItems]= useState<string>('');
 
   const allergyOptions = [
     'Dairy',
@@ -87,6 +96,18 @@ const EventCreation: React.FC = () => {
     }
   };
 
+  // Use type assertion to tell TypeScript the shape of the data
+  const buildingsData = Buildings as BuildingsData; // Explicitly cast the imported JSON to BuildingsData type
+
+  const handleBuildingChange = (e: any) => {
+    setBuilding(e.detail.value);
+    setRoomNumber(''); // Reset room when the building changes
+  };
+
+  const handleRoomChange = (e: any) => {
+    setRoomNumber(e.detail.value);
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -115,45 +136,44 @@ const EventCreation: React.FC = () => {
           />
         </IonItem>
 
-        {/* Event Locations Input */}
+        {/* Building Select Dropdown */}
         <IonListHeader>
-          <IonLabel className="center">
-            <h1>Event Locations:</h1>
-          </IonLabel>
+          <IonLabel className="Rooms"><h1>Location</h1></IonLabel>
         </IonListHeader>
-        <IonListHeader>
-          <IonLabel className="center">
-            <p>Please Set Building & Room Number!</p>
-          </IonLabel>
-        </IonListHeader>
-        <IonRow className="ion-justify-content-center">
-          <IonCol size="5">
+        <IonItem>
+          <IonSelect
+            justify="start"
+            placeholder="Building"
+            value={building}
+            onIonChange={handleBuildingChange}
+          >
+            {/* Dynamically create IonSelectOption for each building */}
+            {Object.keys(buildingsData).map((buildingName, index) => (
+              <IonSelectOption key={index} value={buildingName}>
+                {buildingName}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonItem>
+
+        {/* Room Select Dropdown, shown only if a building is selected */}
+        {building && buildingsData[building] && (
+          <IonItem>
             <IonSelect
-              label="Building"
-              labelPlacement="floating"
-              placeholder="Building"
-              value={building}
-              onIonChange={(e) => setBuilding(e.detail.value!)}
-            >
-              <IonSelectOption value="Apple">Apple</IonSelectOption>
-              <IonSelectOption value="Banana">Banana</IonSelectOption>
-              <IonSelectOption value="Orange">Orange</IonSelectOption>
-            </IonSelect>
-          </IonCol>
-          <IonCol size="5">
-            <IonSelect
-              label="Room Number"
-              labelPlacement="floating"
+              justify="start"
               placeholder="Room Number"
               value={roomNumber}
-              onIonChange={(e) => setRoomNumber(e.detail.value!)}
+              onIonChange={handleRoomChange}
             >
-              <IonSelectOption value="101">101</IonSelectOption>
-              <IonSelectOption value="102">102</IonSelectOption>
-              <IonSelectOption value="103">103</IonSelectOption>
+              {/* Dynamically create IonSelectOption for rooms in the selected building */}
+              {buildingsData[building]?.map((room, roomIndex) => (
+                <IonSelectOption key={roomIndex} value={room}>
+                  {room}
+                </IonSelectOption>
+              ))}
             </IonSelect>
-          </IonCol>
-        </IonRow>
+          </IonItem>
+        )}
 
         {/* Allergy Checkboxes */}
         <IonListHeader>

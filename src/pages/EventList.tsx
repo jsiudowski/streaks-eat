@@ -96,10 +96,10 @@ const EventList: React.FC = () => {
                     {events.map((event, index) => (
                         <IonItem key={index}>
                             <IonLabel>
-                                <h2>{event.Building}</h2>
+                                <h2>{event.FoodDescription}</h2>
+                                <p>Building: {event.Building}</p>
                                 <p>Room: {event.RoomNumber}</p>
                                 <p>Allergens: {event.Allergens.join(', ')}</p> {/* Display allergens */}
-                                <p>Description: {event.FoodDescription}</p>
                                 <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
                             </IonLabel>
                         </IonItem>
