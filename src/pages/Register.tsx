@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonProgressBar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonButton, IonInput, IonLoading } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonProgressBar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonButton, IonInput, IonLoading, IonList, IonItem, useIonToast } from '@ionic/react';
 import { useHistory, useParams } from 'react-router';
 import './Register.css'
 import { Link } from 'react-router-dom';
@@ -11,25 +11,47 @@ const Register: React.FC = () => {
     const [cpassword, setCPassword] = useState('')
     const [busy, setBusy] = useState<boolean>(false)
     const history = useHistory();
+    const [alertMessage] = useIonToast();
 
-    async function Register() {
-        //validation
-        setBusy(true)
-        if(password !== cpassword) {
-            console.log('Passwords do not match')
-        }
-        if(username.trim() === '' || password.trim() === '') {
-            console.log('Username and Password are required!')
-        }
+    const showAlert = (message: string, position: 'top' | 'bottom' | 'middle' = 'top') => {
+      alertMessage({
+          message,
+          duration: 1500,
+          position,
+      });
+  };
 
-        const res = await registerUser(username, password)
-        console.log(username, password, cpassword)
+  async function Register() {
+      setBusy(true);
+      {/* Checks to see if there are user inputs in either field*/}
+      if (username.trim() !== '' && password.trim() === '') {
+        showAlert('Password is required ');
+        setBusy(false);
+        return; // Exit early
+      }
+      if (password.trim() !== '' && username.trim() === '') {
+          showAlert('Username is required');
+          setBusy(false);
+          return; // Exit early
+      }
+      if (password !== cpassword) {
+          showAlert('Passwords do not match');
+          setBusy(false);
+          return; // Exit early
+      }
+      if (username.trim() === '' || password.trim() === '') {
+          showAlert('Username and Password are required!');
+          setBusy(false);
+          return; // Exit early
+      }
 
-        setBusy(false)
-        if(res) {
-            history.push('/pages/EventList');
-          }
-    }
+      const res = await registerUser(username, password);
+      setBusy(false);
+      if (res) {
+          showAlert('Registration successful');
+          history.push('/pages/EventList');
+      }
+  }
 
     return (
         <IonPage>
@@ -46,6 +68,20 @@ const Register: React.FC = () => {
               <IonButton onClick={Register}>Register</IonButton>
 
               <p>Already have an account? <Link to="/pages/Login">Login</Link></p>
+              <IonCard>
+              <IonCardHeader>
+                <IonCardTitle>Registration Requirements:</IonCardTitle>
+                <IonCardSubtitle>Here are some requirements for registration:</IonCardSubtitle>
+              </IonCardHeader>
+              <IonCardContent><p>Do not include '@jcu.edu' in username.</p></IonCardContent>
+              <IonCardContent>Password must contain:
+              <p>- At Least 10 characters</p>
+              <p>- At least one uppercase letter.</p>
+              <p>- At least one lowercase letter</p>
+              <p>- At least one number</p>
+              <p>- At least one symbol.</p>
+              </IonCardContent>
+            </IonCard>
             </IonContent>
         </IonPage>
     );

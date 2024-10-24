@@ -36,12 +36,6 @@ mdIcon: Displays the Icon in the nav menu,
 */
 const appPages: AppPage[] = [
   {
-    title: 'Dashboard',
-    url: '/pages/dashboard',
-    iosIcon: homeOutline,
-    mdIcon: homeOutline
-  },
-  {
     title: 'Event List',
     url: '/pages/EventList',
     iosIcon: calendarOutline,

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonCheckbox, IonButton, IonCardTitle, IonLoading } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, useIonToast, IonPage, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonCheckbox, IonButton, IonCardTitle, IonLoading, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle } from '@ionic/react';
 import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { loginUser } from '../firebaseConfig';
+
 
 const Login: React.FC = () => {
 
@@ -10,17 +11,48 @@ const Login: React.FC = () => {
     const history = useHistory();
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [showAlert, setShowAlert] = useState<boolean>(false); // State for alert visibility
+    const [alertMessage] = useIonToast();
+
+    const showAlert = (message: string, position: 'top' | 'bottom' | 'middle' = 'top') => {
+      alertMessage({
+          message,
+          duration: 1500,
+          position,
+      });
+  };
+  
 
     async function LoginUser() {
         setBusy(true)
+        
+        {/* Checks to see if there are user inputs in either field*/}
+        if (username.trim() !== '' && password.trim() === '') {
+          showAlert('Password is required ');
+          setBusy(false);
+          return; // Exit early
+        }
+        if (password.trim() !== '' && username.trim() === '') {
+            showAlert('Username is required');
+            setBusy(false);
+            return; // Exit early
+        }
+        if (username.trim() === '' || password.trim() === '') {
+          showAlert('Username and Password are required!');
+          setBusy(false);
+          return; // Exit early
+        }
+
+        {/* all fields are checked | ensures if login is successful or not */}
         const res = await loginUser(username, password);
         console.log(`${res ? 'Login Success' : 'Login Failed'}`)
         setBusy(false)
         if(res) {
-          setShowAlert(true); // Show the alert on successful login
+          showAlert('Login successful.');
           history.push('/pages/EventList');
         }
+        else {
+          showAlert('Login failed. Please try again.');
+        };
         
     }
 
@@ -38,6 +70,14 @@ const Login: React.FC = () => {
               <IonButton onClick={LoginUser}>Login</IonButton>
 
               <p>New here? Create an account! <Link to="/pages/Register">Register</Link></p>
+
+              <IonCard>
+              <IonCardHeader>
+                <IonCardTitle>Login Requirements:</IonCardTitle>
+                <IonCardSubtitle>Here are some requirements for logging in:</IonCardSubtitle>
+              </IonCardHeader>
+              <IonCardContent>Do not include '@jcu.edu' in username.</IonCardContent>
+            </IonCard>
             </IonContent>
         </IonPage>
     );
