@@ -6,7 +6,8 @@ interface LocationState {
     event?: {
       title: string;
       subtitle: string;
-      content: string;
+      contentFood: string;
+      contentAllergies: string;
     };
   }
 
@@ -38,7 +39,8 @@ interface LocationState {
           </IonHeader>
           <IonContent>
             <h2>{event.subtitle}</h2>
-            <p>{event.content}</p>
+            <p>{event.contentFood}</p>
+            <p>{event.contentAllergies}</p>
           </IonContent>
 
           <IonFab slot="fixed" horizontal="end" vertical="bottom">

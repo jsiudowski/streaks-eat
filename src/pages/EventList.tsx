@@ -9,7 +9,8 @@ import { useHistory } from 'react-router-dom';
 interface CardDetails {
   title: string;
   subtitle: string;
-  content: string;
+  contentFood: string;
+  contentAllergies: string;
 }
 
 const EventList: React.FC = () => {
@@ -56,7 +57,8 @@ const EventList: React.FC = () => {
                   <IonCardSubtitle>{event.subtitle}</IonCardSubtitle>
                   <IonCardTitle>{event.title}</IonCardTitle>
                 </IonCardHeader>
-              <IonCardContent>{event.content}</IonCardContent>
+              <IonCardContent>{event.contentFood}</IonCardContent>
+              <IonCardContent>{event.contentAllergies}</IonCardContent>
 
               </IonCard>
           ))

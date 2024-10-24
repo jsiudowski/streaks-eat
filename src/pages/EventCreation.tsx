@@ -20,6 +20,7 @@ const EventCreation: React.FC = () => {
   const [allergies, setAllergies] = useState<string[]>([]);
   const [selectedBuilding, setSelectedBuilding] = useState<string | undefined>(undefined);
   const [selectedRoom, setSelectedRoom] = useState<string | undefined>(undefined);
+  const[foodItems, setFoodItems]= useState<string>('');
 
   const allergyOptions = [
     'Dairy',
@@ -51,7 +52,8 @@ const EventCreation: React.FC = () => {
     const cardDetails = {
       title: `Event at ${building} - Room ${roomNumber}`,
       subtitle: `Event Name: ${EventName}`,
-      content: `Allergies: ${allergies.join(', ')}`,
+      contentFood:`Food Items: ${foodItems}`,
+      contentAllergies:`Allergies: ${allergies.join(', ')}`,
     };
 
     // Navigate to EventList page with state
@@ -67,6 +69,7 @@ const EventCreation: React.FC = () => {
     setAllergies([]);
     setSelectedBuilding(undefined);
     setSelectedRoom(undefined);
+    setFoodItems('');
   };
 
   // Use type assertion to tell TypeScript the shape of the data
@@ -145,6 +148,17 @@ const EventCreation: React.FC = () => {
             </IonSelect>
           </IonItem>
         )}
+
+        <IonListHeader>
+          <IonLabel className="Food present"><h1>Food Present:</h1></IonLabel>
+        </IonListHeader>
+        <IonGrid>
+          <IonInput label="Food Items" labelPlacement="floating"
+              placeholder="List all items at your event:"
+              value={foodItems}
+              onIonInput={e => setFoodItems((e.target as unknown as HTMLInputElement).value)}
+            />
+        </IonGrid>
 
         {/* Allergy Checkboxes */}
         <IonListHeader>
