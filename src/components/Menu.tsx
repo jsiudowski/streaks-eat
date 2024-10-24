@@ -42,12 +42,6 @@ const appPages: AppPage[] = [
     mdIcon: calendarOutline
   },
   {
-    title: 'Locations',
-    url: '/pages/Locations',
-    iosIcon: navigate,
-    mdIcon: navigate
-  },
-  {
     title: 'Map',
     url: '/pages/Map',
     iosIcon: mapOutline,

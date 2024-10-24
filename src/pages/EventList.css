@@ -20,3 +20,12 @@
     height: 36px; 
     margin-right: 8px; /* Space between icon and text */
 }
+
+.building-name {
+    background-color: navy;  /* Solid navy blue background */
+    color: white;            /* White text color */
+    padding: 10px;          /* Padding around the text */
+    border-radius: 5px;     /* Rounded corners */
+    margin: 10px 0;         /* Margin above and below the building name */
+    font-weight: bold;       /* Bold text */
+}
