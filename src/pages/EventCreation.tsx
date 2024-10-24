@@ -13,12 +13,12 @@ import {
   IonItem,
   IonInput,
   IonLabel,
-  IonSelect,
-  IonSelectOption,
   IonRow,
   IonCol,
   IonIcon,
-  IonGrid,
+  IonModal, // Import IonModal
+  IonSearchbar, // Import IonSearchbar
+  IonList,
 } from '@ionic/react';
 import { addSharp } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
@@ -26,21 +26,23 @@ import { addEvents } from '../firebaseConfig'; // Import Firestore configuration
 import './EventCreation.css';
 import Buildings from '../Data/RoomsEdited.json';
 
-// Define the type for the structure of the JSON data
+//Define the type for the structure of the JSON data
 type BuildingsData = {
-    [buildingName: string]: string[] | null; // Maps each building name to an array of room names or null
-  };
-  
+  [buildingName: string]: string[] | null; // Map each building name to an array 
+};
 
 const EventCreation: React.FC = () => {
   const history = useHistory();
 
-  // State to capture user input
   const [building, setBuilding] = useState<string>('');
   const [roomNumber, setRoomNumber] = useState<string>('');
   const [eventName, setEventName] = useState<string>('');
   const [allergens, setAllergens] = useState<number[]>([]); // Keep the allergens as a number array
-  const[foodItems, setFoodItems]= useState<string>('');
+  const [foodItems, setFoodItems] = useState<string>('');
+  const [buildingSearchQuery, setBuildingSearchQuery] = useState<string>(''); // State for building search input
+  const [roomSearchQuery, setRoomSearchQuery] = useState<string>(''); // State for room search input
+  const [isBuildingModalOpen, setIsBuildingModalOpen] = useState<boolean>(false); // State for the building modal
+  const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false); // State for the room modal
 
   const allergyOptions = [
     'Dairy',
@@ -56,7 +58,21 @@ const EventCreation: React.FC = () => {
     'Other',
   ];
 
-  // Handle button selection
+  const buildingsData = Buildings as BuildingsData;
+
+  // Function to filter buildings based on search query
+  const filteredBuildings = Object.keys(buildingsData).filter((buildingName) =>
+    buildingName.toLowerCase().includes(buildingSearchQuery.toLowerCase())
+  );
+
+  // Function to filter rooms based on search query within the selected building
+  const filteredRooms =
+    building && buildingsData[building]
+      ? buildingsData[building]!.filter((room) =>
+          room.toLowerCase().includes(roomSearchQuery.toLowerCase())
+        )
+      : [];
+
   const toggleAllergy = (allergyIndex: number) => {
     setAllergens((prev) => {
       if (prev.includes(allergyIndex)) {
@@ -67,9 +83,7 @@ const EventCreation: React.FC = () => {
     });
   };
 
-  // Function to add a new event card and send data to Firebase
   const addEventCard = async () => {
-    // Prepare the event data to send to Firebase
     const newEvent = {
       Building: building,
       RoomNumber: roomNumber,
@@ -79,16 +93,13 @@ const EventCreation: React.FC = () => {
     };
 
     try {
-      // Call the addEvents function to add the event to Firebase
       const success = await addEvents(newEvent);
 
       if (success) {
-        // Clear all inputs upon successful submission
         setBuilding('');
         setRoomNumber('');
         setEventName('');
-        setAllergens([]); // Reset allergens array
-        // After the event is created, navigate back with refresh state
+        setAllergens([]);
         history.push('/pages/EventList', { refresh: true });
       }
     } catch (error) {
@@ -96,16 +107,15 @@ const EventCreation: React.FC = () => {
     }
   };
 
-  // Use type assertion to tell TypeScript the shape of the data
-  const buildingsData = Buildings as BuildingsData; // Explicitly cast the imported JSON to BuildingsData type
-
-  const handleBuildingChange = (e: any) => {
-    setBuilding(e.detail.value);
-    setRoomNumber(''); // Reset room when the building changes
+  const handleBuildingChange = (selectedBuilding: string) => {
+    setBuilding(selectedBuilding);
+    setRoomNumber(''); // Reset room when building changes
+    setIsBuildingModalOpen(false); // Close the building modal after selection
   };
 
-  const handleRoomChange = (e: any) => {
-    setRoomNumber(e.detail.value);
+  const handleRoomChange = (selectedRoom: string) => {
+    setRoomNumber(selectedRoom);
+    setIsRoomModalOpen(false); // Close the room modal after selection
   };
 
   return (
@@ -120,7 +130,6 @@ const EventCreation: React.FC = () => {
       </IonHeader>
 
       <IonContent>
-        {/* Event Name Input */}
         <IonListHeader>
           <IonLabel className="center">
             <h1>Event Name:</h1>
@@ -136,46 +145,86 @@ const EventCreation: React.FC = () => {
           />
         </IonItem>
 
-        {/* Building Select Dropdown */}
         <IonListHeader>
           <IonLabel className="Rooms"><h1>Location</h1></IonLabel>
         </IonListHeader>
-        <IonItem>
-          <IonSelect
-            justify="start"
-            placeholder="Building"
-            value={building}
-            onIonChange={handleBuildingChange}
-          >
-            {/* Dynamically create IonSelectOption for each building */}
-            {Object.keys(buildingsData).map((buildingName, index) => (
-              <IonSelectOption key={index} value={buildingName}>
-                {buildingName}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
+
+        {/* Button to open the custom building selection modal */}
+        <IonItem button onClick={() => setIsBuildingModalOpen(true)}>
+          <IonLabel>
+            {building || 'Select Building'}
+          </IonLabel>
         </IonItem>
 
-        {/* Room Select Dropdown, shown only if a building is selected */}
-        {building && buildingsData[building] && (
-          <IonItem>
-            <IonSelect
-              justify="start"
-              placeholder="Room Number"
-              value={roomNumber}
-              onIonChange={handleRoomChange}
-            >
-              {/* Dynamically create IonSelectOption for rooms in the selected building */}
-              {buildingsData[building]?.map((room, roomIndex) => (
-                <IonSelectOption key={roomIndex} value={room}>
-                  {room}
-                </IonSelectOption>
+        {/* Custom Modal for Building Selection */}
+        <IonModal isOpen={isBuildingModalOpen} onDidDismiss={() => setIsBuildingModalOpen(false)}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Select a Building</IonTitle>
+              <IonButtons slot="end">
+                <IonButton onClick={() => setIsBuildingModalOpen(false)}>Close</IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            <IonSearchbar
+              value={buildingSearchQuery}
+              onIonInput={(e) => setBuildingSearchQuery((e.target as unknown as HTMLInputElement).value)}
+              placeholder="Search Buildings"
+            />
+            <IonList>
+              {filteredBuildings.map((buildingName, index) => (
+                <IonItem
+                  button
+                  key={index}
+                  onClick={() => handleBuildingChange(buildingName)}
+                >
+                  {buildingName}
+                </IonItem>
               ))}
-            </IonSelect>
+            </IonList>
+          </IonContent>
+        </IonModal>
+
+        {/* Button to open the custom room selection modal, only if a building is selected */}
+        {building && (
+          <IonItem button onClick={() => setIsRoomModalOpen(true)}>
+            <IonLabel>
+              {roomNumber || 'Select Room Number'}
+            </IonLabel>
           </IonItem>
         )}
 
-        {/* Allergy Checkboxes */}
+        {/* Custom Modal for Room Selection */}
+        <IonModal isOpen={isRoomModalOpen} onDidDismiss={() => setIsRoomModalOpen(false)}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Select a Room</IonTitle>
+              <IonButtons slot="end">
+                <IonButton onClick={() => setIsRoomModalOpen(false)}>Close</IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            <IonSearchbar
+              value={roomSearchQuery}
+              onIonInput={(e) => setRoomSearchQuery((e.target as unknown as HTMLInputElement).value)}
+              placeholder="Search Rooms"
+            />
+            <IonList>
+              {filteredRooms.map((room, roomIndex) => (
+                <IonItem
+                  button
+                  key={roomIndex}
+                  onClick={() => handleRoomChange(room)}
+                >
+                  {room}
+                </IonItem>
+              ))}
+            </IonList>
+          </IonContent>
+        </IonModal>
+
         <IonListHeader>
           <IonLabel className="center">
             <h1>Allergies Checklist:</h1>
@@ -187,7 +236,7 @@ const EventCreation: React.FC = () => {
               <IonButton
                 expand="full"
                 color={allergens.includes(index) ? 'secondary' : 'light'}
-                onClick={() => toggleAllergy(index)} // Use index instead of allergy string
+                onClick={() => toggleAllergy(index)}
               >
                 {allergy}
               </IonButton>
@@ -195,7 +244,6 @@ const EventCreation: React.FC = () => {
           ))}
         </IonRow>
 
-        {/* Button For Event Creation */}
         <IonFab slot="fixed" horizontal="end" vertical="bottom">
           <IonButton size="large" className="createEventButton" onClick={addEventCard}>
             <span className="icon-circle">
