@@ -104,6 +104,7 @@ const EventList: React.FC = () => {
                                 <h2>{event.FoodDescription}</h2>
                                 <p>Building: {event.Building}</p>
                                 <p>Room: {event.RoomNumber}</p>
+                                <p>Food: {event.foodItems}</p>
                                 <p>Allergens: {event.Allergens.join(', ')}</p> {/* Display allergens */}
                                 <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
                             </IonLabel>

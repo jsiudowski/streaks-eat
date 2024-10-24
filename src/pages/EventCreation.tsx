@@ -19,6 +19,7 @@ import {
   IonModal, // Import IonModal
   IonSearchbar, // Import IonSearchbar
   IonList,
+  IonGrid,
 } from '@ionic/react';
 import { addSharp } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
@@ -87,7 +88,7 @@ const EventCreation: React.FC = () => {
     const newEvent = {
       Building: building,
       RoomNumber: roomNumber,
-      FoodDescription: eventName,
+      FoodDescription: foodItems,
       Allergens: allergens,
       TimeCreated: new Date(),
     };
@@ -100,6 +101,7 @@ const EventCreation: React.FC = () => {
         setRoomNumber('');
         setEventName('');
         setAllergens([]);
+        setFoodItems('');
         history.push('/pages/EventList', { refresh: true });
       }
     } catch (error) {
@@ -224,6 +226,18 @@ const EventCreation: React.FC = () => {
             </IonList>
           </IonContent>
         </IonModal>
+
+        {/* Food Items */}
+        <IonGrid>
+          <IonListHeader>
+            <IonLabel className="center"><h1>Food Present:</h1></IonLabel>
+          </IonListHeader>
+            <IonInput label="Food Items" labelPlacement="floating"
+                placeholder="List all items at your event:"
+                value={foodItems}
+                onIonInput={e => setFoodItems((e.target as unknown as HTMLInputElement).value)}
+              />
+        </IonGrid>
 
         <IonListHeader>
           <IonLabel className="center">
