@@ -52,11 +52,13 @@ import Boler from './pages/BuildingPages/Boler';
 import LSC from './pages/BuildingPages/LSC';
 import SIH from './pages/BuildingPages/SIH';
 import EventCreation from './pages/EventCreation';
+import { UserProvider } from './UserContext';
 
 setupIonicReact();
 const App: React.FC = () => {
   return (
     <IonApp>
+      <UserProvider>
       <IonReactRouter>
         <IonSplitPane contentId="main">
           <Menu />
@@ -82,6 +84,7 @@ const App: React.FC = () => {
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
+      </UserProvider>
     </IonApp>
   );
 };

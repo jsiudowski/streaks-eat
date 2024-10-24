@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, Firestore, setDoc, doc } from 'firebase/firestore/lite';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const config = {
@@ -20,7 +20,7 @@ const app = firebase.initializeApp(config);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
-const auth = getAuth();
+const auth = getAuth(app);
 onAuthStateChanged(auth, (user) => {
   if (user) {
     // User is signed in, see docs for a list of available properties
@@ -41,6 +41,19 @@ export async function getEvents() {
   return eventList;
 }
 
+export async function addEvents(event: {Building: string, RoomNumber: string, FoodDescription: string, Allergens: number[], TimeCreated: Date}) {
+  try {
+    const eventRef = doc(collection(db, 'events'));
+    await setDoc(eventRef, event);
+    console.log('Event Added:', event);
+    return true;
+  }
+  catch(error) {
+    console.error('Error adding event:', error);
+    return false;
+  }
+}
+
 export async function loginUser(username: string, password: string) {
 
     const email = `${username}@jcu.edu`
@@ -55,17 +68,17 @@ export async function loginUser(username: string, password: string) {
         return false;
     }
 }
-
 export async function registerUser(username:string, password:string) {
-    const email = `${username}@jcu.edu`
+  const email = `${username}@jcu.edu`
 
-    try {
-        const res = await firebase.auth().createUserWithEmailAndPassword(email, password)
-        console.log(res)
-        return true
-    }
-    catch(error) {
-        console.log(error)
-        return false
-    }
+  try {
+      const res = await firebase.auth().createUserWithEmailAndPassword(email, password)
+      console.log(res)
+      return true
+  }
+  catch(error) {
+      console.log(error)
+      return false
+  }
 }
+export default auth;

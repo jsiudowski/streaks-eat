@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonProgressBar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonButton, IonInput, IonLoading } from '@ionic/react';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import './Register.css'
 import { Link } from 'react-router-dom';
 import { registerUser } from '../firebaseConfig';
@@ -10,6 +10,7 @@ const Register: React.FC = () => {
     const [password, setPassword] = useState('')
     const [cpassword, setCPassword] = useState('')
     const [busy, setBusy] = useState<boolean>(false)
+    const history = useHistory();
 
     async function Register() {
         //validation
@@ -25,6 +26,9 @@ const Register: React.FC = () => {
         console.log(username, password, cpassword)
 
         setBusy(false)
+        if(res) {
+            history.push('/pages/EventList');
+          }
     }
 
     return (
