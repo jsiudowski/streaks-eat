@@ -132,31 +132,39 @@ const EventCreation: React.FC = () => {
       </IonHeader>
 
       <IonContent>
-        <IonListHeader>
-          <IonLabel className="center">
-            <h1>Event Name:</h1>
-          </IonLabel>
-        </IonListHeader>
-        <IonItem>
-          <IonInput
-            label="Event Name"
-            labelPlacement="floating"
-            placeholder="What is the name of your event?"
-            value={eventName}
-            onIonInput={(e) => setEventName((e.target as unknown as HTMLInputElement).value)}
-          />
-        </IonItem>
+      <IonRow class="ion-justify-content-center">
+          <IonCol size="10">
+            <IonListHeader>
+              <IonLabel className="center">
+                <h1>Event Name:</h1>
+              </IonLabel>
+            </IonListHeader>
+            <IonItem>
+              <IonInput
+                label="Event Name"
+                labelPlacement="floating"
+                placeholder="What is the name of your event?"
+                value={eventName}
+                onIonInput={(e) => setEventName((e.target as unknown as HTMLInputElement).value)}
+              />
+            </IonItem>
+          </IonCol>
+        </IonRow>
 
         <IonListHeader>
-          <IonLabel className="Rooms"><h1>Location</h1></IonLabel>
+          <IonLabel className="center"><h1>Location:</h1></IonLabel>
         </IonListHeader>
 
         {/* Button to open the custom building selection modal */}
-        <IonItem button onClick={() => setIsBuildingModalOpen(true)}>
-          <IonLabel>
-            {building || 'Select Building'}
-          </IonLabel>
-        </IonItem>
+        <IonRow class="ion-justify-content-center">
+          <IonCol size="10">
+          <IonItem button onClick={() => setIsBuildingModalOpen(true)}>
+            <IonLabel>
+              {building || 'Select Building'}
+            </IonLabel>
+          </IonItem>
+          </IonCol>
+        </IonRow>
 
         {/* Custom Modal for Building Selection */}
         <IonModal isOpen={isBuildingModalOpen} onDidDismiss={() => setIsBuildingModalOpen(false)}>
@@ -190,11 +198,15 @@ const EventCreation: React.FC = () => {
 
         {/* Button to open the custom room selection modal, only if a building is selected */}
         {building && (
-          <IonItem button onClick={() => setIsRoomModalOpen(true)}>
-            <IonLabel>
-              {roomNumber || 'Select Room Number'}
-            </IonLabel>
-          </IonItem>
+          <IonRow class="ion-justify-content-center">
+            <IonCol size="10">
+            <IonItem button onClick={() => setIsRoomModalOpen(true)}>
+              <IonLabel>
+                {roomNumber || 'Select Room Number'}
+              </IonLabel>
+            </IonItem>
+            </IonCol>
+          </IonRow>
         )}
 
         {/* Custom Modal for Room Selection */}
@@ -232,11 +244,16 @@ const EventCreation: React.FC = () => {
           <IonListHeader>
             <IonLabel className="center"><h1>Food Present:</h1></IonLabel>
           </IonListHeader>
-            <IonInput label="Food Items" labelPlacement="floating"
-                placeholder="List all items at your event:"
-                value={foodItems}
-                onIonInput={e => setFoodItems((e.target as unknown as HTMLInputElement).value)}
-              />
+          <IonRow class="ion-justify-content-center">
+            <IonCol size="10">
+              <IonInput 
+                  label="Food Items" labelPlacement="floating"
+                  placeholder="List all items at your event:"
+                  value={foodItems}
+                  onIonInput={e => setFoodItems((e.target as unknown as HTMLInputElement).value)}
+                />
+              </IonCol>
+            </IonRow>
         </IonGrid>
 
         <IonListHeader>
