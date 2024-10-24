@@ -22,7 +22,7 @@ import {
 } from '@ionic/react';
 import { addSharp } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import { addEvents } from '../firebaseConfig'; // Import Firestore configuration
+import { addEvents } from '../firebaseConfig'; // Import Firebase
 import './EventCreation.css';
 import Buildings from '../Data/RoomsEdited.json';
 
@@ -88,7 +88,7 @@ const EventCreation: React.FC = () => {
       Building: building,
       RoomNumber: roomNumber,
       FoodDescription: eventName,
-      Allergens: allergens, // Maintain the allergens as a number array
+      Allergens: allergens,
       TimeCreated: new Date(),
     };
 
