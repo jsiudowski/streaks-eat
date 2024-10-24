@@ -87,6 +87,7 @@ const EventCreation: React.FC = () => {
   const addEventCard = async () => {
     const newEvent = {
       Building: building,
+      EventName: eventName,
       RoomNumber: roomNumber,
       FoodDescription: foodItems,
       Allergens: allergens,

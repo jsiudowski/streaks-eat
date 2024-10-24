@@ -21,11 +21,12 @@ import { addSharp } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { DocumentData } from 'firebase/firestore'; // Import DocumentData from Firestore
-import './EventList.css';
+import "./EventList.css"
 
 // Define a type for the event
 interface Event {
     id?: string; // Optional unique ID for each event
+    EventName: string; // Add EventName type
     FoodDescription: string;
     Building: string;
     RoomNumber: string;
@@ -52,6 +53,7 @@ const EventList: React.FC = () => {
             // Map the fetched data to match the Event type
             const formattedEvents: Event[] = eventsData.map((doc) => ({
                 id: doc.id, // If your document has an ID
+                EventName: doc.EventName || 'Unnamed Event', // Fetch EventName from data
                 FoodDescription: doc.FoodDescription || '',
                 Building: doc.Building || '',
                 RoomNumber: doc.RoomNumber || '',
@@ -129,19 +131,24 @@ const EventList: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <IonList>
-                    {events.map((event, index) => (
-                        <IonItem key={index}>
-                            <IonLabel>
-                                <h2>{event.FoodDescription}</h2>
-                                <p>Building: {event.Building}</p>
-                                <p>Room: {event.RoomNumber}</p>
-                                <p>Allergens: {event.Allergens.join(', ')}</p> {/* Display allergens */}
-                                <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
-                            </IonLabel>
-                        </IonItem>
-                    ))}
-                </IonList>
+                {Object.keys(groupedEvents).map((building, index) => (
+                    <div key={index}>
+                        <div className="building-name">{building}</div> {/* Style the building name */}
+                        <IonList>
+                            {groupedEvents[building].map((event: Event, idx: number) => (
+                                <IonItem key={event.id || idx} button onClick={() => handleCardClick(event)}>
+                                    <IonLabel>
+                                        <h3>{event.EventName ?? 'Unnamed Event'}</h3> {/* Show event name */}
+                                        <p>{event.FoodDescription ?? 'No Description Available'}</p>
+                                        <p>Room: {event.RoomNumber}</p>
+                                        <p>Allergens: {event.Allergens.join(', ')}</p> {/* Display allergens */}
+                                        <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
+                                    </IonLabel>
+                                </IonItem>
+                            ))}
+                        </IonList>
+                    </div>
+                ))}
             </IonContent>
 
             <IonFab slot='fixed' horizontal='end' vertical='bottom'>
