@@ -129,23 +129,19 @@ const EventList: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                {Object.keys(groupedEvents).map((building, index) => (
-                    <div key={index}>
-                        <div className="building-name">{building}</div> {/* Style the building name */}
-                        <IonList>
-                            {groupedEvents[building].map((event: Event, idx: number) => (
-                                <IonItem key={event.id || idx} button onClick={() => handleCardClick(event)}>
-                                    <IonLabel>
-                                        <h3>{event.FoodDescription}</h3>
-                                        <p>Room: {event.RoomNumber}</p>
-                                        <p>Allergens: {event.Allergens.join(', ')}</p> {/* Display allergens */}
-                                        <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
-                                    </IonLabel>
-                                </IonItem>
-                            ))}
-                        </IonList>
-                    </div>
-                ))}
+                <IonList>
+                    {events.map((event, index) => (
+                        <IonItem key={index}>
+                            <IonLabel>
+                                <h2>{event.FoodDescription}</h2>
+                                <p>Building: {event.Building}</p>
+                                <p>Room: {event.RoomNumber}</p>
+                                <p>Allergens: {event.Allergens.join(', ')}</p> {/* Display allergens */}
+                                <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
+                            </IonLabel>
+                        </IonItem>
+                    ))}
+                </IonList>
             </IonContent>
 
             <IonFab slot='fixed' horizontal='end' vertical='bottom'>
