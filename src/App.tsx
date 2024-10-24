@@ -41,7 +41,6 @@ These are the variables that have to be imported from their respective file dire
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AboutUs from './pages/AboutUs';
-import Dashboard from './pages/Dashboard';
 import MyProfile from './pages/MyProfile';
 import Locations from './pages/Locations';
 import Map from './pages/Map';
@@ -65,11 +64,10 @@ const App: React.FC = () => {
           <Menu />
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
-              <Redirect to="/pages/Dashboard" />
+              <Redirect to="/pages/Login" />
             </Route>
             <Route path="/pages/Login" component={Login} exact ></Route>
             <Route path="/pages/Register" component={Register} exact></Route>
-            <Route path="/pages/Dashboard" component={Dashboard}></Route>
             <Route path="/pages/AboutUs" component={AboutUs}></Route>
             <Route path="/pages/MyProfile" component={MyProfile}></Route>
             <Route path="/pages/Locations" component={Locations}></Route>
