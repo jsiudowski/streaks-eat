@@ -17,6 +17,7 @@ import {
 import { getEvents } from '../firebaseConfig'; // Adjust the import path as needed
 import { addSharp } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 // Define a type for the location state
 interface LocationState {
@@ -28,6 +29,7 @@ const EventList: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const location = useLocation<LocationState>();
+    const history = useHistory();
 
     const fetchEvents = async () => {
         setLoading(true);
@@ -60,6 +62,13 @@ const EventList: React.FC = () => {
         const date = new Date(timestamp.seconds * 1000); // Convert seconds to milliseconds
         return date.toLocaleString(); // Format the date to a human-readable string
     };
+
+    const handleCardClick = (event: Event) => {
+        history.push({
+          pathname: '/pages/EventDetails',
+          state: { event } // Pass the entire event object
+        });
+      };
 
     if (loading) {
         return (
@@ -108,5 +117,6 @@ const EventList: React.FC = () => {
         </IonPage>
     );
 };
+
 
 export default EventList;

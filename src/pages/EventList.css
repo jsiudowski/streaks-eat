@@ -1,0 +1,22 @@
+.addEventButton {
+    --background: rgb(239, 255, 15) !important;
+    --color: black !important; /* Ensure text color remains black */
+    --border: 2px solid black !important; /* Maintain black border */
+    --border-radius: 50px !important; /* More rounded corners */
+    --padding: 10px 20px; /* Add some padding */
+    --display: flex; /* Use flexbox for alignment */
+    --align-items: center; /* Center items vertically */
+
+}
+
+.icon-circle {
+    background-color: rgb(84, 181, 255); /* Background for the icon circle */
+    border: 2px solid black; /* Black border for the circle */
+    border-radius: 50%; /* Make it a circle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;  
+    height: 36px; 
+    margin-right: 8px; /* Space between icon and text */
+}
