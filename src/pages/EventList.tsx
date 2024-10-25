@@ -16,7 +16,7 @@ import {
     IonButtons,
     IonMenuButton
 } from '@ionic/react';
-import { getEvents } from '../firebaseConfig'; // Adjust the import path as needed
+import { getAllergens, getEvents } from '../firebaseConfig'; // Adjust the import path as needed
 import { addSharp } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
@@ -30,7 +30,7 @@ interface Event {
     FoodDescription: string;
     Building: string;
     RoomNumber: string;
-    Allergens: string[];
+    Allergens: number[];
     TimeCreated: { seconds: number; nanoseconds?: number };
 }
 
@@ -45,6 +45,21 @@ const EventList: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const location = useLocation<LocationState>();
     const history = useHistory();
+    const [allergenMap, setAllergenMap] = useState<Record<number, string>>({});
+
+    const fetchAllergens = async () => {
+        try {
+            const allergensData = await getAllergens(); // Ensure this function fetches data correctly
+            const map: Record<number, string> = {};
+            allergensData.forEach((allergen: any) => {
+                map[allergen.id] = allergen.description; // Ensure this matches your allergen structure
+            });
+            setAllergenMap(map);
+            console.log('Allergen Map:', allergenMap);
+        } catch (err) {
+            console.error('Failed to load allergens', err);
+        }
+    };
 
     const fetchEvents = async () => {
         setLoading(true);
@@ -58,7 +73,7 @@ const EventList: React.FC = () => {
                 Building: doc.Building || '',
                 RoomNumber: doc.RoomNumber || '',
                 Allergens: doc.Allergens || [],
-                TimeCreated: doc.TimeCreated || { seconds: 0 } // Provide a default value if necessary
+                TimeCreated: doc.TimeCreated || { seconds: 0 }, // Provide a default value if necessary
             }));
             setEvents(formattedEvents);
         } catch (err) {
@@ -70,12 +85,14 @@ const EventList: React.FC = () => {
 
     // useEffect to fetch events when component mounts
     useEffect(() => {
+        fetchAllergens(); // Fetch allergens initially
         fetchEvents(); // Fetch events initially
     }, []); // Empty dependency array means it runs once when the component mounts
 
     // useEffect to check for location state and fetch events if refresh is required
     useEffect(() => {
         if (location.state?.refresh) {
+            fetchAllergens(); // Fetch allergens initially
             fetchEvents(); // Fetch events if coming from EventCreation with refresh state
             history.replace({ ...location, state: {} }); // Clear the refresh state to prevent repeated fetching
         }
@@ -141,7 +158,7 @@ const EventList: React.FC = () => {
                                         <h3>{event.EventName ?? 'Unnamed Event'}</h3> {/* Show event name */}
                                         <p>{event.FoodDescription ?? 'No Description Available'}</p>
                                         <p>Room: {event.RoomNumber}</p>
-                                        <p>Allergens: {event.Allergens.join(', ')}</p> {/* Display allergens */}
+                                        <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
                                         <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
                                     </IonLabel>
                                 </IonItem>

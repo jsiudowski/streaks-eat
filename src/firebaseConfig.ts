@@ -4,6 +4,7 @@ import 'firebase/compat/firestore';
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, collection, getDocs, Firestore, setDoc, doc } from 'firebase/firestore/lite';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDownloadURL, getStorage, ref, uploadString } from "firebase/storage";
 
 const config = {
     apiKey: "AIzaSyCyQOeqqsDjQFDdpJTden1kiVrEv8EOq88",
@@ -19,6 +20,7 @@ const config = {
 const app = firebase.initializeApp(config);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
+const storage = getStorage(app); // Initialize storage
 
 const auth = getAuth(app);
 onAuthStateChanged(auth, (user) => {
@@ -81,4 +83,16 @@ export async function registerUser(username:string, password:string) {
       return false
   }
 }
+
+// Get a list of allergens from your database
+export async function getAllergens() {
+  const allergensCol = collection(db, 'allergies'); 
+  const allergenSnapshot = await getDocs(allergensCol);
+  const allergenList = allergenSnapshot.docs.map(doc => ({
+      id: doc.data().id, // Assuming you have an 'id' field
+      description: doc.data().description, // Assuming you have a 'description' field
+  }));
+  return allergenList;
+}
+
 export default auth;
