@@ -32,6 +32,7 @@ interface Event {
     RoomNumber: string;
     Allergens: string[];
     TimeCreated: { seconds: number; nanoseconds?: number };
+    FoodPicture: any;
 }
 
 // Define a type for the location state
@@ -57,6 +58,7 @@ const EventList: React.FC = () => {
                 FoodDescription: doc.FoodDescription || '',
                 Building: doc.Building || '',
                 RoomNumber: doc.RoomNumber || '',
+                FoodPicture: doc.FoodPicture || '',
                 Allergens: doc.Allergens || [],
                 TimeCreated: doc.TimeCreated || { seconds: 0 } // Provide a default value if necessary
             }));
@@ -90,9 +92,18 @@ const EventList: React.FC = () => {
     };
 
     const handleCardClick = (event: Event) => {
+        const eventDetails = {
+            title: event.EventName || 'Unnamed Event', // Default value
+            subtitle: event.Building || 'Unknown Building', // Default valuecontentFood: event.FoodDescription || 'No Description Available', // Default value
+            roomNumber: event.RoomNumber || 'Unknown Room', // Default valuecontentFood: event.FoodDescription || 'No Description Available', // Default value
+            contentFood: event.FoodDescription || 'No Description Available', // Default value
+            imageFood: event.FoodPicture || '',
+            contentAllergies: event.Allergens.join(', ') || 'None', // Default value
+        };
+    
         history.push({
             pathname: '/pages/EventDetails',
-            state: { event } // Pass the entire event object
+            state: { event: eventDetails } // Only pass eventDetails
         });
     };
 
