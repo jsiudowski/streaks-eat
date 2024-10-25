@@ -1,6 +1,7 @@
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonLoading, IonPage, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
+import { eye, eyeOff } from 'ionicons/icons';
 import React, { useState } from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, useIonToast, IonPage, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonCheckbox, IonButton, IonCardTitle, IonLoading, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle } from '@ionic/react';
-import { useHistory, useParams } from 'react-router';
+import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { loginUser } from '../firebaseConfig';
 
@@ -11,6 +12,7 @@ const Login: React.FC = () => {
     const history = useHistory();
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false);
     const [alertMessage] = useIonToast();
 
     const showAlert = (message: string, position: 'top' | 'bottom' | 'middle' = 'top') => {
@@ -66,8 +68,11 @@ const Login: React.FC = () => {
             <IonLoading message="Please wait..." duration={0} isOpen={busy}/>
             <IonContent className="ion-padding">
                 <IonInput placeholder="Username?" onIonChange={(e: any) => setUsername(e.target.value)}/>
-                <IonInput placeholder='Password?' onIonChange={(e: any) => setPassword(e.target.value)}/>
-              <IonButton onClick={LoginUser}>Login</IonButton>
+                <IonInput type={showPassword ? "text" : "password"} placeholder='Password?' onIonChange={(e: any) => (e.detail.value!)} 
+                      style={{ flex: 1 }}/>
+                <IonButton onClick={LoginUser}>Login</IonButton>
+                <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}> <IonIcon icon={showPassword ? eyeOff : eye} /> </IonButton>
+              
 
               <p>New here? Create an account! <Link to="/pages/Register">Register</Link></p>
 
