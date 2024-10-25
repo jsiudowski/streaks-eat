@@ -24,7 +24,7 @@ import {
 } from '@ionic/react';
 import { addSharp, camera } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import { addEvents } from '../firebaseConfig'; // Import Firebase
+import { addEvents, uploadImage } from '../firebaseConfig'; // Import Firebase
 import './EventCreation.css';
 import Buildings from '../Data/RoomsEdited.json';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Import Camera 
@@ -103,32 +103,36 @@ const EventCreation: React.FC = () => {
   };
 
   const addEventCard = async () => {
-  
-    const newEvent = {
-      Building: building,
-      EventName: eventName,
-      RoomNumber: roomNumber,
-      FoodDescription: foodItems,
-      FoodPicture: image, 
-      Allergens: allergens,
-      TimeCreated: new Date()
-    };
-
     try {
-      const success = await addEvents(newEvent);
+        const foodPictureUrl = image ? await uploadImage(image) : ''; // Upload the image and get URL
 
-      if (success) {
-        setBuilding('');
-        setRoomNumber('');
-        setEventName('');
-        setAllergens([]);
-        setFoodItems('');
-        history.push('/pages/EventList', { refresh: true });
-      }
+        const newEvent = {
+            Building: building,
+            EventName: eventName,
+            RoomNumber: roomNumber,
+            FoodDescription: foodItems,
+            Allergens: allergens,
+            TimeCreated: new Date(),
+            ImageURL: foodPictureUrl // Use the uploaded image URL
+        };
+
+        const success = await addEvents(newEvent);
+
+        if (success) {
+            // Reset the form
+            setBuilding('');
+            setRoomNumber('');
+            setEventName('');
+            setAllergens([]);
+            setFoodItems('');
+            setImage(undefined); // Reset image
+            history.push('/pages/EventList', { refresh: true });
+        }
     } catch (error) {
-      console.error('Error adding event to Firebase:', error);
+        console.error('Error adding event to Firebase:', error);
     }
-  };
+};
+
 
   const handleBuildingChange = (selectedBuilding: string) => {
     setBuilding(selectedBuilding);

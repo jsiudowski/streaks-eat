@@ -4,7 +4,7 @@ import 'firebase/compat/firestore';
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, collection, getDocs, Firestore, setDoc, doc } from 'firebase/firestore/lite';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getDownloadURL, getStorage, ref, uploadString } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
 
 const config = {
     apiKey: "AIzaSyCyQOeqqsDjQFDdpJTden1kiVrEv8EOq88",
@@ -43,7 +43,7 @@ export async function getEvents() {
   return eventList;
 }
 
-export async function addEvents(event: {Building: string, RoomNumber: string, FoodDescription: string, Allergens: number[], TimeCreated: Date}) {
+export async function addEvents(event: {Building: string, RoomNumber: string, FoodDescription: string, Allergens: number[], TimeCreated: Date, ImageURL: string}) {
   try {
     const eventRef = doc(collection(db, 'events'));
     await setDoc(eventRef, event);
@@ -94,5 +94,17 @@ export async function getAllergens() {
   }));
   return allergenList;
 }
+
+// Function to upload images and return the URL
+export const uploadImage = async (imageUri: string): Promise<string> => {
+  const response = await fetch(imageUri);
+  const blob = await response.blob();
+
+  const storageRef = ref(storage, `images/${Date.now()}.png`);
+  await uploadBytes(storageRef, blob);
+
+  const downloadURL = await getDownloadURL(storageRef);
+  return downloadURL;
+};
 
 export default auth;

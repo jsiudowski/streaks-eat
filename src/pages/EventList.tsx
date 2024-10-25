@@ -32,7 +32,7 @@ interface Event {
     RoomNumber: string;
     Allergens: number[];
     TimeCreated: { seconds: number; nanoseconds?: number };
-    FoodPicture: any;
+    ImageURL: string;
 }
 
 // Define a type for the location state
@@ -76,6 +76,7 @@ const EventList: React.FC = () => {
                 FoodPicture: doc.FoodPicture || '',
                 Allergens: doc.Allergens || [],
                 TimeCreated: doc.TimeCreated || { seconds: 0 }, // Provide a default value if necessary
+                ImageURL: doc.ImageURL || ''
             }));
             setEvents(formattedEvents);
         } catch (err) {
@@ -114,7 +115,7 @@ const EventList: React.FC = () => {
             subtitle: event.Building || 'Unknown Building', // Default valuecontentFood: event.FoodDescription || 'No Description Available', // Default value
             roomNumber: event.RoomNumber || 'Unknown Room', // Default valuecontentFood: event.FoodDescription || 'No Description Available', // Default value
             contentFood: event.FoodDescription || 'No Description Available', // Default value
-            imageFood: event.FoodPicture || '',
+            imageFood: event.ImageURL || '',
             contentAllergies: event.Allergens.join(', ') || 'None', // Default value
         };
     
@@ -172,6 +173,9 @@ const EventList: React.FC = () => {
                                         <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
                                         <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
                                     </IonLabel>
+                                    {event.ImageURL && (
+                                        <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: 'auto' }} />
+                                    )}
                                 </IonItem>
                             ))}
                         </IonList>
