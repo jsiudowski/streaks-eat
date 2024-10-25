@@ -1,54 +1,59 @@
 import { IonButton, IonContent, IonFab, IonHeader, IonIcon, IonPage, IonRouterLink, IonTitle, IonToolbar } from '@ionic/react';
 import { addSharp } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
+import './EventDetails.css';
 
+// Update the interface for LocationState to match the expected structure
 interface LocationState {
     event?: {
-      title: string;
-      subtitle: string;
-      contentFood: string;
-      contentAllergies: string;
+        title: string;
+        subtitle: string;
+        contentFood: string;
+        roomNumber: string;
+        contentAllergies: string;
     };
+}
+
+const EventDetails: React.FC = () => {
+  const location = useLocation<LocationState>();
+  const { event } = location.state || {};
+
+  if (!event) {
+      return (
+          <IonPage>
+              <IonHeader>
+                  <IonToolbar>
+                      <IonTitle>Event Details</IonTitle>
+                  </IonToolbar>
+              </IonHeader>
+              <IonContent>
+                  <p>No details available for this event.</p>
+              </IonContent>
+          </IonPage>
+      );
   }
 
-  const EventDetails: React.FC = () => {
-    const location = useLocation<LocationState>();
-    const { event } = location.state || {};
-    
-    if (!event) {
-        return (
-          <IonPage>
-            <IonHeader>
-              <IonToolbar>
-                <IonTitle>Event Details</IonTitle>
-              </IonToolbar>
-            </IonHeader>
-            <IonContent>
-              <p>No details available for this event.</p>
-            </IonContent>
-          </IonPage>
-        );
-      }
-    
-      return (
-        <IonPage>
+  return (
+      <IonPage>
           <IonHeader>
-            <IonToolbar>
-              <IonTitle>{event.title}</IonTitle>
-            </IonToolbar>
+              <IonToolbar>
+                  <IonTitle>{event.title}</IonTitle>
+              </IonToolbar>
           </IonHeader>
-          <IonContent>
-            <h2>{event.subtitle}</h2>
-            <p>{event.contentFood}</p>
-            <p>{event.contentAllergies}</p>
+          <IonContent className="page-content">
+              <h2 className="building-info">Building: {event.subtitle}</h2>
+              <p className="room-number">Room Number: {event.roomNumber}</p>
+              <p className="food-allergens">Food Items: {event.contentFood}</p>
+              <p className="food-allergens">Allergens: {event.contentAllergies}</p>
           </IonContent>
 
           <IonFab slot="fixed" horizontal="end" vertical="bottom">
-            <IonRouterLink routerLink="/pages/EventList">
-                <IonButton color={'danger'} size="large"> go back</IonButton>
-            </IonRouterLink>
+              <IonRouterLink routerLink="/pages/EventList">
+                  <IonButton color={'danger'} size="large">Go Back</IonButton>
+              </IonRouterLink>
           </IonFab>
-        </IonPage>
-      );
-    };
+      </IonPage>
+  );
+};
+
 export default EventDetails;

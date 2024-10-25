@@ -1,0 +1,26 @@
+/* EventDetails.css */
+
+.page-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    padding: 16px; /* Optional: overall padding */
+}
+
+.building-info {
+    text-align: center; /* Center text */
+    font-size: 1.5rem; /* Adjust font size as needed */
+    margin-bottom: 16px; /* Space below the building info */
+}
+
+.room-number {
+    text-align: center; /* Center text */
+    font-size: 1.2rem; /* Adjust font size */
+    margin-bottom: 16px; /* Space below room number */
+}
+
+.food-allergens {
+    padding-left: 16px; /* Add padding for left alignment */
+    text-align: left; /* Left align the text */
+    width: 100%; /* Take full width */
+}

@@ -109,6 +109,7 @@ const EventCreation: React.FC = () => {
       EventName: eventName,
       RoomNumber: roomNumber,
       FoodDescription: foodItems,
+      FoodPicture: image, 
       Allergens: allergens,
       TimeCreated: new Date()
     };
