@@ -20,12 +20,15 @@ import {
   IonSearchbar, // Import IonSearchbar
   IonList,
   IonGrid,
+  IonFabButton,
 } from '@ionic/react';
-import { addSharp } from 'ionicons/icons';
+import { addSharp, camera } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { addEvents } from '../firebaseConfig'; // Import Firebase
 import './EventCreation.css';
 import Buildings from '../Data/RoomsEdited.json';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Import Camera 
+import { defineCustomElements } from '@ionic/pwa-elements/loader'; // Custom camera elements
 
 //Define the type for the structure of the JSON data
 type BuildingsData = {
@@ -44,6 +47,7 @@ const EventCreation: React.FC = () => {
   const [roomSearchQuery, setRoomSearchQuery] = useState<string>(''); // State for room search input
   const [isBuildingModalOpen, setIsBuildingModalOpen] = useState<boolean>(false); // State for the building modal
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false); // State for the room modal
+  const [image, setImage] = useState<string | undefined>();// State for image functionality for camera
 
   const allergyOptions = [
     'Dairy',
@@ -60,6 +64,20 @@ const EventCreation: React.FC = () => {
   ];
 
   const buildingsData = Buildings as BuildingsData;
+
+  // Function for camera to be allowed to take a picture
+  const takePicture = async () => {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: true,
+      resultType: CameraResultType.Uri,    
+      source:CameraSource.Prompt
+    });
+
+    setImage(image.webPath); // Save the image URI
+  };
+
+  defineCustomElements(window);
 
   // Function to filter buildings based on search query
   const filteredBuildings = Object.keys(buildingsData).filter((buildingName) =>
@@ -257,6 +275,20 @@ const EventCreation: React.FC = () => {
             </IonRow>
         </IonGrid>
 
+        {/* Provide picture for food */}
+        <IonListHeader>
+            <IonLabel className="center"><h2>Insert Photo of Food:</h2></IonLabel>
+        </IonListHeader>
+        <IonContent className="custom-content">
+          <IonFab class="fab-container" vertical="top" horizontal="end" slot="fixed">
+              <IonFabButton onClick={takePicture}>
+                <IonIcon icon={camera} />
+              </IonFabButton>
+          </IonFab>
+          {image && <img src={image} alt="Captured" />}
+        </IonContent>
+
+        {/* Provide the checklist for allergies */}
         <IonListHeader>
           <IonLabel className="center">
             <h1>Allergies Checklist:</h1>
