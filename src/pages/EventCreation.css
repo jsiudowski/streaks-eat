@@ -55,3 +55,7 @@
     margin-right: 10px;
 
   }
+
+  .remove-button {
+    z-index: 10; /* Ensure it’s on top of other elements */
+}

@@ -48,6 +48,7 @@ const EventCreation: React.FC = () => {
   const [isBuildingModalOpen, setIsBuildingModalOpen] = useState<boolean>(false); // State for the building modal
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false); // State for the room modal
   const [image, setImage] = useState<string | undefined>();// State for image functionality for camera
+  
 
   const allergyOptions = [
     'Dairy',
@@ -78,6 +79,11 @@ const EventCreation: React.FC = () => {
   };
 
   defineCustomElements(window);
+
+  const removeImage = () => {
+    console.log('Removing image...');
+    setImage(undefined); // Clear the image state
+  };
 
   // Function to filter buildings based on search query
   const filteredBuildings = Object.keys(buildingsData).filter((buildingName) =>
@@ -285,14 +291,19 @@ const EventCreation: React.FC = () => {
         <IonListHeader>
             <IonLabel className="center"><h2>Insert Photo of Food:</h2></IonLabel>
         </IonListHeader>
-        <IonContent className="custom-content">
-          <IonFab class="fab-container" vertical="top" horizontal="end" slot="fixed">
-              <IonFabButton onClick={takePicture}>
-                <IonIcon icon={camera} />
-              </IonFabButton>
-          </IonFab>
-          {image && <img src={image} alt="Captured" />}
-        </IonContent>
+            <IonContent className="custom-content">
+                <IonFab className="fab-container" vertical="top" horizontal="end" slot="fixed">
+                    <IonFabButton onClick={takePicture}>
+                        <IonIcon icon={camera} />
+                    </IonFabButton>
+                </IonFab>
+                {image && (
+                    <div style={{ position: 'relative' }}>
+                        <img src={image} alt="Captured" />
+                        <IonButton className="remove-button" onClick={removeImage}>X</IonButton>
+                    </div>
+                )}
+            </IonContent>
 
         {/* Provide the checklist for allergies */}
         <IonListHeader>
