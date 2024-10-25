@@ -1,34 +1,34 @@
-import React, { useState } from 'react';
-import {
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonMenuButton,
-  IonPage,
-  IonFab,
-  IonButton,
-  IonTitle,
-  IonToolbar,
-  IonListHeader,
-  IonItem,
-  IonInput,
-  IonLabel,
-  IonRow,
-  IonCol,
-  IonIcon,
-  IonModal, // Import IonModal
-  IonSearchbar, // Import IonSearchbar
-  IonList,
-  IonGrid,
-  IonFabButton,
-} from '@ionic/react';
-import { addSharp, camera } from 'ionicons/icons';
-import { useHistory } from 'react-router-dom';
-import { addEvents, uploadImage } from '../firebaseConfig'; // Import Firebase
-import './EventCreation.css';
-import Buildings from '../Data/RoomsEdited.json';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Import Camera 
 import { defineCustomElements } from '@ionic/pwa-elements/loader'; // Custom camera elements
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonFab,
+  IonFabButton,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonLabel, // Import IonSearchbar
+  IonList,
+  IonListHeader,
+  IonMenuButton,
+  IonModal,
+  IonPage,
+  IonRow, // Import IonModal
+  IonSearchbar,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/react';
+import { addSharp, camera } from 'ionicons/icons';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import Buildings from '../Data/RoomsEdited.json';
+import { addEvents, uploadImage } from '../firebaseConfig'; // Import Firebase
+import './EventCreation.css';
 
 //Define the type for the structure of the JSON data
 type BuildingsData = {
@@ -315,7 +315,7 @@ const EventCreation: React.FC = () => {
         </IonRow>
 
         <IonFab slot="fixed" horizontal="end" vertical="bottom">
-          <IonButton size="large" className="createEventButton" onClick={addEventCard}>
+          <IonButton size="default" className="createEventButton" onClick={addEventCard}>
             <span className="icon-circle">
               <IonIcon icon={addSharp} />
             </span>

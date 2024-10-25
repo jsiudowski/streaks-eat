@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from 'react';
 import {
+    IonButton,
+    IonButtons,
     IonContent,
+    IonFab,
     IonHeader,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-    IonList,
+    IonIcon,
     IonItem,
     IonLabel,
+    IonList,
     IonLoading,
+    IonMenuButton,
+    IonPage,
     IonRouterLink,
-    IonButton,
-    IonFab,
-    IonIcon,
-    IonButtons,
-    IonMenuButton
+    IonTitle,
+    IonToolbar
 } from '@ionic/react';
-import { getAllergens, getEvents } from '../firebaseConfig'; // Adjust the import path as needed
-import { addSharp } from 'ionicons/icons';
-import { useLocation } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
 import { DocumentData } from 'firebase/firestore'; // Import DocumentData from Firestore
-import "./EventList.css"
+import { addSharp } from 'ionicons/icons';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { getAllergens, getEvents } from '../firebaseConfig'; // Adjust the import path as needed
+import "./EventList.css";
 
 // Define a type for the event
 interface Event {
@@ -189,7 +188,7 @@ const EventList: React.FC = () => {
                     routerDirection="forward"
                     onClick={() => history.push('/pages/EventCreation', { refresh: true })}
                 >
-                    <IonButton size="large" className='addEventButton'>
+                    <IonButton size="default" className='addEventButton'>
                         <span className='icon-circle'><IonIcon icon={addSharp}></IonIcon></span> Add Event
                     </IonButton>
                 </IonRouterLink>
