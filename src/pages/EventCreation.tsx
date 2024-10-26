@@ -1,5 +1,7 @@
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Import Camera 
 import { defineCustomElements } from '@ionic/pwa-elements/loader'; // Custom camera elements
+import { close } from 'ionicons/icons'; // Adjust based on your setup
+
 import {
   IonButton,
   IonButtons,
@@ -291,19 +293,24 @@ const EventCreation: React.FC = () => {
         <IonListHeader>
             <IonLabel className="center"><h2>Insert Photo of Food:</h2></IonLabel>
         </IonListHeader>
-            <IonContent className="custom-content">
+        <IonContent className="custom-content">
+            {image ? (
+                <div style={{ position: 'relative' }}>
+                    <img src={image} alt="Captured" />
+                    <IonFab className="fab-container" vertical="top" horizontal="end" slot="fixed">
+                        <IonFabButton onClick={removeImage}>
+                            <IonIcon icon={close} /> {/* Use the close icon for the FAB */}
+                        </IonFabButton>
+                    </IonFab>
+                </div>
+            ) : (
                 <IonFab className="fab-container" vertical="top" horizontal="end" slot="fixed">
                     <IonFabButton onClick={takePicture}>
                         <IonIcon icon={camera} />
                     </IonFabButton>
                 </IonFab>
-                {image && (
-                    <div style={{ position: 'relative' }}>
-                        <img src={image} alt="Captured" />
-                        <IonButton className="remove-button" onClick={removeImage}>X</IonButton>
-                    </div>
-                )}
-            </IonContent>
+            )}
+        </IonContent>
 
         {/* Provide the checklist for allergies */}
         <IonListHeader>
