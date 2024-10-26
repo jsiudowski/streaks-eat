@@ -77,6 +77,9 @@ const EventList: React.FC = () => {
                 TimeCreated: doc.TimeCreated || { seconds: 0 }, // Provide a default value if necessary
                 ImageURL: doc.ImageURL || ''
             }));
+            formattedEvents.sort((a, b) => {
+                return (b.TimeCreated.seconds - a.TimeCreated.seconds); // Sort in descending order
+            });
             setEvents(formattedEvents);
         } catch (err) {
             setError('Failed to load events');
@@ -88,7 +91,9 @@ const EventList: React.FC = () => {
     // useEffect to fetch events when component mounts
     useEffect(() => {
         fetchAllergens(); // Fetch allergens initially
-        fetchEvents(); // Fetch events initially
+        if (!events.length) {
+            fetchEvents();
+        }
     }, []); // Empty dependency array means it runs once when the component mounts
 
     // useEffect to check for location state and fetch events if refresh is required
@@ -109,16 +114,18 @@ const EventList: React.FC = () => {
     };
 
     const handleCardClick = (event: Event) => {
-        const eventDetails = {
-            title: event.EventName || 'Unnamed Event', // Default value
-            subtitle: event.Building || 'Unknown Building', // Default valuecontentFood: event.FoodDescription || 'No Description Available', // Default value
-            roomNumber: event.RoomNumber || 'Unknown Room', // Default valuecontentFood: event.FoodDescription || 'No Description Available', // Default value
-            contentFood: event.FoodDescription || 'No Description Available', // Default value
-            imageFood: event.ImageURL || '',
-            contentAllergies: event.Allergens.join(', ') || 'None', // Default value
+        const eventDetails = {     
+            EventName: event.EventName || 'Unnamed Event',
+            FoodDescription: event.FoodDescription || 'No Description Available',
+            Building: event.Building || 'Unknown Building',
+            RoomNumber: event.RoomNumber || 'Unknown Room',
+            Allergens: event.Allergens || 'No Allergens Reported',
+            TimeCreated: event.TimeCreated,
+            ImageURL: event.ImageURL || '',
+            AllergenMap: allergenMap || ''
         };
     
-        history.push({
+        history.replace({
             pathname: '/pages/EventDetails',
             state: { event: eventDetails } // Only pass eventDetails
         });
@@ -171,6 +178,7 @@ const EventList: React.FC = () => {
                                         <p>Room: {event.RoomNumber}</p>
                                         <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
                                         <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
+                                        
                                     </IonLabel>
                                     {event.ImageURL && (
                                         <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: 'auto' }} />

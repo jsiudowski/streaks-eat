@@ -67,7 +67,7 @@ const App: React.FC = () => {
             <Route path="/pages/Map" component={Map}></Route>
             <Route path="/pages/EventList" component={EventList}></Route>
             <Route path="/pages/EventCreation" component={EventCreation}></Route>
-            <Route path="/pages/EventDetails" component={EventDetails}></Route>
+            <Route path="/pages/EventDetails" component={EventDetails} exact={true}></Route>
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
