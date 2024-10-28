@@ -74,16 +74,20 @@ const EventDetails: React.FC = () => {
             </IonToolbar>
         </IonHeader>
         <IonContent className="page-content">
-        <IonLabel>
-          <p>Food Items: {event.FoodDescription}</p>
-          <p>Room: {event.RoomNumber}</p>
-          <p>Allergens: {event.Allergens.map((id: number) => event.AllergenMap[id] || id).join(', ')}</p>
-          <p>Created On: {formatDate(event.TimeCreated)}</p>
-        </IonLabel>
-      {event.ImageURL && (
-          <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: '100px' }} />
-      )}
-      </IonContent>
+            <div className="grid-container">
+                <div className="grid-item"><strong>Food Items:</strong></div>
+                <div className="grid-item">{event.FoodDescription}</div>
+                <div className="grid-item"><strong>Room:</strong></div>
+                <div className="grid-item">{event.RoomNumber}</div>
+                <div className="grid-item"><strong>Allergens:</strong></div>
+                <div className="grid-item">{event.Allergens.map((id: number) => event.AllergenMap[id] || id).join(', ')}</div>
+                <div className="grid-item"><strong>Created On:</strong></div>
+                <div className="grid-item">{formatDate(event.TimeCreated)}</div>
+            </div>
+            {event.ImageURL && (
+                <img src={event.ImageURL} alt="Food" className="event-image" />
+            )}
+        </IonContent>
 
         <IonFab slot="fixed" horizontal="end" vertical="bottom">
             <IonRouterLink routerLink="/pages/EventList">
@@ -91,9 +95,7 @@ const EventDetails: React.FC = () => {
             </IonRouterLink>
         </IonFab>
     </IonPage>
-);
-  }
-
-  
+    );
+}
 
 export default EventDetails;

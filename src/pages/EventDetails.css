@@ -1,26 +1,48 @@
 /* EventDetails.css */
-
 .page-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center content horizontally */
-    padding: 16px; /* Optional: overall padding */
+    padding: 16px;
+    background-color: #f9f9f9; /* Light background for better contrast */
+    font-family: Arial, sans-serif; /* Change to a more modern font */
+    text-align: center; /* Center text within the page */
 }
 
-.building-info {
-    text-align: center; /* Center text */
-    font-size: 1.5rem; /* Adjust font size as needed */
-    margin-bottom: 16px; /* Space below the building info */
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Two columns: label and value */
+    gap: 16px; /* Reduced space between grid items */
+    margin-bottom: 40px; /* Space below the grid */
 }
 
-.room-number {
-    text-align: center; /* Center text */
-    font-size: 1.2rem; /* Adjust font size */
-    margin-bottom: 16px; /* Space below room number */
+.grid-item {
+    padding: 6px; /* Reduced padding for grid items */
 }
 
-.food-allergens {
-    padding-left: 16px; /* Add padding for left alignment */
-    text-align: left; /* Left align the text */
-    width: 100%; /* Take full width */
+.event-image {
+    border-radius: 8px; /* Rounded corners for the image */
+    margin: 16px auto; /* Center the image with margin */
+    display: block; /* Center the image */
+    max-width: 100%; /* Ensure responsiveness */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.ion-header {
+    background-color: #4a90e2; /* Header background color */
+    color: white; /* Header text color */
+}
+
+.ion-toolbar {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+.ion-title {
+    font-size: 1.5em; /* Increase font size for title */
+}
+
+.ion-button {
+    border-radius: 5px; /* Slightly rounded button corners */
+    transition: background-color 0.3s; /* Smooth transition for button hover */
+}
+
+.ion-button:hover {
+    background-color: #d9534f; /* Darker red on hover */
 }
