@@ -95,6 +95,12 @@ export async function getAllergens() {
   return allergenList;
 }
 
+// Function to update food availability for an event
+export const updateEvent = async (eventId: string, data: Partial<{ FoodDescription: string }>) => {
+  const eventRef = doc(db, 'events', eventId); // Specify the document to update
+  await setDoc(eventRef, data, { merge: true }); // Use merge to only update specific fields
+};
+
 // Function to upload images and return the URL
 export const uploadImage = async (imageUri: string): Promise<string> => {
   const response = await fetch(imageUri);

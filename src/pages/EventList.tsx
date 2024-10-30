@@ -1,20 +1,4 @@
-import {
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonFab,
-    IonHeader,
-    IonIcon,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonLoading,
-    IonMenuButton,
-    IonPage,
-    IonRouterLink,
-    IonTitle,
-    IonToolbar
-} from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonLoading, IonMenuButton, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import { DocumentData } from 'firebase/firestore'; // Import DocumentData from Firestore
 import { addSharp } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
@@ -46,6 +30,8 @@ const EventList: React.FC = () => {
     const location = useLocation<LocationState>();
     const history = useHistory();
     const [allergenMap, setAllergenMap] = useState<Record<number, string>>({});
+    const [showWarning, setShowWarning] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
     const fetchAllergens = async () => {
         try {
@@ -113,7 +99,19 @@ const EventList: React.FC = () => {
         return date.toLocaleString(); // Format the date to a human-readable string
     };
 
+    //*Upon clicking a card, displays warning to proceed if event contains allergy listed as "other"
     const handleCardClick = (event: Event) => {
+        const hasOtherAllergen = event.Allergens.includes(10);
+        
+        if (hasOtherAllergen) {
+            setSelectedEvent(event); // Store the selected event for later use
+            setShowWarning(true); // Show the warning modal
+        } else {
+            navigateToEventDetails(event); // Navigate directly if no caution is needed
+        }
+    };
+    // navigates to event details pages if proceeding is true 
+    const navigateToEventDetails = (event: Event) => {
         const eventDetails = {     
             EventName: event.EventName || 'Unnamed Event',
             FoodDescription: event.FoodDescription || 'No Description Available',
@@ -129,6 +127,17 @@ const EventList: React.FC = () => {
             pathname: '/pages/EventDetails',
             state: { event: eventDetails } // Only pass eventDetails
         });
+    };
+
+    const handleConfirm = () => {
+        if (selectedEvent) {
+            navigateToEventDetails(selectedEvent);
+        }
+        setShowWarning(false);
+    };
+
+    const handleCancel = () => {
+        setShowWarning(false);
     };
 
     // Group events by building
@@ -165,6 +174,8 @@ const EventList: React.FC = () => {
                     <IonTitle>Event List</IonTitle>
                 </IonToolbar>
             </IonHeader>
+
+            {/* List of all events available */}
             <IonContent>
                 {Object.keys(groupedEvents).map((building, index) => (
                     <div key={index}>
@@ -177,8 +188,7 @@ const EventList: React.FC = () => {
                                         <p>{event.FoodDescription ?? 'No Description Available'}</p>
                                         <p>Room: {event.RoomNumber}</p>
                                         <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
-                                        <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}
-                                        
+                                        <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}            
                                     </IonLabel>
                                     {event.ImageURL && (
                                         <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: 'auto' }} />
@@ -188,19 +198,44 @@ const EventList: React.FC = () => {
                         </IonList>
                     </div>
                 ))}
-            </IonContent>
 
-            <IonFab slot='fixed' horizontal='end' vertical='bottom'>
-                <IonRouterLink
-                    routerLink='/pages/EventCreation'
-                    routerDirection="forward"
-                    onClick={() => history.push('/pages/EventCreation', { refresh: true })}
-                >
-                    <IonButton size="default" className='addEventButton'>
-                        <span className='icon-circle'><IonIcon icon={addSharp}></IonIcon></span> Add Event
-                    </IonButton>
-                </IonRouterLink>
-            </IonFab>
+                {/* Warning card for the event if there is an allergy listed as "other"*/}
+                {showWarning && (
+                    <div className="overlay">
+                        <IonCard className="confirmation-card">
+                            <IonCardHeader>
+                                <IonCardTitle>Caution!</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                <p>There's an Allergy Listed as "Other". Discretion advised.</p>
+                                <IonRow className="ion-justify-content-center">
+                                    <IonCol size="5">
+                                        <IonButton expand="full" onClick={handleConfirm} color="primary">Proceed</IonButton>
+                                    </IonCol>
+                                    <IonCol size="5">
+                                        <IonButton expand="full" onClick={handleCancel} color="light">Exit</IonButton>
+                                    </IonCol>
+                                </IonRow>
+                            </IonCardContent>
+                        </IonCard>
+                    </div>
+                )}
+            </IonContent>
+            
+            {/* Event Creation button   (Displays only if Warning Card is not shown) */}
+            {!showWarning && (
+                <IonFab slot='fixed' horizontal='end' vertical='bottom'>
+                    <IonRouterLink
+                        routerLink='/pages/EventCreation'
+                        routerDirection="forward"
+                        onClick={() => history.push('/pages/EventCreation', { refresh: true })}
+                    >
+                        <IonButton size="default" className='addEventButton'>
+                            <span className='icon-circle'><IonIcon icon={addSharp}></IonIcon></span> Add Event
+                        </IonButton>
+                    </IonRouterLink>
+                </IonFab>
+            )}
         </IonPage>
     );
 };

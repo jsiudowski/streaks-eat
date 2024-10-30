@@ -1,31 +1,7 @@
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Import Camera 
 import { defineCustomElements } from '@ionic/pwa-elements/loader'; // Custom camera elements
-import { close } from 'ionicons/icons'; // Adjust based on your setup
-
-import {
-  IonButton,
-  IonButtons,
-  IonCol,
-  IonContent,
-  IonFab,
-  IonFabButton,
-  IonGrid,
-  IonHeader,
-  IonIcon,
-  IonInput,
-  IonItem,
-  IonLabel, // Import IonSearchbar
-  IonList,
-  IonListHeader,
-  IonMenuButton,
-  IonModal,
-  IonPage,
-  IonRow, // Import IonModal
-  IonSearchbar,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/react';
-import { addSharp, camera } from 'ionicons/icons';
+import { IonButton, useIonToast, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
+import { addSharp, camera, close } from 'ionicons/icons';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Buildings from '../Data/RoomsEdited.json';
@@ -50,8 +26,8 @@ const EventCreation: React.FC = () => {
   const [isBuildingModalOpen, setIsBuildingModalOpen] = useState<boolean>(false); // State for the building modal
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false); // State for the room modal
   const [image, setImage] = useState<string | undefined>();// State for image functionality for camera
+  const [alertMessage] = useIonToast();
   
-
   const allergyOptions = [
     'Dairy',
     'Egg',
@@ -87,10 +63,20 @@ const EventCreation: React.FC = () => {
     setImage(undefined); // Clear the image state
   };
 
+  // Alert Function For Required Fields
+  const showAlert = (message: string, position: 'top' | 'bottom' | 'middle' = 'top') => {
+    alertMessage({
+        message,
+        duration: 2500,
+        position,
+    });
+};
+
   // Function to filter buildings based on search query
   const filteredBuildings = Object.keys(buildingsData).filter((buildingName) =>
     buildingName.toLowerCase().includes(buildingSearchQuery.toLowerCase())
   );
+
 
   // Function to filter rooms based on search query within the selected building
   const filteredRooms =
@@ -100,6 +86,7 @@ const EventCreation: React.FC = () => {
         )
       : [];
 
+  // Function to filter the allergies
   const toggleAllergy = (allergyIndex: number) => {
     setAllergens((prev) => {
       if (prev.includes(allergyIndex)) {
@@ -111,36 +98,42 @@ const EventCreation: React.FC = () => {
   };
 
   const addEventCard = async () => {
-    try {
-        const foodPictureUrl = image ? await uploadImage(image) : ''; // Upload the image and get URL
+     // Validation
+     if (!eventName || !foodItems || !building || !roomNumber) {
+        showAlert('Please fill in all required fields: Title, Food, Building, and Room Number.');
+        return; // Exit the function if validation fails
+  }
 
-        const newEvent = {
-            Building: building,
-            EventName: eventName,
-            RoomNumber: roomNumber,
-            FoodDescription: foodItems,
-            Allergens: allergens,
-            TimeCreated: new Date(),
-            ImageURL: foodPictureUrl // Use the uploaded image URL
-        };
+  try {
+      const foodPictureUrl = image ? await uploadImage(image) : ''; // Upload the image and get URL
 
-        const success = await addEvents(newEvent);
+      const newEvent = {
+          Building: building,
+          EventName: eventName,
+          RoomNumber: roomNumber,
+          FoodDescription: foodItems,
+          Allergens: allergens,
+          TimeCreated: new Date(),
+          ImageURL: foodPictureUrl // Use the uploaded image URL
+      };
 
-        if (success) {
-            // Reset the form
-            setBuilding('');
-            setRoomNumber('');
-            setEventName('');
-            setAllergens([]);
-            setFoodItems('');
-            setImage(undefined); // Reset image
-            history.push('/pages/EventList', { refresh: true });
-        }
-    } catch (error) {
-        console.error('Error adding event to Firebase:', error);
-    }
+      const success = await addEvents(newEvent);
+
+      if (success) {
+          // Reset the form
+          setBuilding('');
+          setRoomNumber('');
+          setEventName('');
+          setAllergens([]);
+          setFoodItems('');
+          setImage(undefined); // Reset image
+          showAlert('Event Successfully Created');
+          history.push('/pages/EventList', { refresh: true });
+      }
+  } catch (error) {
+      console.error('Error adding event to Firebase:', error);
+  }
 };
-
 
   const handleBuildingChange = (selectedBuilding: string) => {
     setBuilding(selectedBuilding);
@@ -174,11 +167,11 @@ const EventCreation: React.FC = () => {
             </IonListHeader>
             <IonItem>
               <IonInput
-                label="Event Name"
+                label="Event Name (REQUIRED)"
                 labelPlacement="floating"
                 placeholder="What is the name of your event?"
                 value={eventName}
-                onIonInput={(e) => setEventName((e.target as unknown as HTMLInputElement).value)}
+                onIonInput={(e) => setEventName((e.target as unknown as HTMLInputElement).value)}      
               />
             </IonItem>
           </IonCol>
@@ -193,7 +186,7 @@ const EventCreation: React.FC = () => {
           <IonCol size="10">
           <IonItem button onClick={() => setIsBuildingModalOpen(true)}>
             <IonLabel>
-              {building || 'Select Building'}
+              {building || 'Select Building (REQUIRED)' }
             </IonLabel>
           </IonItem>
           </IonCol>
@@ -235,7 +228,7 @@ const EventCreation: React.FC = () => {
             <IonCol size="10">
             <IonItem button onClick={() => setIsRoomModalOpen(true)}>
               <IonLabel>
-                {roomNumber || 'Select Room Number'}
+                {roomNumber || 'Select Room Number (REQUIRED)'}
               </IonLabel>
             </IonItem>
             </IonCol>
@@ -280,7 +273,7 @@ const EventCreation: React.FC = () => {
           <IonRow class="ion-justify-content-center">
             <IonCol size="10">
               <IonInput 
-                  label="Food Items" labelPlacement="floating"
+                  label="Food Item (REQUIRED)" labelPlacement="floating"
                   placeholder="List all items at your event:"
                   value={foodItems}
                   onIonInput={e => setFoodItems((e.target as unknown as HTMLInputElement).value)}
@@ -316,6 +309,11 @@ const EventCreation: React.FC = () => {
         <IonListHeader>
           <IonLabel className="center">
             <h1>Allergies Checklist:</h1>
+          </IonLabel>
+        </IonListHeader>
+        <IonListHeader>
+          <IonLabel className="center">
+            <p>Required: If None Apply, Please Choose Other:</p>
           </IonLabel>
         </IonListHeader>
         <IonRow className="ion-justify-content-center">
