@@ -105,31 +105,32 @@ const EventCreation: React.FC = () => {
   }
 
   try {
-      const foodPictureUrl = image ? await uploadImage(image) : ''; // Upload the image and get URL
+    const foodPictureUrl = image ? await uploadImage(image) : ''; // Upload the image and get URL
 
-      const newEvent = {
-          Building: building,
-          EventName: eventName,
-          RoomNumber: roomNumber,
-          FoodDescription: foodItems,
-          Allergens: allergens,
-          TimeCreated: new Date(),
-          ImageURL: foodPictureUrl // Use the uploaded image URL
-      };
+    const newEvent = {
+        Building: building,
+        EventName: eventName,
+        RoomNumber: roomNumber,
+        FoodDescription: foodItems,
+        Allergens: allergens,
+        TimeCreated: new Date(),
+        ImageURL: foodPictureUrl, // Use the uploaded image URL
+        FoodAvailable: true 
+    };
 
-      const success = await addEvents(newEvent);
+    const success = await addEvents(newEvent);
 
-      if (success) {
-          // Reset the form
-          setBuilding('');
-          setRoomNumber('');
-          setEventName('');
-          setAllergens([]);
-          setFoodItems('');
-          setImage(undefined); // Reset image
-          showAlert('Event Successfully Created');
-          history.push('/pages/EventList', { refresh: true });
-      }
+    if (success) {
+        // Reset the form
+        setBuilding('');
+        setRoomNumber('');
+        setEventName('');
+        setAllergens([]);
+        setFoodItems('');
+        setImage(undefined); // Reset image
+        showAlert('Event Successfully Created');
+        history.push('/pages/EventList', { refresh: true });
+    }
   } catch (error) {
       console.error('Error adding event to Firebase:', error);
   }

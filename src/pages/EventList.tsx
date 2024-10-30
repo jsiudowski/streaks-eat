@@ -16,6 +16,7 @@ interface Event {
     Allergens: number[];
     TimeCreated: { seconds: number; nanoseconds?: number };
     ImageURL: string;
+    FoodAvailable: boolean;
 }
 
 // Define a type for the location state
@@ -61,7 +62,8 @@ const EventList: React.FC = () => {
                 FoodPicture: doc.FoodPicture || '',
                 Allergens: doc.Allergens || [],
                 TimeCreated: doc.TimeCreated || { seconds: 0 }, // Provide a default value if necessary
-                ImageURL: doc.ImageURL || ''
+                ImageURL: doc.ImageURL || '',
+                FoodAvailable: doc.FoodAvailable !== undefined ? doc.FoodAvailable : false,
             }));
             formattedEvents.sort((a, b) => {
                 return (b.TimeCreated.seconds - a.TimeCreated.seconds); // Sort in descending order
@@ -120,7 +122,8 @@ const EventList: React.FC = () => {
             Allergens: event.Allergens || 'No Allergens Reported',
             TimeCreated: event.TimeCreated,
             ImageURL: event.ImageURL || '',
-            AllergenMap: allergenMap || ''
+            AllergenMap: allergenMap || '',
+            FoodAvailable: event.FoodAvailable
         };
     
         history.replace({
@@ -188,7 +191,8 @@ const EventList: React.FC = () => {
                                         <p>{event.FoodDescription ?? 'No Description Available'}</p>
                                         <p>Room: {event.RoomNumber}</p>
                                         <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
-                                        <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}            
+                                        <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}  
+                                        <p>Food Still Available? {event.FoodAvailable ? 'Yes' : 'No'}</p>          
                                     </IonLabel>
                                     {event.ImageURL && (
                                         <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: 'auto' }} />

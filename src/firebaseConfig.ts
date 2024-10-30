@@ -43,7 +43,7 @@ export async function getEvents() {
   return eventList;
 }
 
-export async function addEvents(event: {Building: string, RoomNumber: string, FoodDescription: string, Allergens: number[], TimeCreated: Date, ImageURL: string}) {
+export async function addEvents(event: {Building: string, RoomNumber: string, FoodDescription: string, Allergens: number[], TimeCreated: Date, ImageURL: string, FoodAvailable: boolean}) {
   try {
     const eventRef = doc(collection(db, 'events'));
     await setDoc(eventRef, event);
@@ -96,9 +96,9 @@ export async function getAllergens() {
 }
 
 // Function to update food availability for an event
-export const updateEvent = async (eventId: string, data: Partial<{ FoodDescription: string }>) => {
-  const eventRef = doc(db, 'events', eventId); // Specify the document to update
-  await setDoc(eventRef, data, { merge: true }); // Use merge to only update specific fields
+export const updateEvent = async (eventId: string, data: Partial<{ FoodAvailable: boolean }>) => {
+  const eventRef = doc(db, 'events', eventId);
+  await setDoc(eventRef, data, { merge: true }); // Correctly merges the update
 };
 
 // Function to upload images and return the URL

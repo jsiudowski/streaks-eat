@@ -2,7 +2,8 @@ import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol
 import { useHistory, useLocation } from 'react-router-dom';
 import './EventDetails.css';
 import { useState, useEffect } from 'react';
-import { updateEvent } from '../firebaseConfig'; 
+import { updateEvent, } from '../firebaseConfig'; 
+
 
 interface LocationState {
     event: {
@@ -15,6 +16,7 @@ interface LocationState {
         TimeCreated: { seconds: number; nanoseconds?: number };
         ImageURL: string;
         AllergenMap: Record<number, string>;
+        FoodAvailable: boolean; 
     };
 }
 
@@ -32,31 +34,34 @@ const EventDetails: React.FC = () => {
     const { event } = location.state || {};
     const [isLoading, setIsLoading] = useState(true);
     const [foodDescription, setFoodDescription] = useState<string>(event?.FoodDescription || '');
-    const [showModal, setShowModal] = useState(false); // State for modal visibility
+    const [showModal, setShowModal] = useState(false);
+    const [foodAvailable, setFoodAvailable] = useState<boolean>(event?.FoodAvailable || true);
 
     useEffect(() => {
         if (event) {
             setIsLoading(false);
             setFoodDescription(event.FoodDescription);
+            setFoodAvailable(event.FoodAvailable);
         }
     }, [event]);
 
-    // Warning confirmation card upon clicking no food button 
     const handleNoFoodClick = () => {
-        setShowModal(true); // Show confirmation modal
+        setShowModal(true);
     };
 
     const handleConfirm = async () => {
-        setFoodDescription('No Food');
+        const newAvailability = !foodAvailable;
+        setFoodAvailable(newAvailability);
+
         if (event?.id) {
-            await updateEvent(event.id, { FoodDescription: 'No Food' }); // Updates database
-            history.push('/pages/EventList', { refresh: true }); // Trigger refresh on the Event List
+            await updateEvent(event.id, { FoodAvailable: newAvailability });
+            history.replace('/pages/EventList', { refresh: true });
         }
-        setShowModal(false); // Close modal after confirmation
+        setShowModal(false);
     };
 
     const handleCancel = () => {
-        setShowModal(false); // Close modal without doing anything
+        setShowModal(false);
     };
 
     if (isLoading) {
@@ -103,16 +108,16 @@ const EventDetails: React.FC = () => {
                     <div className="grid-item"><strong>Room:</strong></div>
                     <div className="grid-item">{event.RoomNumber}</div>
                     <div className="grid-item"><strong>Allergens:</strong></div>
-                    <div className="grid-item">{event.Allergens.map((id: number) => event.AllergenMap[id] || id).join(', ')}</div>
+                    <div className="grid-item">{event.Allergens.map(id => event.AllergenMap[id] || id).join(', ')}</div>
                     <div className="grid-item"><strong>Created On:</strong></div>
                     <div className="grid-item">{formatDate(event.TimeCreated)}</div>
+                    <div className="grid-item"><strong>Food Available:</strong> {foodAvailable ? 'Yes' : 'No'}</div>
                 </div>
                 {event.ImageURL && (
                     <img src={event.ImageURL} alt="Food" className="event-image" />
                 )}
-                <IonButton onClick={handleNoFoodClick} color="warning">No Food</IonButton>
+                <IonButton onClick={handleNoFoodClick} color="warning">Toggle Food Availability</IonButton>
 
-                {/* Confirmation Modal For "No Food" Change */}
                 {showModal && (
                     <div className="overlay">
                         <IonCard className="confirmation-card">
@@ -121,7 +126,6 @@ const EventDetails: React.FC = () => {
                             </IonCardHeader>
                             <IonCardContent>
                                 <p>Are you sure you want to update the Food Listing?</p>
-                                <p>This action can not be undone</p>
                                 <IonRow className="ion-justify-content-center">
                                     <IonCol size="5">
                                         <IonButton expand="full" onClick={handleConfirm} color="primary">Yes</IonButton>
@@ -136,11 +140,10 @@ const EventDetails: React.FC = () => {
                 )}
             </IonContent>
 
-            {/* Return to event list button (Displays only if Warning Card is not shown) */}
-            {!showModal && ( // Only show the FAB button if the modal is not active
+            {!showModal && (
                 <IonFab slot="fixed" horizontal="end" vertical="bottom">
                     <IonRouterLink routerLink="/pages/EventList">
-                        <IonButton color={'danger'} size="large">Go Back</IonButton>
+                        <IonButton color="danger" size="large">Go Back</IonButton>
                     </IonRouterLink>
                 </IonFab>
             )}
