@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonInput, IonLabel, IonListHeader, IonCardTitle, IonCheckbox, IonGrid, IonCol, IonRow, IonButton } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonInput, IonLabel, IonListHeader, IonCardTitle, IonCheckbox, IonGrid, IonCol, IonRow, IonButton, IonCard, IonCardContent, IonCardHeader } from '@ionic/react';
 import { useParams } from 'react-router';
 import './MyProfile.css'
 
 const MyProfile: React.FC = () => {
 
   const [activeAllergies, setActiveAllergies] = useState<string[]>([]);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
     const toggleAllergy = (allergy: string) => {
         setActiveAllergies((prev) => {
@@ -16,6 +17,21 @@ const MyProfile: React.FC = () => {
             }
         });
     };
+
+  //Update profile handlers
+  const handleUpdateProfile = () => {
+    setShowConfirmation(true);
+  };
+
+  const handleConfirm = () => {
+    // Logic for confirming the profile update
+    console.log("Profile updated with allergies:", activeAllergies);
+    setShowConfirmation(false);
+  };
+
+  const handleCancel = () => {
+    setShowConfirmation(false);
+  };
 
     const allergyOptions = [
         "Dairy", 
@@ -29,7 +45,6 @@ const MyProfile: React.FC = () => {
         "Wheat", 
         "Gluten"
     ];
-
 
     return (
         <IonPage>
@@ -96,8 +111,38 @@ const MyProfile: React.FC = () => {
                     </IonCol>
                   )}
                   </IonRow>) : null
+                  
               ))}
+              <IonCol size="5">
+                <IonRow class="ion-justify-content-center" onClick={handleUpdateProfile}>
+                  <IonButton>
+                    Update Profile
+                  </IonButton>
+                </IonRow>
+              </IonCol>
             </IonGrid>
+
+            {/* Confirmation Card */}
+              {showConfirmation && (
+                <div className="overlay">
+                  <IonCard className="confirmation-card">
+                    <IonCardHeader>
+                      <IonCardTitle>Caution!</IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                      <p>Are you sure you want to save changes?</p>
+                      <IonRow className="ion-justify-content-center">
+                        <IonCol size="5">
+                          <IonButton expand="full" onClick={handleConfirm} color="primary">Proceed</IonButton>
+                        </IonCol>
+                        <IonCol size="5">
+                          <IonButton expand="full" onClick={handleCancel} color="light">Exit</IonButton>
+                        </IonCol>
+                      </IonRow>
+                    </IonCardContent>
+                  </IonCard>
+                </div>
+              )}
           </IonContent>
         </IonPage>
     );
