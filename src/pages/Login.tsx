@@ -59,32 +59,37 @@ const Login: React.FC = () => {
     }
 
     return (
-        <IonPage>
-            <IonHeader>
+      <IonPage>
+          <IonHeader>
               <IonToolbar>
-                <IonTitle>Login</IonTitle>
+                  <IonTitle>Login</IonTitle>
               </IonToolbar>
-            </IonHeader>
-            <IonLoading message="Please wait..." duration={0} isOpen={busy}/>
-            <IonContent className="ion-padding">
-                <IonInput placeholder="Username?" onIonChange={(e: any) => setUsername(e.target.value)}/>
-                <IonInput type={showPassword ? "text" : "password"} placeholder='Password?' onIonChange={(e: any) => (e.detail.value!)} 
-                      style={{ flex: 1 }}/>
-                <IonButton onClick={LoginUser}>Login</IonButton>
-                <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}> <IonIcon icon={showPassword ? eyeOff : eye} /> </IonButton>
-              
+          </IonHeader>
+          <IonLoading message="Please wait..." duration={0} isOpen={busy} />
+          <IonContent className="ion-padding">
+              <IonInput placeholder="Username?" onIonChange={(e: any) => setUsername(e.target.value)} />
+              <IonInput
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password?"
+                  onIonChange={(e: any) => setPassword(e.detail.value!)} // Make sure to set password here
+                  style={{ flex: 1 }}
+              />
+              <IonButton onClick={LoginUser}>Login</IonButton>
+              <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}>
+                  <IonIcon icon={showPassword ? eyeOff : eye} />
+              </IonButton>
 
               <p>New here? Create an account! <Link to="/pages/Register">Register</Link></p>
 
               <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>Login Requirements:</IonCardTitle>
-                <IonCardSubtitle>Here are some requirements for logging in:</IonCardSubtitle>
-              </IonCardHeader>
-              <IonCardContent>Do not include '@jcu.edu' in username.</IonCardContent>
-            </IonCard>
-            </IonContent>
-        </IonPage>
+                  <IonCardHeader>
+                      <IonCardTitle>Login Requirements:</IonCardTitle>
+                      <IonCardSubtitle>Here are some requirements for logging in:</IonCardSubtitle>
+                  </IonCardHeader>
+                  <IonCardContent>Do not include '@jcu.edu' in username.</IonCardContent>
+              </IonCard>
+          </IonContent>
+      </IonPage>
     );
 }
 export default Login;
