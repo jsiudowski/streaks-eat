@@ -136,11 +136,12 @@ const EventCreation: React.FC = () => {
 
   const addEventCard = async () => {
      // Validation
-     if (!eventName || !foodItems || !building || !roomNumber) {
-        showAlert('Please fill in all required fields: Title, Food, Building, and Room Number.');
+     const buildingHasRooms = building && buildingsData[building] && buildingsData[building]!.length > 0; // Building with no rooms is not required for creation.
+     if (!eventName || !foodItems || !building || (buildingHasRooms && !roomNumber)) {
+        showAlert('Please fill in all required fields: Title, Food, Building, and Room Number if applicable.');
         return; // Exit the function if validation fails
-  }
-
+    }
+    
   try {
     const foodPictureUrl = image ? await uploadImage(image) : ''; // Upload the image and get URL
 
@@ -262,19 +263,18 @@ const EventCreation: React.FC = () => {
           </IonContent>
         </IonModal>
 
-        {/* Button to open the custom room selection modal, only if a building is selected */}
-        {building && (
+        {/* Button to open the custom room selection modal, only if a building is selected and has rooms */}
+        {building && buildingsData[building] && buildingsData[building]!.length > 0 && (
           <IonRow class="ion-justify-content-center">
             <IonCol size="10">
-            <IonItem button onClick={() => setIsRoomModalOpen(true)}>
-              <IonLabel>
-                {roomNumber || 'Select Room Number (REQUIRED)'}
-              </IonLabel>
-            </IonItem>
+              <IonItem button onClick={() => setIsRoomModalOpen(true)}>
+                <IonLabel>
+                  {roomNumber || 'Select Room Number (REQUIRED)'}
+                </IonLabel>
+              </IonItem>
             </IonCol>
           </IonRow>
         )}
-
         {/* Custom Modal for Room Selection */}
         <IonModal isOpen={isRoomModalOpen} onDidDismiss={() => setIsRoomModalOpen(false)}>
           <IonHeader>
