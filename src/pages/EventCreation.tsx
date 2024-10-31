@@ -115,7 +115,6 @@ const EventCreation: React.FC = () => {
         Allergens: allergens,
         TimeCreated: new Date(),
         ImageURL: foodPictureUrl, // Use the uploaded image URL
-        FoodAvailable: true 
     };
 
     const success = await addEvents(newEvent);

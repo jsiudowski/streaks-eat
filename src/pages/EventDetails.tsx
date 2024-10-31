@@ -2,8 +2,6 @@ import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol
 import { useHistory, useLocation } from 'react-router-dom';
 import './EventDetails.css';
 import { useState, useEffect } from 'react';
-import { updateEvent, } from '../firebaseConfig'; 
-
 
 interface LocationState {
     event: {
@@ -16,7 +14,6 @@ interface LocationState {
         TimeCreated: { seconds: number; nanoseconds?: number };
         ImageURL: string;
         AllergenMap: Record<number, string>;
-        FoodAvailable: boolean; 
     };
 }
 
@@ -35,34 +32,12 @@ const EventDetails: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [foodDescription, setFoodDescription] = useState<string>(event?.FoodDescription || '');
     const [showModal, setShowModal] = useState(false);
-    const [foodAvailable, setFoodAvailable] = useState<boolean>(event?.FoodAvailable || true);
 
     useEffect(() => {
         if (event) {
             setIsLoading(false);
-            setFoodDescription(event.FoodDescription);
-            setFoodAvailable(event.FoodAvailable);
         }
     }, [event]);
-
-    const handleNoFoodClick = () => {
-        setShowModal(true);
-    };
-
-    const handleConfirm = async () => {
-        const newAvailability = !foodAvailable;
-        setFoodAvailable(newAvailability);
-
-        if (event?.id) {
-            await updateEvent(event.id, { FoodAvailable: newAvailability });
-            history.replace('/pages/EventList', { refresh: true });
-        }
-        setShowModal(false);
-    };
-
-    const handleCancel = () => {
-        setShowModal(false);
-    };
 
     if (isLoading) {
         return (
@@ -111,42 +86,16 @@ const EventDetails: React.FC = () => {
                     <div className="grid-item">{event.Allergens.map(id => event.AllergenMap[id] || id).join(', ')}</div>
                     <div className="grid-item"><strong>Created On:</strong></div>
                     <div className="grid-item">{formatDate(event.TimeCreated)}</div>
-                    <div className="grid-item"><strong>Food Available:</strong> {foodAvailable ? 'Yes' : 'No'}</div>
                 </div>
                 {event.ImageURL && (
                     <img src={event.ImageURL} alt="Food" className="event-image" />
                 )}
-                <IonButton onClick={handleNoFoodClick} color="warning">Toggle Food Availability</IonButton>
-
-                {showModal && (
-                    <div className="overlay">
-                        <IonCard className="confirmation-card">
-                            <IonCardHeader>
-                                <IonCardTitle>Confirm Update</IonCardTitle>
-                            </IonCardHeader>
-                            <IonCardContent>
-                                <p>Are you sure you want to update the Food Listing?</p>
-                                <IonRow className="ion-justify-content-center">
-                                    <IonCol size="5">
-                                        <IonButton expand="full" onClick={handleConfirm} color="primary">Yes</IonButton>
-                                    </IonCol>
-                                    <IonCol size="5">
-                                        <IonButton expand="full" onClick={handleCancel} color="light">No</IonButton>
-                                    </IonCol>
-                                </IonRow>
-                            </IonCardContent>
-                        </IonCard>
-                    </div>
-                )}
             </IonContent>
-
-            {!showModal && (
-                <IonFab slot="fixed" horizontal="end" vertical="bottom">
-                    <IonRouterLink routerLink="/pages/EventList">
-                        <IonButton color="danger" size="large">Go Back</IonButton>
-                    </IonRouterLink>
-                </IonFab>
-            )}
+            <IonFab slot="fixed" horizontal="end" vertical="bottom">
+                <IonRouterLink routerLink="/pages/EventList">
+                    <IonButton color="danger" size="large">Go Back</IonButton>
+                </IonRouterLink>
+            </IonFab>
         </IonPage>
     );
 };

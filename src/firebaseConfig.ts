@@ -43,7 +43,7 @@ export async function getEvents() {
   return eventList;
 }
 
-export async function addEvents(event: {Building: string, RoomNumber: string, FoodDescription: string, Allergens: number[], TimeCreated: Date, ImageURL: string, FoodAvailable: boolean}) {
+export async function addEvents(event: {Building: string, RoomNumber: string, FoodDescription: string, Allergens: number[], TimeCreated: Date, ImageURL: string}) {
   try {
     const eventRef = doc(collection(db, 'events'));
     await setDoc(eventRef, event);
@@ -94,12 +94,6 @@ export async function getAllergens() {
   }));
   return allergenList;
 }
-
-// Function to update food availability for an event
-export const updateEvent = async (eventId: string, data: Partial<{ FoodAvailable: boolean }>) => {
-  const eventRef = doc(db, 'events', eventId);
-  await setDoc(eventRef, data, { merge: true }); // Correctly merges the update
-};
 
 // Function to upload images and return the URL
 export const uploadImage = async (imageUri: string): Promise<string> => {
