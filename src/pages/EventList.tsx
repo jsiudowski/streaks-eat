@@ -51,20 +51,29 @@ const EventList: React.FC = () => {
         setLoading(true);
         try {
             const eventsData: DocumentData[] = await getEvents(); // Fetch events from Firebase
-            // Map the fetched data to match the Event type
-            const formattedEvents: Event[] = eventsData.map((doc) => ({
-                id: doc.id, // If your document has an ID
-                EventName: doc.EventName || 'Unnamed Event', // Fetch EventName from data
-                FoodDescription: doc.FoodDescription || '',
-                Building: doc.Building || '',
-                RoomNumber: doc.RoomNumber || '',
-                FoodPicture: doc.FoodPicture || '',
-                Allergens: doc.Allergens || [],
-                TimeCreated: doc.TimeCreated || { seconds: 0 }, // Provide a default value if necessary
-                ImageURL: doc.ImageURL || '',
-            }));
+            const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+            
+            // Map the fetched data to match the Event type and filter out old events
+            const formattedEvents: Event[] = eventsData
+                .map((doc) => ({
+                    id: doc.id, // If your document has an ID
+                    EventName: doc.EventName || 'Unnamed Event', // Fetch EventName from data
+                    FoodDescription: doc.FoodDescription || '',
+                    Building: doc.Building || '',
+                    RoomNumber: doc.RoomNumber || '',
+                    FoodPicture: doc.FoodPicture || '',
+                    Allergens: doc.Allergens || [],
+                    TimeCreated: doc.TimeCreated || { seconds: 0 }, // Provide a default value if necessary
+                    ImageURL: doc.ImageURL || '',
+                }))
+                .filter((event) => {
+                    // Only include events from the last 2 hours
+                    const eventTime = event.TimeCreated.seconds * 1000; // Convert to milliseconds
+                    return eventTime >= twoHoursAgo;
+                });
+    
             formattedEvents.sort((a, b) => {
-                return (b.TimeCreated.seconds - a.TimeCreated.seconds); // Sort in descending order
+                return b.TimeCreated.seconds - a.TimeCreated.seconds; // Sort in descending order
             });
             setEvents(formattedEvents);
         } catch (err) {
