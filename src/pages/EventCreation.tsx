@@ -2,11 +2,10 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // I
 import { defineCustomElements } from '@ionic/pwa-elements/loader'; // Custom camera elements
 import { IonButton, useIonToast, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
 import { addSharp, camera, close } from 'ionicons/icons';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Buildings from '../Data/RoomsEdited.json';
 import { addEvents, uploadImage } from '../firebaseConfig'; // Import Firebase
-import { PushNotifications } from '@capacitor/push-notifications'; //Import push notifications 
 import './EventCreation.css';
 
 //Define the type for the structure of the JSON data
@@ -44,17 +43,6 @@ const EventCreation: React.FC = () => {
   ];
 
   const buildingsData = Buildings as BuildingsData;
-
-  // Use Effect for Push Notification 
-  useEffect(() => {
-    const setupPushNotifications = async () => {
-      await PushNotifications.requestPermissions();
-      await PushNotifications.register();
-      addListeners();
-    };
-
-    setupPushNotifications();
-  }, []);
 
   // Function for camera to be allowed to take a picture
   const takePicture = async () => {
@@ -109,31 +97,6 @@ const EventCreation: React.FC = () => {
     });
   };
 
-  // Event lisener for push notifications
-  const addListeners = async () => {
-    await PushNotifications.addListener('registration', token => {
-      console.info('Registration token: ', token.value);
-    });
-    await PushNotifications.addListener('registrationError', err => {
-      console.error('Registration error: ', err.error);
-    });
-    await PushNotifications.addListener('pushNotificationReceived', notification => {
-      console.log('Push notification received: ', notification);
-    });
-    await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
-      console.log('Push notification action performed', notification.actionId, notification.inputValue);
-    });
-  };
-
-  // Ability to send push notifcation
-  const sendPushNotification = async (eventDetails: any) => {
-    const notification = {
-      title: 'New Event Created',
-      body: `Event "${eventDetails.EventName}" has been created in ${eventDetails.Building}, Room ${eventDetails.RoomNumber}.`,
-    };
-  }
-  
-
   const addEventCard = async () => {
      // Validation
      if (!eventName || !foodItems || !building || !roomNumber) {
@@ -166,9 +129,6 @@ const EventCreation: React.FC = () => {
         setImage(undefined); // Reset image
         showAlert('Event Successfully Created');
         history.push('/pages/EventList', { refresh: true });
-
-        // Send push notification
-        await sendPushNotification(newEvent);
     }
   } catch (error) {
       console.error('Error adding event to Firebase:', error);
