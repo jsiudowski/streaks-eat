@@ -1,5 +1,5 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonHeader, IonIcon, IonLabel, IonModal, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import './EventDetails.css';
 import { useState, useEffect } from 'react';
 
@@ -27,11 +27,8 @@ const formatDate = (timestamp: { seconds?: number; nanoseconds?: number } | unde
 
 const EventDetails: React.FC = () => {
     const location = useLocation<LocationState>();
-    const history = useHistory();
     const { event } = location.state || {};
     const [isLoading, setIsLoading] = useState(true);
-    const [foodDescription, setFoodDescription] = useState<string>(event?.FoodDescription || '');
-    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         if (event) {
@@ -79,7 +76,7 @@ const EventDetails: React.FC = () => {
             <IonContent className="page-content">
                 <div className="grid-container">
                     <div className="grid-item"><strong>Food Items:</strong></div>
-                    <div className="grid-item">{foodDescription}</div>
+                    <div className="grid-item">{event.FoodDescription}</div>
                     <div className="grid-item"><strong>Room:</strong></div>
                     <div className="grid-item">{event.RoomNumber}</div>
                     <div className="grid-item"><strong>Allergens:</strong></div>
