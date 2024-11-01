@@ -77,6 +77,8 @@ const EventDetails: React.FC = () => {
                 <div className="grid-container">
                     <div className="grid-item"><strong>Food Items:</strong></div>
                     <div className="grid-item">{event.FoodDescription}</div>
+                    <div className="grid-item"><strong>Location:</strong></div>
+                    <div className="grid-item">{event.Building}</div>
                     <div className="grid-item"><strong>Room:</strong></div>
                     <div className="grid-item">{event.RoomNumber}</div>
                     <div className="grid-item"><strong>Allergens:</strong></div>

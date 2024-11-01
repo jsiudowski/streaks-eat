@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonLoading, IonMenuButton, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import { DocumentData } from 'firebase/firestore'; // Import DocumentData from Firestore
-import { addSharp } from 'ionicons/icons';
+import { addSharp, warningOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { getAllergens, getEvents, getUserDataByEmail } from '../firebaseConfig'; // Adjust the import path as needed
@@ -18,6 +18,15 @@ interface Event {
     TimeCreated: { seconds: number; nanoseconds?: number };
     ImageURL: string;
 }
+
+// Define User Profile mapping for events regarding related allergies.
+interface UserData {
+    id: string;
+    Email: string;
+    Year: string; 
+    Name: string;
+    Allergens: number[];
+  }
 
 // Define a type for the location state
 interface LocationState {
@@ -46,8 +55,11 @@ const EventList: React.FC = () => {
     const history = useHistory();
     const [allergenMap, setAllergenMap] = useState<Record<number, string>>({});
     const [showWarning, setShowWarning] = useState(false);
+    const [userAllergens, setUserAllergens] = useState<number[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [showAllergenMatchWarning, setShowAllergenMatchWarning] = useState(false);
     const [userData, setUserData] = useState<UserData | null>(null);
+    const auth = getAuth();
 
     const fetchAllergens = async () => {
         try {
@@ -62,6 +74,21 @@ const EventList: React.FC = () => {
             console.error('Failed to load allergens', err);
         }
     };
+
+    // Fetch user profile allergens
+    const fetchUserProfile = async (email: string) => {
+        const userData = await getUserDataByEmail(email);
+        if (userData) {
+            setUserAllergens(userData.Allergens);
+        }
+    };
+    useEffect(() => {
+        const user = auth.currentUser; // Get the currently logged-in user
+        if (user && user.email) { // Check that user and user.email are not null
+            fetchUserProfile(user.email); // Use the user's email
+        }
+    }, [auth]); // Dependency array can include `auth` to ensure it runs when the component mounts
+
 
     const fetchEvents = async () => {
         setLoading(true);
@@ -140,11 +167,13 @@ const EventList: React.FC = () => {
 
     //*Upon clicking a card, displays warning to proceed if event contains allergy listed as "other"
     const handleCardClick = (event: Event) => {
-        const hasOtherAllergen = event.Allergens.includes(10);
-        
-        if (hasOtherAllergen) {
+        const hasOtherAllergen = event.Allergens.includes(10); // Assuming 10 is the ID for "Other"
+        const hasMatchingAllergen = event.Allergens.some(allergen => userAllergens.includes(allergen));
+    
+        if (hasOtherAllergen || hasMatchingAllergen) {
             setSelectedEvent(event); // Store the selected event for later use
             setShowWarning(true); // Show the warning modal
+            setShowAllergenMatchWarning(hasMatchingAllergen); // Update the warning state
         } else {
             navigateToEventDetails(event); // Navigate directly if no caution is needed
         }
@@ -173,6 +202,7 @@ const EventList: React.FC = () => {
             navigateToEventDetails(selectedEvent);
         }
         setShowWarning(false);
+        setShowAllergenMatchWarning(false);
     };
 
     const handleCancel = () => {
@@ -251,26 +281,40 @@ const EventList: React.FC = () => {
                 <IonContent>
                     {Object.keys(groupedEvents).map((building, index) => (
                         <div key={index}>
-                            <div className="building-name">{building}</div> {/* Style the building name */}
+                            <div className="building-name">{building}</div>
                             <IonList>
-                                {groupedEvents[building].map((event: Event, idx: number) => (
-                                    <IonItem key={event.id || idx} button onClick={() => handleCardClick(event)}>
-                                        <IonLabel>
-                                            <h3>{event.EventName ?? 'Unnamed Event'}</h3> {/* Show event name */}
-                                            <p>{event.FoodDescription ?? 'No Description Available'}</p>
-                                            <p>Room: {event.RoomNumber}</p>
-                                            <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
-                                            <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}   
-                                        </IonLabel>
-                                        {event.ImageURL && (
-                                            <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: 'auto' }} />
-                                        )}
-                                    </IonItem>
-                                ))}
+                                {groupedEvents[building].map((event: Event, idx: number) => {
+                                    const hasMatchingAllergen = event.Allergens.some(allergen => userAllergens.includes(allergen));
+                                    
+                                    return (
+                                        <IonItem key={event.id || idx} button onClick={() => handleCardClick(event)}>
+                                            <IonLabel>
+                                                <h3>{event.EventName ?? 'Unnamed Event'}</h3>
+                                                <p>{event.FoodDescription ?? 'No Description Available'}</p>
+                                                <p>Room: {event.RoomNumber}</p>
+                                                <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
+                                                <p>Created On: {formatDate(event.TimeCreated)}</p>
+                                                {hasMatchingAllergen && (
+                                                <span style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <IonIcon 
+                                                        icon={warningOutline} 
+                                                        color="warning" 
+                                                        style={{ marginRight: '8px', fontSize: '36px' }} 
+                                                    />
+                                                    <p style={{ margin: 0 }}>WARNING: AN ALLERGY ON YOUR PROFILE IS LISTED IN THIS EVENT</p> {/* Margin: 0 is to align properly */}
+                                                </span>
+                                            )}
+                                            </IonLabel>
+                                            {event.ImageURL && (
+                                                <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: 'auto' }} />
+                                            )}
+                                        </IonItem>
+                                    );
+                                })}
                             </IonList>
                         </div>
                     ))}
-    
+
                     {/* Warning card for the event if there is an allergy listed as "other"*/}
                     {showWarning && (
                         <div className="overlay">
@@ -279,7 +323,9 @@ const EventList: React.FC = () => {
                                     <IonCardTitle>Caution!</IonCardTitle>
                                 </IonCardHeader>
                                 <IonCardContent>
-                                    <p>There's an Allergy Listed as "Other". Discretion advised.</p>
+                                    {showAllergenMatchWarning 
+                                        ? <p>An allergy on your profile matches one on this event. Proceed with caution.</p> 
+                                        : <p>There's an Allergy Listed as "Other". Discretion advised.</p>}
                                     <IonRow className="ion-justify-content-center">
                                         <IonCol size="5">
                                             <IonButton expand="full" onClick={handleConfirm} color="primary">Proceed</IonButton>
@@ -310,8 +356,7 @@ const EventList: React.FC = () => {
                 )}
             </IonPage>
         );
-    }
-    
+    } 
 };
 
 export default EventList;
