@@ -41,6 +41,7 @@ interface UserData {
   Year: string; // Adjust this if it's a number
   Name: string;
   Allergens: number[]; // Assuming Allergens is an array of strings
+  IsAdmin: boolean;
 }
 
 // Get a list of events from your database
@@ -84,8 +85,10 @@ export async function registerUser(username:string, password:string) {
   try {
       const res = await firebase.auth().createUserWithEmailAndPassword(email, password)
       const user = await createUser(email)
+      if(res) {
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+      }
       console.log(user)
-      console.log(res)
       return true
   }
   catch(error) {
@@ -119,7 +122,7 @@ export const uploadImage = async (imageUri: string): Promise<string> => {
 
 const createUser = async (email: string) => {
   const newUser = {
-    Email: email,
+    Email: email.toLowerCase(),
     IsAdmin: false
   }
   try {
@@ -140,7 +143,12 @@ export const getUserDataByEmail = async (email: string): Promise<UserData | null
   const userQuery = await getDocs(usersCol);
   const userData = userQuery.docs.find(doc => doc.data().Email === email);
 
-  return userData ? { id: userData.id, ...userData.data() } as UserData : null; // Ensure proper typing
+  if (!userData) {
+    console.error("No user found with the provided email:", email);
+    return null;
+  }
+
+  return userData ? { id: userData.id, ...userData.data() } as UserData : null; 
 };
 
 // Function to update user profile

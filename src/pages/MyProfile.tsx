@@ -10,6 +10,7 @@ interface UserData {
   Year: string; 
   Name: string;
   Allergens: number[];
+  IsAdmin: boolean;
 }
 
 interface Allergen {
@@ -35,6 +36,7 @@ const MyProfile: React.FC = () => {
 
       if (user) {
         const userData = await getUserDataByEmail(user.email!);
+        console.log("User data fetched:", userData);
         if (userData) {
           setUserData(userData);
           setActiveAllergies(userData.Allergens || []);

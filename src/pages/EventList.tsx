@@ -3,8 +3,9 @@ import { DocumentData } from 'firebase/firestore'; // Import DocumentData from F
 import { addSharp } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { getAllergens, getEvents } from '../firebaseConfig'; // Adjust the import path as needed
+import { getAllergens, getEvents, getUserDataByEmail } from '../firebaseConfig'; // Adjust the import path as needed
 import "./EventList.css";
+import { getAuth } from 'firebase/auth';
 
 // Define a type for the event
 interface Event {
@@ -23,6 +24,20 @@ interface LocationState {
     refresh?: boolean; // Indicate if we should refresh the events
 }
 
+interface UserData {
+    id: string;
+    Email: string;
+    Year: string; 
+    Name: string;
+    Allergens: number[];
+    IsAdmin: boolean;
+  }
+
+  interface Allergen {
+    id: number;
+    description: string;
+  }
+
 const EventList: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
@@ -32,6 +47,7 @@ const EventList: React.FC = () => {
     const [allergenMap, setAllergenMap] = useState<Record<number, string>>({});
     const [showWarning, setShowWarning] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [userData, setUserData] = useState<UserData | null>(null);
 
     const fetchAllergens = async () => {
         try {
@@ -83,9 +99,22 @@ const EventList: React.FC = () => {
         }
     };
 
+    const fetchUser = async () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+  
+        if (user) {
+          const userData = await getUserDataByEmail(user.email!);
+          if (userData) {
+            setUserData(userData);
+          }
+        }
+      };
+
     // useEffect to fetch events when component mounts
     useEffect(() => {
         fetchAllergens(); // Fetch allergens initially
+        fetchUser(); // Fetch User, returns data if one
         if (!events.length) {
             fetchEvents();
         }
@@ -95,6 +124,7 @@ const EventList: React.FC = () => {
     useEffect(() => {
         if (location.state?.refresh) {
             fetchAllergens(); // Fetch allergens initially
+            fetchUser(); // Fetch User if there is one
             fetchEvents(); // Fetch events if coming from EventCreation with refresh state
             history.replace({ ...location, state: {} }); // Clear the refresh state to prevent repeated fetching
         }
@@ -189,7 +219,7 @@ const EventList: React.FC = () => {
                 </IonContent>
 
                 {/* Event Creation button   (Displays only if Warning Card is not shown) */}
-                {!showWarning && (
+                {!showWarning && userData?.IsAdmin && (
                     <IonFab slot='fixed' horizontal='end' vertical='bottom'>
                         <IonRouterLink
                             routerLink='/pages/EventCreation'
@@ -265,7 +295,7 @@ const EventList: React.FC = () => {
                 </IonContent>
                 
                 {/* Event Creation button   (Displays only if Warning Card is not shown) */}
-                {!showWarning && (
+                {!showWarning && userData?.IsAdmin && (
                     <IonFab slot='fixed' horizontal='end' vertical='bottom'>
                         <IonRouterLink
                             routerLink='/pages/EventCreation'
