@@ -295,15 +295,19 @@ const EventList: React.FC = () => {
                                                 <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
                                                 <p>Created On: {formatDate(event.TimeCreated)}</p>
                                                 {hasMatchingAllergen && (
-                                                <span style={{ display: 'flex', alignItems: 'center' }}>
-                                                    <IonIcon 
-                                                        icon={warningOutline} 
-                                                        color="warning" 
-                                                        style={{ marginRight: '8px', fontSize: '36px' }} 
-                                                    />
-                                                    <p style={{ margin: 0 }}>WARNING: AN ALLERGY ON YOUR PROFILE IS LISTED IN THIS EVENT</p> {/* Margin: 0 is to align properly */}
-                                                </span>
-                                            )}
+                                                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                                                        <IonIcon 
+                                                            icon={warningOutline} 
+                                                            color="warning" 
+                                                            style={{ marginRight: '8px', fontSize: '36px' }} 
+                                                        />
+                                                        <div className="warning-box">
+                                                            <p style={{ margin: 0 }}>
+                                                                ALLERGY MATCH FOUND
+                                                            </p>
+                                                        </div>
+                                                    </span>
+                                                )}
                                             </IonLabel>
                                             {event.ImageURL && (
                                                 <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: 'auto' }} />

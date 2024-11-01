@@ -53,3 +53,12 @@
     pointer-events: auto; /* Allow pointer events for the card */
     z-index: 1001; /* Ensure the card is above the overlay */
 }
+
+.warning-box {
+    border: 2px solid yellow; /* Yellow outline */
+    padding: 8px; /* Padding inside the box */
+    border-radius: 4px; /* Rounded corners */
+    display: inline-flex; /* Align items in a row */
+    align-items: center; /* Center items vertically */
+    font-weight: bold; /* Optional: make text bold */
+}
