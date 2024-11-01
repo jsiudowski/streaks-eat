@@ -6,3 +6,26 @@
     width: 50%;
     font-weight: 700
   }
+
+  .overlay {
+    position: fixed; /* Fixed positioning to overlap the screen */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0; /* Cover the entire viewport */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 1000; /* Ensure it appears above other content */
+    pointer-events: auto; /* Allow pointer events on the overlay */
+}
+
+.confirmation-card {
+    width: 90%; /* Width of the card */
+    max-width: 400px; /* Maximum width for larger screens */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    pointer-events: auto; /* Allow pointer events for the card */
+    z-index: 1001; /* Ensure the card is above the overlay */
+}

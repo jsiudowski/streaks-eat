@@ -36,22 +36,10 @@ mdIcon: Displays the Icon in the nav menu,
 */
 const appPages: AppPage[] = [
   {
-    title: 'Dashboard',
-    url: '/pages/dashboard',
-    iosIcon: homeOutline,
-    mdIcon: homeOutline
-  },
-  {
     title: 'Event List',
     url: '/pages/EventList',
     iosIcon: calendarOutline,
     mdIcon: calendarOutline
-  },
-  {
-    title: 'Locations',
-    url: '/pages/Locations',
-    iosIcon: navigate,
-    mdIcon: navigate
   },
   {
     title: 'Map',
@@ -85,7 +73,7 @@ const Menu: React.FC = () => {
     <IonMenu contentId="main" type="overlay">
       <IonContent>
         <IonList id="inbox-list">
-          <IonListHeader>Cut-Back Crumbs</IonListHeader>
+          <IonListHeader>Streaks Eat</IonListHeader>
           <IonNote>Welcome!</IonNote>
           {appPages.map((appPage, index) => {
             return (
