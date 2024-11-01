@@ -35,6 +35,14 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+interface UserData {
+  id: string;
+  Email: string;
+  Year: string; // Adjust this if it's a number
+  Name: string;
+  Allergens: number[]; // Assuming Allergens is an array of strings
+}
+
 // Get a list of events from your database
 export async function getEvents() {
   const eventsCol = collection(db, 'events');
@@ -75,6 +83,8 @@ export async function registerUser(username:string, password:string) {
 
   try {
       const res = await firebase.auth().createUserWithEmailAndPassword(email, password)
+      const user = await createUser(email)
+      console.log(user)
       console.log(res)
       return true
   }
@@ -105,6 +115,53 @@ export const uploadImage = async (imageUri: string): Promise<string> => {
 
   const downloadURL = await getDownloadURL(storageRef);
   return downloadURL;
+};
+
+const createUser = async (email: string) => {
+  const newUser = {
+    Email: email,
+    IsAdmin: false
+  }
+  try {
+    const userRef = doc(collection(db, 'users'));
+    await setDoc(userRef, newUser);
+    console.log('User Added:', newUser);
+    return true;
+  }
+  catch(error) {
+    console.error('Error adding user:', error);
+    return false;
+  }
+}
+
+// Function to get user data based on email
+export const getUserDataByEmail = async (email: string): Promise<UserData | null> => {
+  const usersCol = collection(db, 'users');
+  const userQuery = await getDocs(usersCol);
+  const userData = userQuery.docs.find(doc => doc.data().Email === email);
+
+  return userData ? { id: userData.id, ...userData.data() } as UserData : null; // Ensure proper typing
+};
+
+// Function to update user profile
+export const updateUserProfile = async (id:string, email: string, year: string, name: string, allergens: number[]) => {
+    try {
+      // Find the user document by email
+      const userRef = doc(collection(db, 'users'), id); 
+
+      await setDoc(userRef, {
+        Email: email,
+        Year: year,
+        Name: name,
+        Allergens: allergens,
+      }, { merge: true }); // Merge to keep other fields intact
+
+      console.log('User profile updated successfully:', { email, year, name, allergens });
+      return true;
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      return false;
+    }
 };
 
 export default auth;
