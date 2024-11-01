@@ -173,80 +173,115 @@ const EventList: React.FC = () => {
         );
     }
 
-    return (
-        <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonMenuButton />
-                    </IonButtons>
-                    <IonTitle>Event List</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+    if(events.length == 0) {
+        return (
+            <IonPage>
+                <IonHeader>
+                    <IonToolbar>
+                        <IonButtons slot="start">
+                            <IonMenuButton />
+                        </IonButtons>
+                        <IonTitle>Event List</IonTitle>
+                    </IonToolbar>
+                </IonHeader>
+                <IonContent>
+                <p>No events currently. Considering having an Administrator add an event!</p>
+                </IonContent>
 
-            {/* List of all events available */}
-            <IonContent>
-                {Object.keys(groupedEvents).map((building, index) => (
-                    <div key={index}>
-                        <div className="building-name">{building}</div> {/* Style the building name */}
-                        <IonList>
-                            {groupedEvents[building].map((event: Event, idx: number) => (
-                                <IonItem key={event.id || idx} button onClick={() => handleCardClick(event)}>
-                                    <IonLabel>
-                                        <h3>{event.EventName ?? 'Unnamed Event'}</h3> {/* Show event name */}
-                                        <p>{event.FoodDescription ?? 'No Description Available'}</p>
-                                        <p>Room: {event.RoomNumber}</p>
-                                        <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
-                                        <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}   
-                                    </IonLabel>
-                                    {event.ImageURL && (
-                                        <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: 'auto' }} />
-                                    )}
-                                </IonItem>
-                            ))}
-                        </IonList>
-                    </div>
-                ))}
-
-                {/* Warning card for the event if there is an allergy listed as "other"*/}
-                {showWarning && (
-                    <div className="overlay">
-                        <IonCard className="confirmation-card">
-                            <IonCardHeader>
-                                <IonCardTitle>Caution!</IonCardTitle>
-                            </IonCardHeader>
-                            <IonCardContent>
-                                <p>There's an Allergy Listed as "Other". Discretion advised.</p>
-                                <IonRow className="ion-justify-content-center">
-                                    <IonCol size="5">
-                                        <IonButton expand="full" onClick={handleConfirm} color="primary">Proceed</IonButton>
-                                    </IonCol>
-                                    <IonCol size="5">
-                                        <IonButton expand="full" onClick={handleCancel} color="light">Exit</IonButton>
-                                    </IonCol>
-                                </IonRow>
-                            </IonCardContent>
-                        </IonCard>
-                    </div>
+                {/* Event Creation button   (Displays only if Warning Card is not shown) */}
+                {!showWarning && (
+                    <IonFab slot='fixed' horizontal='end' vertical='bottom'>
+                        <IonRouterLink
+                            routerLink='/pages/EventCreation'
+                            routerDirection="forward"
+                            onClick={() => history.push('/pages/EventCreation', { refresh: true })}
+                        >
+                            <IonButton size="default" className='addEventButton'>
+                                <span className='icon-circle'><IonIcon icon={addSharp}></IonIcon></span> Add Event
+                            </IonButton>
+                        </IonRouterLink>
+                    </IonFab>
                 )}
-            </IonContent>
-            
-            {/* Event Creation button   (Displays only if Warning Card is not shown) */}
-            {!showWarning && (
-                <IonFab slot='fixed' horizontal='end' vertical='bottom'>
-                    <IonRouterLink
-                        routerLink='/pages/EventCreation'
-                        routerDirection="forward"
-                        onClick={() => history.push('/pages/EventCreation', { refresh: true })}
-                    >
-                        <IonButton size="default" className='addEventButton'>
-                            <span className='icon-circle'><IonIcon icon={addSharp}></IonIcon></span> Add Event
-                        </IonButton>
-                    </IonRouterLink>
-                </IonFab>
-            )}
-        </IonPage>
-    );
+            </IonPage>
+        );
+    }
+    else {
+        return (
+            <IonPage>
+                <IonHeader>
+                    <IonToolbar>
+                        <IonButtons slot="start">
+                            <IonMenuButton />
+                        </IonButtons>
+                        <IonTitle>Event List</IonTitle>
+                    </IonToolbar>
+                </IonHeader>
+    
+                {/* List of all events available */}
+                <IonContent>
+                    {Object.keys(groupedEvents).map((building, index) => (
+                        <div key={index}>
+                            <div className="building-name">{building}</div> {/* Style the building name */}
+                            <IonList>
+                                {groupedEvents[building].map((event: Event, idx: number) => (
+                                    <IonItem key={event.id || idx} button onClick={() => handleCardClick(event)}>
+                                        <IonLabel>
+                                            <h3>{event.EventName ?? 'Unnamed Event'}</h3> {/* Show event name */}
+                                            <p>{event.FoodDescription ?? 'No Description Available'}</p>
+                                            <p>Room: {event.RoomNumber}</p>
+                                            <p>Allergens: {event.Allergens.map((id: number) => allergenMap[id] || id).join(', ')}</p>
+                                            <p>Created On: {formatDate(event.TimeCreated)}</p> {/* Format date if needed */}   
+                                        </IonLabel>
+                                        {event.ImageURL && (
+                                            <img src={event.ImageURL} alt="Food" style={{ width: '100px', height: 'auto' }} />
+                                        )}
+                                    </IonItem>
+                                ))}
+                            </IonList>
+                        </div>
+                    ))}
+    
+                    {/* Warning card for the event if there is an allergy listed as "other"*/}
+                    {showWarning && (
+                        <div className="overlay">
+                            <IonCard className="confirmation-card">
+                                <IonCardHeader>
+                                    <IonCardTitle>Caution!</IonCardTitle>
+                                </IonCardHeader>
+                                <IonCardContent>
+                                    <p>There's an Allergy Listed as "Other". Discretion advised.</p>
+                                    <IonRow className="ion-justify-content-center">
+                                        <IonCol size="5">
+                                            <IonButton expand="full" onClick={handleConfirm} color="primary">Proceed</IonButton>
+                                        </IonCol>
+                                        <IonCol size="5">
+                                            <IonButton expand="full" onClick={handleCancel} color="light">Exit</IonButton>
+                                        </IonCol>
+                                    </IonRow>
+                                </IonCardContent>
+                            </IonCard>
+                        </div>
+                    )}
+                </IonContent>
+                
+                {/* Event Creation button   (Displays only if Warning Card is not shown) */}
+                {!showWarning && (
+                    <IonFab slot='fixed' horizontal='end' vertical='bottom'>
+                        <IonRouterLink
+                            routerLink='/pages/EventCreation'
+                            routerDirection="forward"
+                            onClick={() => history.push('/pages/EventCreation', { refresh: true })}
+                        >
+                            <IonButton size="default" className='addEventButton'>
+                                <span className='icon-circle'><IonIcon icon={addSharp}></IonIcon></span> Add Event
+                            </IonButton>
+                        </IonRouterLink>
+                    </IonFab>
+                )}
+            </IonPage>
+        );
+    }
+    
 };
 
 export default EventList;

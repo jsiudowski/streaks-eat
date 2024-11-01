@@ -94,6 +94,12 @@ const MyProfile: React.FC = () => {
       </IonHeader>
 
       <IonContent>
+        <IonToast
+          isOpen={toastVisible}
+          onDidDismiss={() => setToastVisible(false)}
+          message={toastMessage}
+          duration={2000} // Duration in milliseconds
+        />
         <IonListHeader>
           <IonLabel className="center"><h1>My Profile</h1></IonLabel>
         </IonListHeader>
@@ -133,9 +139,9 @@ const MyProfile: React.FC = () => {
         </IonListHeader>
 
         <IonGrid>
+        <IonRow className="ion-justify-content-center">
           {allergenDescriptions.map((allergen) => (
-            <IonRow key={allergen.id} className="ion-justify-content-center">
-              <IonCol size="5">
+              <IonCol key={allergen.id} size="5">
                 <IonButton
                   expand="full"
                   color={activeAllergies.includes(allergen.id) ? "secondary" : "light"}
@@ -144,8 +150,8 @@ const MyProfile: React.FC = () => {
                   {allergen.description}
                 </IonButton>
               </IonCol>
-            </IonRow>
           ))}
+          </IonRow>
           <IonCol size="5">
             <IonRow className="ion-justify-content-center" onClick={handleUpdateProfile}>
               <IonButton>
@@ -175,12 +181,6 @@ const MyProfile: React.FC = () => {
             </IonCard>
           </div>
         )}
-        <IonToast
-          isOpen={toastVisible}
-          onDidDismiss={() => setToastVisible(false)}
-          message={toastMessage}
-          duration={2000} // Duration in milliseconds
-        />
       </IonContent>
     </IonPage>
   );
