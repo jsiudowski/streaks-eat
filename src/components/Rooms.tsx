@@ -21,20 +21,20 @@ export class Rooms extends Component<RoomsProps, RoomsState> {
     }
 
     render() {
-        // Cast the imported Buildings data as the BuildingsData interface
+        // Casts the imported Buildings data as the BuildingsData interface
         const buildingsData: BuildingsData = Buildings;
 
         return (
             <div>
                 <h3>Building and Room Information</h3>
 
-                {/* Loop through the buildings (keys of the JSON object) */}
+                {/* Loops through the buildings (keys of the JSON object) */}
                 {Object.keys(buildingsData).map((buildingName, index) => (
                     <div key={index}>
-                        <h4>{buildingName}</h4> {/* Display building name */}
+                        <h4>{buildingName}</h4> {/* Displays building name */}
 
                         <ul>
-                            {/* Check if the value is null or an array */}
+                            {/* Checks if the value is null or an array */}
                             {buildingsData[buildingName] ? (
                              buildingsData[buildingName]?.map((room, roomIndex) => (
                             <li key={roomIndex}>{room}</li>

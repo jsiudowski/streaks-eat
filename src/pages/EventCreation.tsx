@@ -10,9 +10,10 @@ import './EventCreation.css';
 
 //Define the type for the structure of the JSON data
 type BuildingsData = {
-  [buildingName: string]: string[] | null; // Map each building name to an array 
+  [buildingName: string]: string[] | null;  
 };
 
+// Sets up the Event Creation Page
 const EventCreation: React.FC = () => {
   const history = useHistory();
 
@@ -28,6 +29,7 @@ const EventCreation: React.FC = () => {
   const [image, setImage] = useState<string | undefined>();// State for image functionality for camera
   const [alertMessage] = useIonToast();
   
+  // Allergy Options listed in their string counterparts
   const allergyOptions = [
     'Dairy',
     'Egg',
@@ -97,7 +99,7 @@ const EventCreation: React.FC = () => {
     });
   };
   
-
+  // Adds Event to the Event List if validation passes
   const addEventCard = async () => {
      // Validation
      const buildingHasRooms = building && buildingsData[building] && buildingsData[building]!.length > 0; // Building with no rooms is not required for creation.
@@ -109,6 +111,7 @@ const EventCreation: React.FC = () => {
   try {
     const foodPictureUrl = image ? await uploadImage(image) : ''; // Upload the image and get URL
 
+    // Structure for our new event
     const newEvent = {
         Building: building,
         EventName: eventName,
@@ -119,8 +122,10 @@ const EventCreation: React.FC = () => {
         ImageURL: foodPictureUrl, // Use the uploaded image URL
     };
 
+    // Add event to firebase
     const success = await addEvents(newEvent);
 
+    // Check if the event was successfully added to Firebase
     if (success) {
         // Reset the form
         setBuilding('');

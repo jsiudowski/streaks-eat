@@ -16,7 +16,7 @@ import JCUMAP from './Photos/JCUMAP.png' ;
 import { IonImg } from '@ionic/react';
 
 
-
+//Displays the University Map PNG and corresponding locations via their numbers in a list
 const Map: React.FC = () => {
   return (
     <IonPage>

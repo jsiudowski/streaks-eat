@@ -5,9 +5,8 @@ import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { loginUser } from '../firebaseConfig';
 
-
+// Sets up the login page for the app
 const Login: React.FC = () => {
-
     const [busy, setBusy] = useState<boolean>(false)
     const history = useHistory();
     const [username, setUsername] = useState('')
@@ -15,6 +14,7 @@ const Login: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [alertMessage] = useIonToast();
 
+    // Field to display login success or failure to the user
     const showAlert = (message: string, position: 'top' | 'bottom' | 'middle' = 'top') => {
       alertMessage({
           message,
@@ -22,8 +22,8 @@ const Login: React.FC = () => {
           position,
       });
   };
-  
 
+    // Attempts to Log in a User. Has conditions for both success and failure
     async function LoginUser() {
         setBusy(true)
         

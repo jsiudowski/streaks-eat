@@ -1,4 +1,3 @@
-
 import {
   IonContent,
   IonIcon,
@@ -15,6 +14,7 @@ import { useLocation } from 'react-router-dom';
 import { alertCircleOutline, archiveOutline, archiveSharp, bookmarkOutline, calendarOutline, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, mapOutline, navigate, paperPlaneOutline, paperPlaneSharp, personOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 
+// Structure for the side bar navigations
 interface AppPage {
   url: string;
   iosIcon: string;
@@ -61,10 +61,6 @@ const appPages: AppPage[] = [
   }
 ];
 
-
-//const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-
-
 // This is the rendering of the side menu with all of the tabs. 
 const Menu: React.FC = () => {
   const location = useLocation();
@@ -86,16 +82,6 @@ const Menu: React.FC = () => {
             );
           })}
         </IonList>
-
-        {/* <IonList id="labels-list">
-          <IonListHeader>Labels</IonListHeader>
-          {labels.map((label, index) => (
-            <IonItem lines="none" key={index}>
-              <IonIcon aria-hidden="true" slot="start" icon={bookmarkOutline} />
-              <IonLabel>{label}</IonLabel>
-            </IonItem>
-          ))}
-        </IonList> */}
       </IonContent>
     </IonMenu>
   );

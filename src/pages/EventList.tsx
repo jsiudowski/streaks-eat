@@ -9,8 +9,8 @@ import { getAuth } from 'firebase/auth';
 
 // Define a type for the event
 interface Event {
-    id?: string; // Optional unique ID for each event
-    EventName: string; // Add EventName type
+    id?: string; 
+    EventName: string;
     FoodDescription: string;
     Building: string;
     RoomNumber: string;
@@ -33,6 +33,7 @@ interface LocationState {
     refresh?: boolean; // Indicate if we should refresh the events
 }
 
+// Structure for our UserData to be loaded and saved
 interface UserData {
     id: string;
     Email: string;
@@ -42,11 +43,13 @@ interface UserData {
     IsAdmin: boolean;
   }
 
+  //Structure for our allergen mappings from our database
   interface Allergen {
     id: number;
     description: string;
   }
 
+// Sets up Event List Page for App
 const EventList: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
@@ -61,12 +64,13 @@ const EventList: React.FC = () => {
     const [userData, setUserData] = useState<UserData | null>(null);
     const auth = getAuth();
 
+    // Grabs Allergen data from the database
     const fetchAllergens = async () => {
         try {
-            const allergensData = await getAllergens(); // Ensure this function fetches data correctly
+            const allergensData = await getAllergens();
             const map: Record<number, string> = {};
             allergensData.forEach((allergen: any) => {
-                map[allergen.id] = allergen.description; // Ensure this matches your allergen structure
+                map[allergen.id] = allergen.description; 
             });
             setAllergenMap(map);
             console.log('Allergen Map:', allergenMap);
@@ -75,7 +79,7 @@ const EventList: React.FC = () => {
         }
     };
 
-    // Fetch user profile allergens
+    // Fetches a user profile and corresponding allergens
     const fetchUserProfile = async (email: string) => {
         const userData = await getUserDataByEmail(email);
         if (userData) {
@@ -99,14 +103,14 @@ const EventList: React.FC = () => {
             // Map the fetched data to match the Event type and filter out old events
             const formattedEvents: Event[] = eventsData
                 .map((doc) => ({
-                    id: doc.id, // If your document has an ID
-                    EventName: doc.EventName || 'Unnamed Event', // Fetch EventName from data
+                    id: doc.id,
+                    EventName: doc.EventName || 'Unnamed Event', 
                     FoodDescription: doc.FoodDescription || '',
                     Building: doc.Building || '',
                     RoomNumber: doc.RoomNumber || '',
                     FoodPicture: doc.FoodPicture || '',
                     Allergens: doc.Allergens || [],
-                    TimeCreated: doc.TimeCreated || { seconds: 0 }, // Provide a default value if necessary
+                    TimeCreated: doc.TimeCreated || { seconds: 0 }, 
                     ImageURL: doc.ImageURL || '',
                 }))
                 .filter((event) => {
@@ -126,6 +130,7 @@ const EventList: React.FC = () => {
         }
     };
 
+    // Grabs a user from the current login and maps it to our structure
     const fetchUser = async () => {
         const auth = getAuth();
         const user = auth.currentUser;
@@ -138,7 +143,6 @@ const EventList: React.FC = () => {
         }
       };
 
-    // useEffect to fetch events when component mounts
     useEffect(() => {
         fetchAllergens(); // Fetch allergens initially
         fetchUser(); // Fetch User, returns data if one
@@ -159,26 +163,29 @@ const EventList: React.FC = () => {
 
     const formatDate = (timestamp: { seconds?: number, nanoseconds?: number } | undefined) => {
         if (!timestamp || typeof timestamp.seconds !== 'number') {
-            return 'Unknown Date'; // Handle cases where timestamp is undefined or malformed
+            return 'Unknown Date'; // Handles cases where timestamp is undefined or malformed
         }
         const date = new Date(timestamp.seconds * 1000); // Convert seconds to milliseconds
-        return date.toLocaleString(); // Format the date to a human-readable string
+        return date.toLocaleString(); // Formats the date to a human-readable string
     };
 
     //*Upon clicking a card, displays warning to proceed if event contains allergy listed as "other"
     const handleCardClick = (event: Event) => {
-        const hasOtherAllergen = event.Allergens.includes(10); // Assuming 10 is the ID for "Other"
+        const hasOtherAllergen = event.Allergens.includes(10); // 10 is the ID for "Other"
         const hasMatchingAllergen = event.Allergens.some(allergen => userAllergens.includes(allergen));
     
+        // If the users allergies are indicated in the event, or if they have an allergy in the
+        // "other" category saved, a dialog will let the user know of this. This is a safety feature
         if (hasOtherAllergen || hasMatchingAllergen) {
             setSelectedEvent(event); // Store the selected event for later use
             setShowWarning(true); // Show the warning modal
             setShowAllergenMatchWarning(hasMatchingAllergen); // Update the warning state
         } else {
-            navigateToEventDetails(event); // Navigate directly if no caution is needed
+            navigateToEventDetails(event);
         }
     };
-    // navigates to event details pages if proceeding is true 
+
+    // Navigates to Event Details page if proceeding is true 
     const navigateToEventDetails = (event: Event) => {
         const eventDetails = {     
             EventName: event.EventName || 'Unnamed Event',
@@ -197,6 +204,7 @@ const EventList: React.FC = () => {
         });
     };
 
+    //If the event is selected and confirmed, navigation to Event Details page commences
     const handleConfirm = () => {
         if (selectedEvent) {
             navigateToEventDetails(selectedEvent);
@@ -205,6 +213,7 @@ const EventList: React.FC = () => {
         setShowAllergenMatchWarning(false);
     };
 
+    //Handles Cancel button
     const handleCancel = () => {
         setShowWarning(false);
     };
@@ -219,12 +228,14 @@ const EventList: React.FC = () => {
         return acc;
     }, {} as Record<string, Event[]>);
 
+    // Loading messages
     if (loading) {
         return (
             <IonLoading isOpen={loading} message={'Loading events...'} />
         );
     }
 
+    // Error Messages
     if (error) {
         return (
             <IonContent>
@@ -233,6 +244,7 @@ const EventList: React.FC = () => {
         );
     }
 
+    //If there are no events currently in the list, display a message describing that to the user
     if(events.length == 0) {
         return (
             <IonPage>
@@ -248,7 +260,7 @@ const EventList: React.FC = () => {
                 <p>No events currently. Considering having an Administrator add an event!</p>
                 </IonContent>
 
-                {/* Event Creation button   (Displays only if Warning Card is not shown) */}
+                {/* Event Creation button   (Displays only if Warning Card is not shown and the user IsAdmin is true) */}
                 {!showWarning && userData?.IsAdmin && (
                     <IonFab slot='fixed' horizontal='end' vertical='bottom'>
                         <IonRouterLink
@@ -265,6 +277,7 @@ const EventList: React.FC = () => {
             </IonPage>
         );
     }
+    // If there are events in the list currently, display those.
     else {
         return (
             <IonPage>
@@ -344,7 +357,7 @@ const EventList: React.FC = () => {
                     )}
                 </IonContent>
                 
-                {/* Event Creation button   (Displays only if Warning Card is not shown) */}
+                {/* Event Creation button   (Displays only if Warning Card is not shown and the user IsAdmin is true) */}
                 {!showWarning && userData?.IsAdmin && (
                     <IonFab slot='fixed' horizontal='end' vertical='bottom'>
                         <IonRouterLink
