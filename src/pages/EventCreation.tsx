@@ -1,7 +1,7 @@
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Import Camera 
 import { defineCustomElements } from '@ionic/pwa-elements/loader'; // Custom camera elements
 import { IonButton, useIonToast, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
-import { addSharp, camera, close } from 'ionicons/icons';
+import { addSharp, arrowBack, camera, close } from 'ionicons/icons';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Buildings from '../Data/RoomsEdited.json';
@@ -152,6 +152,10 @@ const EventCreation: React.FC = () => {
     setRoomNumber(selectedRoom);
     setIsRoomModalOpen(false); // Close the room modal after selection
   };
+
+  const backToEventList = () => {
+    history.push('/pages/EventList', { refresh: true });
+  }
 
   return (
     <IonPage>
@@ -335,6 +339,15 @@ const EventCreation: React.FC = () => {
             </IonCol>
           ))}
         </IonRow>
+
+        <IonFab slot="fixed" horizontal="start" vertical="bottom">
+          <IonButton size="default" className="createEventButton" onClick={backToEventList}>
+            <span className="icon-circle">
+              <IonIcon icon={arrowBack} />
+            </span>
+            Back
+          </IonButton>
+        </IonFab>
 
         <IonFab slot="fixed" horizontal="end" vertical="bottom">
           <IonButton size="default" className="createEventButton" onClick={addEventCard}>
