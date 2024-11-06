@@ -3,6 +3,7 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { useParams } from 'react-router';
 import './AboutUs.css'
 
+// Sets up the About Us page which describes the Developers who created this app
 const AboutUs: React.FC = () => {
 
     const { name } = useParams<{ name: string; }>();

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import './EventDetails.css';
 import { useState, useEffect } from 'react';
 
+// Structure for our event receieved from the previous location state
 interface LocationState {
     event: {
         id: string;
@@ -17,6 +18,7 @@ interface LocationState {
     };
 }
 
+// Format Date Helper Method
 const formatDate = (timestamp: { seconds?: number; nanoseconds?: number } | undefined) => {
     if (!timestamp || typeof timestamp.seconds !== 'number') {
         return 'Unknown Date';
@@ -25,17 +27,20 @@ const formatDate = (timestamp: { seconds?: number; nanoseconds?: number } | unde
     return date.toLocaleString();
 };
 
+//Sets up the Event Details page with the correctly sent Event object
 const EventDetails: React.FC = () => {
     const location = useLocation<LocationState>();
     const { event } = location.state || {};
     const [isLoading, setIsLoading] = useState(true);
 
+    // If the event is there, turn off the loading
     useEffect(() => {
         if (event) {
             setIsLoading(false);
         }
     }, [event]);
 
+    // If the page is still loading, display that to the user.
     if (isLoading) {
         return (
             <IonPage>
@@ -51,6 +56,7 @@ const EventDetails: React.FC = () => {
         );
     }
 
+    // If there is no event currently provided, display that to the user.
     if (!event) {
         return (
             <IonPage>
@@ -66,6 +72,7 @@ const EventDetails: React.FC = () => {
         );
     }
 
+    // If there is an event provided, display the correct information to the user.
     return (
         <IonPage>
             <IonHeader>

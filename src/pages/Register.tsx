@@ -13,6 +13,7 @@ const Register: React.FC = () => {
     const history = useHistory();
     const [alertMessage] = useIonToast();
 
+    // Alert message for when user registers successfully or registration fails
     const showAlert = (message: string, position: 'top' | 'bottom' | 'middle' = 'top') => {
       alertMessage({
           message,
@@ -21,6 +22,7 @@ const Register: React.FC = () => {
       });
   };
 
+  // Attempts to Register a user from the page inputs. Reports back with success or failure
   async function Register() {
       setBusy(true);
       {/* Checks to see if there are user inputs in either field*/}
@@ -45,6 +47,7 @@ const Register: React.FC = () => {
           return; // Exit early
       }
 
+      //Attempt User Registration
       const res = await registerUser(username, password);
       setBusy(false);
       console.log(`${res ? 'Registration Success' : 'Registration Failed'}`)

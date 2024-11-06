@@ -4,6 +4,7 @@ import { getAuth } from 'firebase/auth';
 import { getUserDataByEmail, getAllergens, updateUserProfile } from '../firebaseConfig'; // Adjust the import path as necessary
 import './MyProfile.css';
 
+// Structure for our UserData to be loaded and saved
 interface UserData {
   id: string;
   Email: string;
@@ -13,11 +14,13 @@ interface UserData {
   IsAdmin: boolean;
 }
 
+//Structure for our allergen mappings from our database
 interface Allergen {
   id: number;
   description: string;
 }
 
+// Displays current logged in user's name, year, email, and allergens. Can be updated on this page too.
 const MyProfile: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [activeAllergies, setActiveAllergies] = useState<number[]>([]);
@@ -30,6 +33,7 @@ const MyProfile: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>('');
 
   useEffect(() => {
+    //Fetching User and Allergen Data
     const fetchData = async () => {
       const auth = getAuth();
       const user = auth.currentUser;
@@ -52,6 +56,7 @@ const MyProfile: React.FC = () => {
     fetchData();
   }, []);
 
+  //Toggles allergy inputs on and off
   const toggleAllergy = (allergyId: number) => {
     setActiveAllergies((prev) => {
       if (prev.includes(allergyId)) {
@@ -62,10 +67,12 @@ const MyProfile: React.FC = () => {
     });
   };
 
+  // Handles Submit
   const handleUpdateProfile = () => {
     setShowConfirmation(true);
   };
 
+  // Updates the User Profile
   const handleConfirm = async () => {
     if (userData) {
       const success = await updateUserProfile(userData.id, userData.Email, year, name, activeAllergies);
@@ -80,6 +87,7 @@ const MyProfile: React.FC = () => {
     }
   };
 
+  // Handles Cancel
   const handleCancel = () => {
     setShowConfirmation(false);
   };

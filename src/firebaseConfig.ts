@@ -1,3 +1,4 @@
+// Necessary imports
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -6,6 +7,8 @@ import { getFirestore, collection, getDocs, Firestore, setDoc, doc } from 'fireb
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDownloadURL, getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
 
+//This config is safe to leave in this file as the API Key is an identifier and not a security measure
+// needed to communicate with the Firebase DB, Auth, Storage, etc.
 const config = {
     apiKey: "AIzaSyCyQOeqqsDjQFDdpJTden1kiVrEv8EOq88",
     authDomain: "streakseat.firebaseapp.com",
@@ -17,30 +20,27 @@ const config = {
   };
 
 // Initialize Firebase
-const app = firebase.initializeApp(config);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
-const storage = getStorage(app); // Initialize storage
+const app = firebase.initializeApp(config); // Initialize App
+const analytics = getAnalytics(app); // Initialize Analytics
+const db = getFirestore(app); // Initialize Database
+const storage = getStorage(app); // Initialize Storage
+const auth = getAuth(app); // Initialize Auth
 
-const auth = getAuth(app);
+// If User Logs in or Logs out
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/auth.user
     const uid = user.uid;
-    // ...
   } else {
-    // User is signed out
-    // ...
+
   }
 });
 
 interface UserData {
   id: string;
   Email: string;
-  Year: string; // Adjust this if it's a number
+  Year: string;
   Name: string;
-  Allergens: number[]; // Assuming Allergens is an array of strings
+  Allergens: number[];
   IsAdmin: boolean;
 }
 
@@ -52,6 +52,7 @@ export async function getEvents() {
   return eventList;
 }
 
+// Add an event to the database
 export async function addEvents(event: {Building: string, RoomNumber: string, FoodDescription: string, Allergens: number[], TimeCreated: Date, ImageURL: string}) {
   try {
     const eventRef = doc(collection(db, 'events'));
@@ -65,6 +66,7 @@ export async function addEvents(event: {Building: string, RoomNumber: string, Fo
   }
 }
 
+//Logs a user in
 export async function loginUser(username: string, password: string) {
 
     const email = `${username}@jcu.edu`
@@ -79,6 +81,8 @@ export async function loginUser(username: string, password: string) {
         return false;
     }
 }
+
+// Registers a user
 export async function registerUser(username:string, password:string) {
   const email = `${username}@jcu.edu`
 
@@ -102,8 +106,8 @@ export async function getAllergens() {
   const allergensCol = collection(db, 'allergies'); 
   const allergenSnapshot = await getDocs(allergensCol);
   const allergenList = allergenSnapshot.docs.map(doc => ({
-      id: doc.data().id, // Assuming you have an 'id' field
-      description: doc.data().description, // Assuming you have a 'description' field
+      id: doc.data().id,
+      description: doc.data().description,
   }));
   return allergenList;
 }
@@ -120,6 +124,7 @@ export const uploadImage = async (imageUri: string): Promise<string> => {
   return downloadURL;
 };
 
+// Creates a new User and adds them to our Users table in the Database
 const createUser = async (email: string) => {
   const newUser = {
     Email: email.toLowerCase(),
