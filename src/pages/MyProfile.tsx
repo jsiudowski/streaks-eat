@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonListHeader, IonItem, IonInput, IonLabel, IonGrid, IonCol, IonRow, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonToast } from '@ionic/react';
 import { getAuth } from 'firebase/auth';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { getUserDataByEmail, getAllergens, updateUserProfile } from '../firebaseConfig'; // Adjust the import path as necessary
 import './MyProfile.css';
 
@@ -21,14 +21,8 @@ interface Allergen {
   description: string;
 }
 
-// Define a type for the location state
-interface LocationState {
-  refresh?: boolean; // Indicate if we should refresh the events
-}
-
 // Displays current logged in user's name, year, email, and allergens. Can be updated on this page too.
 const MyProfile: React.FC = () => {
-  const location = useLocation<LocationState>();
   const history = useHistory();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [activeAllergies, setActiveAllergies] = useState<number[]>([]);
@@ -41,57 +35,27 @@ const MyProfile: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>('');
 
   useEffect(() => {
-    // Fetching User and Allergen Data
     const fetchData = async () => {
       const auth = getAuth();
       const user = auth.currentUser;
-
+  
       if (user) {
         const userData = await getUserDataByEmail(user.email!);
-        console.log("User data fetched:", userData);
         if (userData) {
           setUserData(userData);
           setActiveAllergies(userData.Allergens || []);
           setName(userData.Name);
           setYear(userData.Year);
         }
-
+  
         const descriptions = await getAllergens();
         setAllergenDescriptions(descriptions);
       }
     };
-
+  
     fetchData();
-  }, []);
-
-  // useEffect to check for location state and fetch events if refresh is required
-  useEffect(() => {
-    if (location.state?.refresh) {
-        // Fetching User and Allergen Data
-    const fetchData = async () => {
-      const auth = getAuth();
-      const user = auth.currentUser;
-
-      if (user) {
-        const userData = await getUserDataByEmail(user.email!);
-        console.log("User data fetched:", userData);
-        if (userData) {
-          setUserData(userData);
-          setActiveAllergies(userData.Allergens || []);
-          setName(userData.Name);
-          setYear(userData.Year);
-        }
-
-        const descriptions = await getAllergens();
-        setAllergenDescriptions(descriptions);
-      }
-    };
-
-    fetchData();
-        history.replace({ ...location, state: {} }); // Clear the refresh state to prevent repeated fetching
-    }
-}, [location.state?.refresh]); // Only run if refresh changes
-
+  }, []); // Run only once when the component mounts
+  
   // Toggles allergy inputs on and off
   const toggleAllergy = (allergyId: number) => {
     setActiveAllergies((prev) => {
@@ -132,7 +96,9 @@ const MyProfile: React.FC = () => {
   const handleSignOut = async () => {
     const auth = getAuth();
     await auth.signOut();
-    history.push('/pages/Login', { refresh: true }); // Redirect to login page after signing out
+    setToastMessage("Sign Out successful!");
+    setToastVisible(true);
+    history.replace('/pages/Login');
   };
 
   return (
