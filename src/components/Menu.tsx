@@ -69,7 +69,7 @@ const Menu: React.FC = () => {
     <IonMenu contentId="main" type="overlay">
       <IonContent>
           <IonListHeader>Streaks Eat - Welcome!</IonListHeader>
-          <img src={StreaksEatLogo} alt="App Logo" style={{ width: '40%', height: 'auto%', verticalAlign: 'end'}} />
+          <img src={StreaksEatLogo} alt="App Logo" style={{ width: '40%', height: 'auto', verticalAlign: 'end'}} />
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
