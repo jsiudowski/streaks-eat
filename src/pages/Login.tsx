@@ -49,6 +49,8 @@ const Login: React.FC = () => {
         console.log(`${res ? 'Login Success' : 'Login Failed'}`)
         setBusy(false)
         if(res) {
+            setUsername('');
+            setPassword('');
           showAlert('Login successful.');
           history.push('/pages/EventList');
         }
