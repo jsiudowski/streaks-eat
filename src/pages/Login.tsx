@@ -1,10 +1,10 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonLoading, IonPage, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonLoading, IonPage, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
 import { eye, eyeOff } from 'ionicons/icons';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import { loginUser } from '../firebaseConfig';
-import './Login.css'
+import './Login.css';
 
 const Login: React.FC = () => {
     const [busy, setBusy] = useState<boolean>(false);
@@ -92,6 +92,7 @@ const Login: React.FC = () => {
             <IonLoading message="Please wait..." duration={0} isOpen={busy} />
             <IonContent className="ion-padding">
                 <IonInput
+                    type={'text'} /*type is specified so keyboard will pop up? */
                     placeholder="Username?"
                     value={username}
                     onIonChange={(e: any) => setUsername(e.target.value)}
