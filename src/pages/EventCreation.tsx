@@ -1,6 +1,6 @@
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Import Camera 
 import { defineCustomElements } from '@ionic/pwa-elements/loader'; // Custom camera elements
-import { IonButton, useIonToast, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, useIonToast, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar, IonFooter } from '@ionic/react';
 import { addSharp, arrowBack, camera, close } from 'ionicons/icons';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -339,24 +339,25 @@ const EventCreation: React.FC = () => {
             </IonCol>
           ))}
         </IonRow>
-
-        <IonFab slot="fixed" horizontal="start" vertical="bottom">
-          <IonButton size="default" className="createEventButton" onClick={backToEventList}>
-            <span className="icon-circle">
-              <IonIcon icon={arrowBack} />
-            </span>
-            Back
-          </IonButton>
-        </IonFab>
-
-        <IonFab slot="fixed" horizontal="end" vertical="bottom">
-          <IonButton size="default" className="createEventButton" onClick={addEventCard}>
-            <span className="icon-circle">
-              <IonIcon icon={addSharp} />
-            </span>
-            Create Event
-          </IonButton>
-        </IonFab>
+  {/* Footer with "Back" and "Create Event" Buttons */}
+  <IonFooter>
+        <IonToolbar>
+          <IonRow>
+            <IonCol>
+              <IonButton expand="block" color="light" onClick={backToEventList}>
+                <IonIcon slot="start" icon={arrowBack} />
+                Back
+              </IonButton>
+            </IonCol>
+            <IonCol>
+              <IonButton expand="block" color="primary" onClick={addEventCard}>
+                <IonIcon slot="start" icon={addSharp} />
+                Create Event
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        </IonToolbar>
+      </IonFooter>
       </IonContent>
     </IonPage>
   );
