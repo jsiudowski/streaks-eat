@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonListHeader, IonItem, IonInput, IonLabel, IonGrid, IonCol, IonRow, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonToast } from '@ionic/react';
 import { getAuth } from 'firebase/auth';
+import { useHistory } from 'react-router-dom';
 import { getUserDataByEmail, getAllergens, updateUserProfile } from '../firebaseConfig'; // Adjust the import path as necessary
 import './MyProfile.css';
 
@@ -22,6 +23,7 @@ interface Allergen {
 
 // Displays current logged in user's name, year, email, and allergens. Can be updated on this page too.
 const MyProfile: React.FC = () => {
+  const history = useHistory();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [activeAllergies, setActiveAllergies] = useState<number[]>([]);
   const [allergenDescriptions, setAllergenDescriptions] = useState<Allergen[]>([]);
@@ -33,30 +35,28 @@ const MyProfile: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>('');
 
   useEffect(() => {
-    //Fetching User and Allergen Data
     const fetchData = async () => {
       const auth = getAuth();
       const user = auth.currentUser;
-
+  
       if (user) {
         const userData = await getUserDataByEmail(user.email!);
-        console.log("User data fetched:", userData);
         if (userData) {
           setUserData(userData);
           setActiveAllergies(userData.Allergens || []);
           setName(userData.Name);
           setYear(userData.Year);
         }
-
+  
         const descriptions = await getAllergens();
         setAllergenDescriptions(descriptions);
       }
     };
-
+  
     fetchData();
-  }, []);
-
-  //Toggles allergy inputs on and off
+  }, []); // Run only once when the component mounts
+  
+  // Toggles allergy inputs on and off
   const toggleAllergy = (allergyId: number) => {
     setActiveAllergies((prev) => {
       if (prev.includes(allergyId)) {
@@ -90,6 +90,15 @@ const MyProfile: React.FC = () => {
   // Handles Cancel
   const handleCancel = () => {
     setShowConfirmation(false);
+  };
+
+  // Handle Sign Out
+  const handleSignOut = async () => {
+    const auth = getAuth();
+    await auth.signOut();
+    setToastMessage("Sign Out successful!");
+    setToastVisible(true);
+    history.replace('/pages/Login');
   };
 
   return (
@@ -149,18 +158,18 @@ const MyProfile: React.FC = () => {
         </IonListHeader>
 
         <IonGrid>
-        <IonRow className="ion-justify-content-center">
-          {allergenDescriptions.map((allergen) => (
-              <IonCol key={allergen.id} size="5">
-                <IonButton
-                  expand="full"
-                  color={activeAllergies.includes(allergen.id) ? "secondary" : "light"}
-                  onClick={() => toggleAllergy(allergen.id)}
-                >
-                  {allergen.description}
-                </IonButton>
-              </IonCol>
-          ))}
+          <IonRow className="ion-justify-content-center">
+            {allergenDescriptions.map((allergen) => (
+                <IonCol key={allergen.id} size="5">
+                  <IonButton
+                    expand="full"
+                    color={activeAllergies.includes(allergen.id) ? "secondary" : "light"}
+                    onClick={() => toggleAllergy(allergen.id)}
+                  >
+                    {allergen.description}
+                  </IonButton>
+                </IonCol>
+            ))}
           </IonRow>
           <IonCol size="5">
             <IonRow className="ion-justify-content-center" onClick={handleUpdateProfile}>
@@ -191,6 +200,14 @@ const MyProfile: React.FC = () => {
             </IonCard>
           </div>
         )}
+
+        {/* Sign Out Button */}
+        <IonRow className="ion-justify-content-center">
+          <IonButton onClick={handleSignOut} color="danger">
+            Sign Out
+          </IonButton>
+        </IonRow>
+
       </IonContent>
     </IonPage>
   );
