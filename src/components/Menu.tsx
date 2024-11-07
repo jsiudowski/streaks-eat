@@ -3,15 +3,15 @@ import {
   IonIcon,
   IonItem,
   IonLabel,
-  IonList,
   IonListHeader,
   IonMenu,
-  IonMenuToggle,
-  IonNote,
+  IonMenuToggle
 } from '@ionic/react';
 
+import { alertCircleOutline, calendarOutline, mapOutline, personOutline } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
-import { alertCircleOutline, archiveOutline, archiveSharp, bookmarkOutline, calendarOutline, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, mapOutline, navigate, paperPlaneOutline, paperPlaneSharp, personOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import JCULogo from '../pages/Photos/JCULogo.png';
+import StreaksEatLogo from '../pages/Photos/StreaksEatLogo.png';
 import './Menu.css';
 
 // Structure for the side bar navigations
@@ -68,9 +68,8 @@ const Menu: React.FC = () => {
   return (
     <IonMenu contentId="main" type="overlay">
       <IonContent>
-        <IonList id="inbox-list">
-          <IonListHeader>Streaks Eat</IonListHeader>
-          <IonNote>Welcome!</IonNote>
+          <IonListHeader>Streaks Eat - Welcome!</IonListHeader>
+          <img src={StreaksEatLogo} alt="App Logo" style={{ width: '40%', height: '24%', verticalAlign: 'bottom'}} />
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
@@ -80,11 +79,26 @@ const Menu: React.FC = () => {
                 </IonItem>
               </IonMenuToggle>
             );
+            
           })}
-        </IonList>
-      </IonContent>
-    </IonMenu>
-  );
-};
+
+              {
+              <img 
+                src={JCULogo} 
+                alt="App Logo" 
+                style={{ 
+                  width: '50%', 
+                  height: 'auto', 
+                  position: 'absolute', 
+                  bottom: '10px', 
+                  left: '10px' 
+                }} 
+                    />
+              }
+              </IonContent>
+            </IonMenu>
+          );
+          };
 
 export default Menu;
+

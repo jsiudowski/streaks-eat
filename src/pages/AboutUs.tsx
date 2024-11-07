@@ -1,7 +1,8 @@
+import { IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonProgressBar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
 import { useParams } from 'react-router';
-import './AboutUs.css'
+import StreaksEatLogo from '../pages/Photos/StreaksEatLogo.png';
+import './AboutUs.css';
 
 // Sets up the About Us page which describes the Developers who created this app
 const AboutUs: React.FC = () => {
@@ -45,8 +46,11 @@ const AboutUs: React.FC = () => {
               Gavin Weiser: Is a senior Computer Science Major with a Minor in Data Science. He has experience in software development as an intern for the Imaging Informatics Department at the Cleveland Clinic. During this internship, He worked on updating a pre-existing framework used by the Imaging Department, to a more modern look. He interned in this position for 5 months in the spring of 2024 and is currently set to intern again in spring 2025.
             </IonCardContent>
           </IonCard>
+          <div></div>
+          <img src={StreaksEatLogo} alt="App Logo" style={{ width: '50%', height: '40%', alignItems: 'middle'}} />
         </IonContent>
       </IonPage>
+      
     );
 };
 
