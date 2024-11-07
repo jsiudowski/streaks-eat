@@ -282,19 +282,21 @@ const EventCreation: React.FC = () => {
           </IonListHeader>
           <IonRow class="ion-justify-content-center">
             <IonCol size="10">
+              <IonItem>
               <IonInput 
                   label="Food Item (REQUIRED)" labelPlacement="floating"
                   placeholder="List all items at your event:"
                   value={foodItems}
                   onIonInput={e => setFoodItems((e.target as unknown as HTMLInputElement).value)}
                 />
+                </IonItem>
               </IonCol>
             </IonRow>
         </IonGrid>
 
         {/* Provide picture for food */}
         <IonListHeader>
-            <IonLabel className="center"><h2>Insert Photo of Food:</h2></IonLabel>
+            <IonLabel className="center"><h1>Insert Photo of Food:</h1></IonLabel>
         </IonListHeader>
         <IonContent className="custom-content">
             {image ? (
@@ -319,11 +321,6 @@ const EventCreation: React.FC = () => {
         <IonListHeader>
           <IonLabel className="center">
             <h1>Allergies Checklist:</h1>
-          </IonLabel>
-        </IonListHeader>
-        <IonListHeader>
-          <IonLabel className="center">
-            <p>Required: If None Apply, Please Choose Other:</p>
           </IonLabel>
         </IonListHeader>
         <IonRow className="ion-justify-content-center">

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import { loginUser } from '../firebaseConfig';
+import './Login.css'
 
 const Login: React.FC = () => {
     const [busy, setBusy] = useState<boolean>(false);
@@ -107,19 +108,16 @@ const Login: React.FC = () => {
                     <IonIcon icon={showPassword ? eyeOff : eye} />
                 </IonButton>
 
-                <p>
-                    New here? Create an account! <Link to="/pages/Register">Register</Link>
-                </p>
+              <p className="register-text">New here? Create an account! <Link to="/pages/Register">Register</Link></p>
 
-                <IonCard>
-                    <IonCardHeader>
-                        <IonCardTitle>Login Requirements:</IonCardTitle>
-                        <IonCardSubtitle>Here are some requirements for logging in:</IonCardSubtitle>
-                    </IonCardHeader>
-                    <IonCardContent>Do not include '@jcu.edu' in username.</IonCardContent>
-                </IonCard>
-            </IonContent>
-        </IonPage>
+              <IonCard>
+                  <IonCardHeader>
+                      <IonCardTitle>Login Requirements:</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>Do not include '@jcu.edu' in username.</IonCardContent>
+              </IonCard>
+          </IonContent>
+      </IonPage>
     );
 };
 export default Login;

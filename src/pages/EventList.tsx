@@ -4,8 +4,8 @@ import { addSharp, warningOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { getAllergens, getEvents, getUserDataByEmail } from '../firebaseConfig'; // Adjust the import path as needed
-import "./EventList.css";
 import { getAuth } from 'firebase/auth';
+import "./EventList.css";
 
 // Define a type for the event
 interface Event {
@@ -257,7 +257,7 @@ const EventList: React.FC = () => {
                     </IonToolbar>
                 </IonHeader>
                 <IonContent>
-                <p>No events currently. Considering having an Administrator add an event!</p>
+                <p className="no-event-text">No events currently. Considering having an Administrator add an event!</p>
                 </IonContent>
 
                 {/* Event Creation button   (Displays only if Warning Card is not shown and the user IsAdmin is true) */}

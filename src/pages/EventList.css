@@ -62,3 +62,9 @@
     align-items: center; /* Center items vertically */
     font-weight: bold; /* Optional: make text bold */
 }
+
+.no-event-text {    /* Text regarding if there are no active events */
+     padding: 2%;
+     text-align: center;
+     font-size: larger;
+}

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonListHeader, IonItem, IonInput, IonLabel, IonGrid, IonCol, IonRow, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonToast } from '@ionic/react';
-import { getAuth } from 'firebase/auth';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonListHeader, IonItem, IonInput, IonLabel, IonGrid, IonCol, IonRow, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonToast, IonCardSubtitle } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { getUserDataByEmail, getAllergens, updateUserProfile } from '../firebaseConfig'; // Adjust the import path as necessary
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import './MyProfile.css';
 
 // Structure for our UserData to be loaded and saved
@@ -33,13 +33,15 @@ const MyProfile: React.FC = () => {
   const [year, setYear] = useState<string>('');
   const [toastVisible, setToastVisible] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
+  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const auth = getAuth();
-      const user = auth.currentUser;
-  
+    const auth = getAuth();
+
+    // Listen to changes in authentication state
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        setUserLoggedIn(true);
         const userData = await getUserDataByEmail(user.email!);
         if (userData) {
           setUserData(userData);
@@ -50,13 +52,16 @@ const MyProfile: React.FC = () => {
   
         const descriptions = await getAllergens();
         setAllergenDescriptions(descriptions);
+      } else {
+        setUserLoggedIn(false);
       }
-    };
-  
-    fetchData();
-  }, []); // Run only once when the component mounts
-  
-  // Toggles allergy inputs on and off
+    });
+
+    // Cleanup the subscription when the component unmounts
+    return () => unsubscribe();
+  }, []);
+
+  //Toggles allergy inputs on and off
   const toggleAllergy = (allergyId: number) => {
     setActiveAllergies((prev) => {
       if (prev.includes(allergyId)) {
@@ -105,112 +110,135 @@ const MyProfile: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton />
-          </IonButtons>
+          <IonMenuButton slot="start" />
           <IonTitle>My Profile</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent>
-        <IonToast
-          isOpen={toastVisible}
-          onDidDismiss={() => setToastVisible(false)}
-          message={toastMessage}
-          duration={2000} // Duration in milliseconds
-        />
+        <IonToast isOpen={toastVisible} message={toastMessage} duration={2000} onDidDismiss={() => setToastVisible(false)} />
+
         <IonListHeader>
           <IonLabel className="center"><h1>My Profile</h1></IonLabel>
         </IonListHeader>
-        
-        <IonGrid>
-          <IonRow className="ion-justify-content-center">
-            <IonCol size="9">
-              <IonItem>
-                <IonInput 
-                  label="Name:"
-                  placeholder="Enter your name"
-                  value={name}
-                  onIonChange={e => setName(e.detail.value!)} ></IonInput>
-              </IonItem>
-            </IonCol>
-            <IonCol size="5">
-              <IonItem>
-                <IonInput 
-                  label="Year:"
-                  placeholder="Enter Year"
-                  value={year}
-                  onIonChange={e => setYear(e.detail.value!)} ></IonInput>
-              </IonItem>
-            </IonCol>
-          </IonRow>
-          <IonRow className="ion-justify-content-center">
-            <IonCol size="10">
-              <IonItem>
-                <IonInput label="Email:" type="email" placeholder="email@domain.com" value={userData?.Email} readonly ></IonInput>
-              </IonItem>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
 
-        <IonListHeader>
-          <IonLabel className="center"><h1>My Allergies:</h1></IonLabel>
-        </IonListHeader>
-
-        <IonGrid>
-          <IonRow className="ion-justify-content-center">
-            {allergenDescriptions.map((allergen) => (
-                <IonCol key={allergen.id} size="5">
-                  <IonButton
-                    expand="full"
-                    color={activeAllergies.includes(allergen.id) ? "secondary" : "light"}
-                    onClick={() => toggleAllergy(allergen.id)}
-                  >
-                    {allergen.description}
-                  </IonButton>
+        {/* Conditional Rendering for Logged In State */}
+        {userLoggedIn ? (
+          <>
+            {/* Display Profile Information when Logged In */}
+            <IonGrid>
+              <IonRow className="ion-justify-content-center">
+                <IonCol size="9">
+                  <IonItem>
+                    <IonInput 
+                      label="Name:"
+                      placeholder="Enter your name"
+                      value={name}
+                      onIonChange={e => setName(e.detail.value!)} ></IonInput>
+                  </IonItem>
                 </IonCol>
-            ))}
-          </IonRow>
-          <IonCol size="5">
-            <IonRow className="ion-justify-content-center" onClick={handleUpdateProfile}>
-              <IonButton>
-                Update Profile
+                <IonCol size="5">
+                  <IonItem>
+                    <IonInput 
+                      label="Year:"
+                      placeholder="Enter Year"
+                      value={year}
+                      onIonChange={e => setYear(e.detail.value!)} ></IonInput>
+                  </IonItem>
+                </IonCol>
+              </IonRow>
+              <IonRow className="ion-justify-content-center">
+                <IonCol size="10">
+                  <IonItem>
+                    <IonInput label="Email:" type="email" placeholder="email@domain.com" value={userData?.Email} readonly ></IonInput>
+                  </IonItem>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+
+            <IonListHeader>
+              <IonLabel className="center"><h1>My Allergies:</h1></IonLabel>
+            </IonListHeader>
+
+            <IonGrid>
+            <IonRow className="ion-justify-content-center">
+              {allergenDescriptions.map((allergen) => (
+                  <IonCol key={allergen.id} size="5">
+                    <IonButton
+                      expand="full"
+                      color={activeAllergies.includes(allergen.id) ? "secondary" : "light"}
+                      onClick={() => toggleAllergy(allergen.id)}
+                    >
+                      {allergen.description}
+                    </IonButton>
+                  </IonCol>
+              ))}
+              </IonRow>
+              <IonCol size="5">
+                <IonRow className="ion-justify-content-center" onClick={handleUpdateProfile}>
+                  <IonButton>
+                    Update Profile
+                  </IonButton>
+                </IonRow>
+              </IonCol>
+            </IonGrid>
+
+            {showConfirmation && (
+              <div className="overlay">
+                <IonCard className="confirmation-card">
+                  <IonCardHeader>
+                    <IonCardTitle>Caution!</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <p>Are you sure you want to save changes?</p>
+                    <IonRow className="ion-justify-content-center">
+                      <IonCol size="5">
+                        <IonButton expand="full" onClick={handleConfirm} color="primary">Proceed</IonButton>
+                      </IonCol>
+                      <IonCol size="5">
+                        <IonButton expand="full" onClick={handleCancel} color="light">Exit</IonButton>
+                      </IonCol>
+                    </IonRow>
+                  </IonCardContent>
+                </IonCard>
+              </div>
+            )}
+            {/* Sign Out Button */}
+            <IonRow className="ion-justify-content-center">
+              <IonButton onClick={handleSignOut} color="danger">
+                Sign Out
               </IonButton>
             </IonRow>
-          </IonCol>
-        </IonGrid>
-
-        {showConfirmation && (
-          <div className="overlay">
-            <IonCard className="confirmation-card">
+          </>
+        ) : (
+          // Display Login and Registration buttons if not logged in
+          <IonGrid className="centered-text">
+            <IonCard>
               <IonCardHeader>
-                <IonCardTitle>Caution!</IonCardTitle>
+                <h1>Hello!!</h1>
+                <h3>Welcome to Streaks Eat!!</h3>
               </IonCardHeader>
               <IonCardContent>
-                <p>Are you sure you want to save changes?</p>
-                <IonRow className="ion-justify-content-center">
-                  <IonCol size="5">
-                    <IonButton expand="full" onClick={handleConfirm} color="primary">Proceed</IonButton>
-                  </IonCol>
-                  <IonCol size="5">
-                    <IonButton expand="full" onClick={handleCancel} color="light">Exit</IonButton>
-                  </IonCol>
-                </IonRow>
+                <p>It appears that you are not logged in, or have a registered account.</p>
+                <p>Would you like to log in or register?</p>
               </IonCardContent>
+              <IonRow className="centered-row">
+                <IonCol size="5">
+                  <IonButton expand="full" routerLink="/pages/Login" color="primary">
+                    Login
+                  </IonButton>
+                </IonCol>
+                <IonCol size="5">
+                  <IonButton expand="full" routerLink="/pages/Register" color="primary">
+                    Register
+                  </IonButton>
+                </IonCol>
+              </IonRow>
             </IonCard>
-          </div>
+          </IonGrid>
         )}
-
-        {/* Sign Out Button */}
-        <IonRow className="ion-justify-content-center">
-          <IonButton onClick={handleSignOut} color="danger">
-            Sign Out
-          </IonButton>
-        </IonRow>
-
       </IonContent>
     </IonPage>
   );
 };
-
 export default MyProfile;
