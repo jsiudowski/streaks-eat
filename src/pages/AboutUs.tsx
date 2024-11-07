@@ -47,11 +47,12 @@ const AboutUs: React.FC = () => {
             </IonCardContent>
           </IonCard>
           <div></div>
-          <img src={StreaksEatLogo} alt="App Logo" style={{ width: '50%', height: '40%', alignItems: 'middle'}} />
+          <img src={StreaksEatLogo} alt="App Logo" style={{ width: '50%', height: 'auto', alignItems: 'middle'}} />
         </IonContent>
       </IonPage>
       
     );
 };
+
 
 export default AboutUs;
