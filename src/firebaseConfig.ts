@@ -127,8 +127,10 @@ export const uploadImage = async (imageUri: string): Promise<string> => {
 // Creates a new User and adds them to our Users table in the Database
 const createUser = async (email: string) => {
   const newUser = {
+    Name: '',
     Email: email.toLowerCase(),
-    IsAdmin: false
+    IsAdmin: false,
+    Allergens: []
   }
   try {
     const userRef = doc(collection(db, 'users'));

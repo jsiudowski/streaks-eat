@@ -23,7 +23,6 @@ interface Event {
 interface UserData {
     id: string;
     Email: string;
-    Year: string; 
     Name: string;
     Allergens: number[];
   }
@@ -37,7 +36,6 @@ interface LocationState {
 interface UserData {
     id: string;
     Email: string;
-    Year: string; 
     Name: string;
     Allergens: number[];
     IsAdmin: boolean;
@@ -297,7 +295,7 @@ const EventList: React.FC = () => {
                             <div className="building-name">{building}</div>
                             <IonList>
                                 {groupedEvents[building].map((event: Event, idx: number) => {
-                                    const hasMatchingAllergen = event.Allergens.some(allergen => userAllergens.includes(allergen));
+                                    const hasMatchingAllergen = event.Allergens.some(allergen => userAllergens?.includes(allergen));
                                     
                                     return (
                                         <IonItem key={event.id || idx} button onClick={() => handleCardClick(event)}>
