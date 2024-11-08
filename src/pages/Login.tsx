@@ -82,6 +82,11 @@ const Login: React.FC = () => {
         }
     }, [isLoggedIn, history]);
 
+    const handleLoginClick = (e: React.FormEvent) => {
+        e.preventDefault();  // Prevent form submission (if used inside a form)
+        LoginUser();
+    };
+
     return (
         <IonPage>
             <IonHeader>
@@ -91,23 +96,25 @@ const Login: React.FC = () => {
             </IonHeader>
             <IonLoading message="Please wait..." duration={0} isOpen={busy} />
             <IonContent className="ion-padding">
-                <IonInput
-                    type={'text'} /*type is specified so keyboard will pop up? */
-                    placeholder="Username?"
-                    value={username}
-                    onIonChange={(e: any) => setUsername(e.target.value)}
-                />
-                <IonInput
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Password?"
-                    value={password}
-                    onIonChange={(e: any) => setPassword(e.detail.value!)}
-                    style={{ flex: 1 }}
-                />
-                <IonButton onClick={LoginUser}>Login</IonButton>
-                <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}>
-                    <IonIcon icon={showPassword ? eyeOff : eye} />
-                </IonButton>
+                <form onSubmit={handleLoginClick}>
+                    <IonInput
+                        type={'text'} /*type is specified so keyboard will pop up? */
+                        placeholder="Username?"
+                        value={username}
+                        onIonChange={(e: any) => setUsername(e.target.value)}
+                    />
+                    <IonInput
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Password?"
+                        value={password}
+                        onIonChange={(e: any) => setPassword(e.detail.value!)}
+                        style={{ flex: 1 }}
+                    />
+                    <IonButton onClick={LoginUser}>Login</IonButton>
+                    <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}>
+                        <IonIcon icon={showPassword ? eyeOff : eye} />
+                    </IonButton>
+                </form>
 
                 <p className="register-text">New here? Create an account! <Link to="/pages/Register">Register</Link></p>
                 

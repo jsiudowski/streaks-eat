@@ -25,7 +25,8 @@ const Register: React.FC = () => {
   };
 
   // Attempts to Register a user from the page inputs. Reports back with success or failure
-  async function Register() {
+  async function Register(e: React.FormEvent) {
+      e.preventDefault(); // Prevent form submission (default behavior)
       setBusy(true);
       {/* Checks to see if there are user inputs in either field*/}
       if (username.trim() !== '' && password.trim() === '') {
@@ -72,10 +73,12 @@ const Register: React.FC = () => {
             </IonHeader>
             <IonLoading message="Please wait..." duration={0} isOpen={busy}/>
             <IonContent className="ion-padding">
+            <form onSubmit={Register}>
                 <IonInput placeholder="Username?" onIonChange={(e: any) => setUsername(e.target.value)}/>
                 <IonInput placeholder='Password?' type={showPassword ? 'text' : 'password'} onIonChange={(e: any) => setPassword(e.target.value)}/>
                 <IonInput placeholder='Confirm Password?' type={showPassword ? 'text' : 'password'} onIonChange={(e: any) => setCPassword(e.target.value)}/>
               <IonButton onClick={Register}>Register</IonButton>
+            </form>
               <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}>
                     <IonIcon icon={showPassword ? eyeOff : eye} />
               </IonButton>
