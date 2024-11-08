@@ -1,4 +1,4 @@
-import { IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonImg, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
 import { useParams } from 'react-router';
 import StreaksEatLogo from '../pages/Photos/StreaksEatLogo.png';
@@ -47,7 +47,7 @@ const AboutUs: React.FC = () => {
             </IonCardContent>
           </IonCard>
           <div></div>
-          <img src={StreaksEatLogo} alt="App Logo" style={{ width: '50%', height: 'auto', alignItems: 'middle'}} />
+          <IonImg src={StreaksEatLogo} alt="Streaks Eat Logo" ></IonImg>   
         </IonContent>
       </IonPage>
       
