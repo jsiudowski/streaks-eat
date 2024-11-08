@@ -157,19 +157,18 @@ export const getUserDataByEmail = async (email: string): Promise<UserData | null
 };
 
 // Function to update user profile
-export const updateUserProfile = async (id:string, email: string, year: string, name: string, allergens: number[]) => {
+export const updateUserProfile = async (id:string, email: string, name: string, allergens: number[]) => {
     try {
       // Find the user document by email
       const userRef = doc(collection(db, 'users'), id); 
 
       await setDoc(userRef, {
         Email: email,
-        Year: year,
         Name: name,
         Allergens: allergens,
       }, { merge: true }); // Merge to keep other fields intact
 
-      console.log('User profile updated successfully:', { email, year, name, allergens });
+      console.log('User profile updated successfully:', { email, name, allergens });
       return true;
     } catch (error) {
       console.error('Error updating user profile:', error);
