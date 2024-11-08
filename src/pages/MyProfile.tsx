@@ -30,7 +30,6 @@ const MyProfile: React.FC = () => {
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
   const [name, setName] = useState<string>('');
-  const [year, setYear] = useState<string>('');
   const [toastVisible, setToastVisible] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
@@ -47,7 +46,6 @@ const MyProfile: React.FC = () => {
           setUserData(userData);
           setActiveAllergies(userData.Allergens || []);
           setName(userData.Name);
-          setYear(userData.Year);
         }
   
         const descriptions = await getAllergens();
@@ -80,7 +78,7 @@ const MyProfile: React.FC = () => {
   // Updates the User Profile
   const handleConfirm = async () => {
     if (userData) {
-      const success = await updateUserProfile(userData.id, userData.Email, year, name, activeAllergies);
+      const success = await updateUserProfile(userData.id, userData.Email, name, activeAllergies);
       if (success) {
         setToastMessage("Profile updated successfully!");
         setToastVisible(true); // Show the toast
@@ -135,15 +133,6 @@ const MyProfile: React.FC = () => {
                       placeholder="Enter your name"
                       value={name}
                       onIonChange={e => setName(e.detail.value!)} ></IonInput>
-                  </IonItem>
-                </IonCol>
-                <IonCol size="5">
-                  <IonItem>
-                    <IonInput 
-                      label="Year:"
-                      placeholder="Enter Year"
-                      value={year}
-                      onIonChange={e => setYear(e.detail.value!)} ></IonInput>
                   </IonItem>
                 </IonCol>
               </IonRow>
