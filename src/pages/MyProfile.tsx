@@ -135,7 +135,6 @@ const MyProfile: React.FC = () => {
                       onIonChange={e => setName(e.detail.value!)} ></IonInput>
                   </IonItem>
                 </IonCol>
-
               </IonRow>
               <IonRow className="ion-justify-content-center">
                 <IonCol size="10">

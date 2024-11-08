@@ -55,7 +55,7 @@
 }
 
 .warning-box {
-    border: 2px solid yellow; /* Yellow outline */
+    border: 2px solid red; /* Yellow outline */
     padding: 8px; /* Padding inside the box */
     border-radius: 4px; /* Rounded corners */
     display: inline-flex; /* Align items in a row */

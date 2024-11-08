@@ -1,7 +1,8 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonHeader, IonIcon, IonLabel, IonModal, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
-import { useLocation } from 'react-router-dom';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonFooter, IonHeader, IonIcon, IonLabel, IonModal, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { useLocation, useHistory } from 'react-router-dom';
 import './EventDetails.css';
 import { useState, useEffect } from 'react';
+import { arrowBack } from 'ionicons/icons';
 
 // Structure for our event receieved from the previous location state
 interface LocationState {
@@ -39,6 +40,11 @@ const EventDetails: React.FC = () => {
             setIsLoading(false);
         }
     }, [event]);
+
+    const history = useHistory();
+    const backToEventList = () => {
+        history.push('/pages/EventList', { refresh: true });
+      }
 
     // If the page is still loading, display that to the user.
     if (isLoading) {
@@ -97,11 +103,18 @@ const EventDetails: React.FC = () => {
                     <img src={event.ImageURL} alt="Food" className="event-image" />
                 )}
             </IonContent>
-            <IonFab slot="fixed" horizontal="end" vertical="bottom">
-                <IonRouterLink routerLink="/pages/EventList">
-                    <IonButton color="danger" size="large">Go Back</IonButton>
-                </IonRouterLink>
-            </IonFab>
+            <IonFooter>
+              <IonToolbar>
+                <IonRow>
+                  <IonCol>
+                    <IonButton expand="block" color="light" onClick={backToEventList}>
+                      <IonIcon slot="start" icon={arrowBack} />
+                    Back
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+              </IonToolbar>
+            </IonFooter>
         </IonPage>
     );
 };

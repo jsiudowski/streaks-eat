@@ -109,8 +109,8 @@ const Login: React.FC = () => {
                     <IonIcon icon={showPassword ? eyeOff : eye} />
                 </IonButton>
 
-              <p className="register-text">New here? Create an account! <Link to="/pages/Register">Register</Link></p>
-
+                <p className="register-text">New here? Create an account! <Link to="/pages/Register">Register</Link></p>
+                
               <IonCard>
                   <IonCardHeader>
                       <IonCardTitle>Login Requirements:</IonCardTitle>

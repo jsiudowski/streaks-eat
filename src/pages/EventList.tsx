@@ -311,7 +311,7 @@ const EventList: React.FC = () => {
                                                     <span style={{ display: 'flex', alignItems: 'center' }}>
                                                         <IonIcon 
                                                             icon={warningOutline} 
-                                                            color="warning" 
+                                                            color="danger"
                                                             style={{ marginRight: '8px', fontSize: '36px' }} 
                                                         />
                                                         <div className="warning-box">

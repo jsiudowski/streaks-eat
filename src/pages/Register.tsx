@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonProgressBar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonButton, IonInput, IonLoading, IonList, IonItem, useIonToast } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonProgressBar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonButton, IonInput, IonLoading, IonList, IonItem, useIonToast, IonIcon } from '@ionic/react';
 import { useHistory, useParams } from 'react-router';
 import './Register.css'
 import { Link } from 'react-router-dom';
 import { registerUser } from '../firebaseConfig';
+import { eyeOff, eye } from 'ionicons/icons';
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [cpassword, setCPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false);
     const [busy, setBusy] = useState<boolean>(false)
     const history = useHistory();
     const [alertMessage] = useIonToast();
@@ -71,11 +73,15 @@ const Register: React.FC = () => {
             <IonLoading message="Please wait..." duration={0} isOpen={busy}/>
             <IonContent className="ion-padding">
                 <IonInput placeholder="Username?" onIonChange={(e: any) => setUsername(e.target.value)}/>
-                <IonInput placeholder='Password?' onIonChange={(e: any) => setPassword(e.target.value)}/>
-                <IonInput placeholder='Confirm Password?' onIonChange={(e: any) => setCPassword(e.target.value)}/>
+                <IonInput placeholder='Password?' type={showPassword ? 'text' : 'password'} onIonChange={(e: any) => setPassword(e.target.value)}/>
+                <IonInput placeholder='Confirm Password?' type={showPassword ? 'text' : 'password'} onIonChange={(e: any) => setCPassword(e.target.value)}/>
               <IonButton onClick={Register}>Register</IonButton>
+              <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}>
+                    <IonIcon icon={showPassword ? eyeOff : eye} />
+              </IonButton>
 
-              <p>Already have an account? <Link to="/pages/Login">Login</Link></p>
+              <p className="login-text">Already have an account? <Link to="/pages/Login">Login</Link></p>
+
               <IonCard>
               <IonCardHeader>
                 <IonCardTitle>Registration Requirements:</IonCardTitle>
