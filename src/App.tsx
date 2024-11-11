@@ -46,9 +46,33 @@ import EventList from './pages/EventList';
 import EventCreation from './pages/EventCreation';
 import EventDetails from './pages/EventDetails';
 import { UserProvider } from './UserContext';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebaseConfig';
 
 setupIonicReact();
 const App: React.FC = () => {
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // Check user auth state
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);  // User is logged in
+      } else {
+        setIsAuthenticated(false); // User is not logged in
+      }
+    });
+
+    // Cleanup listener on unmount
+    return () => unsubscribe();
+  }, []);
+
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>;
+  }
+  
   return (
     <IonApp>
       <UserProvider>
@@ -58,7 +82,7 @@ const App: React.FC = () => {
           <IonRouterOutlet id="main">
             <Switch>
             <Route path="/" exact={true}>
-              <Redirect to="/pages/Login" />
+              {isAuthenticated ? <Redirect to="/pages/EventList" /> : <Redirect to="/pages/Login" />}
             </Route>
             <Route path="/pages/Login" component={Login} exact ></Route>
             <Route path="/pages/Register" component={Register} exact></Route>

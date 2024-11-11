@@ -183,4 +183,4 @@ export const signOutUser = async () => {
   }
 }
 
-export default auth;
+export { auth };
