@@ -1,10 +1,10 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonLoading, IonMenuButton, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonLoading, IonMenuButton, IonPage, IonRouterLink, IonRow, IonTitle, IonToast, IonToolbar } from '@ionic/react';
+import { getAuth } from 'firebase/auth';
 import { DocumentData } from 'firebase/firestore'; // Import DocumentData from Firestore
 import { addSharp, warningOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { getAllergens, getEvents, getUserDataByEmail } from '../firebaseConfig'; // Adjust the import path as needed
-import { getAuth } from 'firebase/auth';
 import "./EventList.css";
 
 // Define a type for the event
@@ -36,6 +36,7 @@ interface LocationState {
 interface UserData {
     id: string;
     Email: string;
+    Year: string; 
     Name: string;
     Allergens: number[];
     IsAdmin: boolean;
@@ -58,6 +59,8 @@ const EventList: React.FC = () => {
     const [showWarning, setShowWarning] = useState(false);
     const [userAllergens, setUserAllergens] = useState<number[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [showToast, setShowToast] = useState(false);
+    const [newEventBuilding, setNewEventBuilding] = useState<string | null>(null);
     const [showAllergenMatchWarning, setShowAllergenMatchWarning] = useState(false);
     const [userData, setUserData] = useState<UserData | null>(null);
     const auth = getAuth();
@@ -116,17 +119,25 @@ const EventList: React.FC = () => {
                     const eventTime = event.TimeCreated.seconds * 1000; // Convert to milliseconds
                     return eventTime >= twoHoursAgo;
                 });
-    
-            formattedEvents.sort((a, b) => {
-                return b.TimeCreated.seconds - a.TimeCreated.seconds; // Sort in descending order
-            });
-            setEvents(formattedEvents);
-        } catch (err) {
-            setError('Failed to load events');
-        } finally {
-            setLoading(false);
-        }
-    };
+
+                if (formattedEvents.length > events.length) {
+                    // New event detected triggers toast
+                    const latestEvent = formattedEvents[0];
+                    setNewEventBuilding(latestEvent.Building);
+                    setShowToast(true);
+                }
+
+                formattedEvents.sort((a, b) => {
+                    return b.TimeCreated.seconds - a.TimeCreated.seconds; // Sort in descending order
+                });
+
+                setEvents(formattedEvents);
+            } catch (err) {
+                    console.error("Failed to load events:");
+            } finally {
+                    setLoading(false);
+            }
+        };
 
     // Grabs a user from the current login and maps it to our structure
     const fetchUser = async () => {
@@ -290,6 +301,13 @@ const EventList: React.FC = () => {
     
                 {/* List of all events available */}
                 <IonContent>
+                    {/* Toast notification for new events */}
+                    <IonToast
+                        isOpen={showToast}
+                        onDidDismiss={() => setShowToast(false)}
+                        message={`New event in ${newEventBuilding}`}
+                        duration={3000}
+                    />
                     {Object.keys(groupedEvents).map((building, index) => (
                         <div key={index}>
                             <div className="building-name">{building}</div>
