@@ -8,6 +8,11 @@ const config: CapacitorConfig = {
     PushNotifications: {
       presentationOptions: ["badge", "sound", "alert"],
     },
+    Keyboard: {
+      resize: 'none', // or 'ionic', depending on your preference
+      style: 'dark',   // change keyboard style if necessary
+      inputStyle: 'default', // or 'none'
+    },
   },
 };
 

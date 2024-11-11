@@ -7,30 +7,6 @@
     font-weight: 500
   }
 
-.createEventButton {
-  --background: #0A4068 !important;
-    --color: #ffffff !important; /* Ensure text color remains black */
-    --border: 2px solid #ffffff !important; /* Maintain black border */
-    --border-radius: 50px !important; /* More rounded corners */
-    --padding: 10px 20px; /* Add some padding */
-    --display: flex; /* Use flexbox for alignment */
-    --align-items: center; /* Center items vertically */
-
-}
-
-.icon-circle {
-  background-color: #ffffff; /* Background for the icon circle */
-  border: 4px solid #0A4068; /* Black border for the circle */
-  border-radius: 100% !important; /* Make it a circle */
-  color: #0A4068;  /*plus sign color */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 36px;
-  height: 36px;
-  margin-right: 8px;
-}
-
 /* image css */
 .custom-content {
     padding: 50px; /* Adjust padding */

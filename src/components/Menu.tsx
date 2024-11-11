@@ -1,20 +1,20 @@
-
 import {
   IonContent,
   IonIcon,
   IonItem,
   IonLabel,
-  IonList,
   IonListHeader,
   IonMenu,
-  IonMenuToggle,
-  IonNote,
+  IonMenuToggle
 } from '@ionic/react';
 
+import { alertCircleOutline, calendarOutline, mapOutline, personOutline } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
-import { alertCircleOutline, archiveOutline, archiveSharp, bookmarkOutline, calendarOutline, heartOutline, heartSharp, homeOutline, mailOutline, mailSharp, mapOutline, navigate, paperPlaneOutline, paperPlaneSharp, personOutline, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import JCULogo from '../pages/Photos/JCULogo.png';
+import StreaksEatLogo from '../pages/Photos/StreaksEatLogo.png';
 import './Menu.css';
 
+// Structure for the side bar navigations
 interface AppPage {
   url: string;
   iosIcon: string;
@@ -61,10 +61,6 @@ const appPages: AppPage[] = [
   }
 ];
 
-
-//const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-
-
 // This is the rendering of the side menu with all of the tabs. 
 const Menu: React.FC = () => {
   const location = useLocation();
@@ -72,33 +68,43 @@ const Menu: React.FC = () => {
   return (
     <IonMenu contentId="main" type="overlay">
       <IonContent>
-        <IonList id="inbox-list">
-          <IonListHeader>Streaks Eat</IonListHeader>
-          <IonNote>Welcome!</IonNote>
+          <IonListHeader>Streaks Eat - Welcome!</IonListHeader>
+          <img src={StreaksEatLogo} alt="App Logo" style={{ width: '40%', height: 'auto', verticalAlign: 'end'}} />
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
+                <IonItem
+                className={location.pathname === appPage.url ? 'selected' : ''}
+                routerLink={appPage.url}
+                routerDirection="none"
+                lines="none"
+                detail={false}
+              >
                   <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
                   <IonLabel>{appPage.title}</IonLabel>
                 </IonItem>
               </IonMenuToggle>
             );
+            
           })}
-        </IonList>
 
-        {/* <IonList id="labels-list">
-          <IonListHeader>Labels</IonListHeader>
-          {labels.map((label, index) => (
-            <IonItem lines="none" key={index}>
-              <IonIcon aria-hidden="true" slot="start" icon={bookmarkOutline} />
-              <IonLabel>{label}</IonLabel>
-            </IonItem>
-          ))}
-        </IonList> */}
-      </IonContent>
-    </IonMenu>
-  );
-};
+              {
+              <img 
+                src={JCULogo} 
+                alt="App Logo" 
+                style={{ 
+                  width: '50%', 
+                  height: 'auto', 
+                  position: 'absolute', 
+                  bottom: '10px', 
+                  left: '10px' 
+                }} 
+                    />
+              }
+              </IonContent>
+            </IonMenu>
+          );
+          };
 
 export default Menu;
+

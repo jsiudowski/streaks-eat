@@ -1,8 +1,10 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonHeader, IonIcon, IonLabel, IonModal, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
-import { useLocation } from 'react-router-dom';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonFooter, IonHeader, IonIcon, IonLabel, IonModal, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { useLocation, useHistory } from 'react-router-dom';
 import './EventDetails.css';
 import { useState, useEffect } from 'react';
+import { arrowBack } from 'ionicons/icons';
 
+// Structure for our event receieved from the previous location state
 interface LocationState {
     event: {
         id: string;
@@ -17,6 +19,7 @@ interface LocationState {
     };
 }
 
+// Format Date Helper Method
 const formatDate = (timestamp: { seconds?: number; nanoseconds?: number } | undefined) => {
     if (!timestamp || typeof timestamp.seconds !== 'number') {
         return 'Unknown Date';
@@ -25,17 +28,25 @@ const formatDate = (timestamp: { seconds?: number; nanoseconds?: number } | unde
     return date.toLocaleString();
 };
 
+//Sets up the Event Details page with the correctly sent Event object
 const EventDetails: React.FC = () => {
     const location = useLocation<LocationState>();
     const { event } = location.state || {};
     const [isLoading, setIsLoading] = useState(true);
 
+    // If the event is there, turn off the loading
     useEffect(() => {
         if (event) {
             setIsLoading(false);
         }
     }, [event]);
 
+    const history = useHistory();
+    const backToEventList = () => {
+        history.push('/pages/EventList', { refresh: true });
+      }
+
+    // If the page is still loading, display that to the user.
     if (isLoading) {
         return (
             <IonPage>
@@ -51,6 +62,7 @@ const EventDetails: React.FC = () => {
         );
     }
 
+    // If there is no event currently provided, display that to the user.
     if (!event) {
         return (
             <IonPage>
@@ -66,6 +78,7 @@ const EventDetails: React.FC = () => {
         );
     }
 
+    // If there is an event provided, display the correct information to the user.
     return (
         <IonPage>
             <IonHeader>
@@ -77,6 +90,8 @@ const EventDetails: React.FC = () => {
                 <div className="grid-container">
                     <div className="grid-item"><strong>Food Items:</strong></div>
                     <div className="grid-item">{event.FoodDescription}</div>
+                    <div className="grid-item"><strong>Location:</strong></div>
+                    <div className="grid-item">{event.Building}</div>
                     <div className="grid-item"><strong>Room:</strong></div>
                     <div className="grid-item">{event.RoomNumber}</div>
                     <div className="grid-item"><strong>Allergens:</strong></div>
@@ -88,11 +103,18 @@ const EventDetails: React.FC = () => {
                     <img src={event.ImageURL} alt="Food" className="event-image" />
                 )}
             </IonContent>
-            <IonFab slot="fixed" horizontal="end" vertical="bottom">
-                <IonRouterLink routerLink="/pages/EventList">
-                    <IonButton color="danger" size="large">Go Back</IonButton>
-                </IonRouterLink>
-            </IonFab>
+            <IonFooter>
+              <IonToolbar>
+                <IonRow>
+                  <IonCol>
+                    <IonButton expand="block" color="light" onClick={backToEventList}>
+                      <IonIcon slot="start" icon={arrowBack} />
+                    Back
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+              </IonToolbar>
+            </IonFooter>
         </IonPage>
     );
 };

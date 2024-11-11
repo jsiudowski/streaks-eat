@@ -1,11 +1,14 @@
+// Necessary imports
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, getDocs, Firestore, setDoc, doc } from 'firebase/firestore/lite';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getDownloadURL, getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
+import { getFirestore, collection, getDocs, setDoc, doc } from 'firebase/firestore/lite';
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
+//This config is safe to leave in this file as the API Key is an identifier and not a security measure
+// needed to communicate with the Firebase DB, Auth, Storage, etc.
 const config = {
     apiKey: "AIzaSyCyQOeqqsDjQFDdpJTden1kiVrEv8EOq88",
     authDomain: "streakseat.firebaseapp.com",
@@ -17,30 +20,29 @@ const config = {
   };
 
 // Initialize Firebase
-const app = firebase.initializeApp(config);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
-const storage = getStorage(app); // Initialize storage
+const app = firebase.initializeApp(config); // Initialize App
+const analytics = getAnalytics(app); // Initialize Analytics
+const db = getFirestore(app); // Initialize Database
+const storage = getStorage(app); // Initialize Storage
+const auth = getAuth(app); // Initialize Auth
 
-const auth = getAuth(app);
+// Listen for authentication state changes
+// If User Logs in or Logs out
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/auth.user
-    const uid = user.uid;
-    // ...
+    // The user is signed in
   } else {
-    // User is signed out
-    // ...
+    // The user is signed out
   }
 });
 
 interface UserData {
   id: string;
   Email: string;
-  Year: string; // Adjust this if it's a number
+  Year: string;
   Name: string;
-  Allergens: number[]; // Assuming Allergens is an array of strings
+  Allergens: number[];
+  IsAdmin: boolean;
 }
 
 // Get a list of events from your database
@@ -51,6 +53,7 @@ export async function getEvents() {
   return eventList;
 }
 
+// Add an event to the database
 export async function addEvents(event: {Building: string, RoomNumber: string, FoodDescription: string, Allergens: number[], TimeCreated: Date, ImageURL: string}) {
   try {
     const eventRef = doc(collection(db, 'events'));
@@ -64,13 +67,11 @@ export async function addEvents(event: {Building: string, RoomNumber: string, Fo
   }
 }
 
+//Logs a user in
 export async function loginUser(username: string, password: string) {
-
     const email = `${username}@jcu.edu`
-
     try {
         const res = await firebase.auth().signInWithEmailAndPassword(email, password);
-        console.log(res);
         return true;
     }
     catch (error) {
@@ -78,14 +79,17 @@ export async function loginUser(username: string, password: string) {
         return false;
     }
 }
+
+// Registers a user
 export async function registerUser(username:string, password:string) {
   const email = `${username}@jcu.edu`
-
   try {
       const res = await firebase.auth().createUserWithEmailAndPassword(email, password)
-      const user = await createUser(email)
-      console.log(user)
-      console.log(res)
+      if(res) {
+        //Creates a user entry in our users collection if the Auth create was successful
+        const userCreate = await createUser(email, res.user?.uid);
+        console.log(userCreate);
+      }
       return true
   }
   catch(error) {
@@ -99,8 +103,8 @@ export async function getAllergens() {
   const allergensCol = collection(db, 'allergies'); 
   const allergenSnapshot = await getDocs(allergensCol);
   const allergenList = allergenSnapshot.docs.map(doc => ({
-      id: doc.data().id, // Assuming you have an 'id' field
-      description: doc.data().description, // Assuming you have a 'description' field
+      id: doc.data().id,
+      description: doc.data().description,
   }));
   return allergenList;
 }
@@ -117,15 +121,17 @@ export const uploadImage = async (imageUri: string): Promise<string> => {
   return downloadURL;
 };
 
-const createUser = async (email: string) => {
+// Creates a new User and adds them to our Users table in the Database
+const createUser = async (email: string, uid: string | undefined) => {
   const newUser = {
-    Email: email,
-    IsAdmin: false
+    Name: '',
+    Email: email.toLowerCase(),
+    IsAdmin: false,
+    Allergens: []
   }
   try {
-    const userRef = doc(collection(db, 'users'));
+    const userRef = doc(collection(db, 'users'), uid);
     await setDoc(userRef, newUser);
-    console.log('User Added:', newUser);
     return true;
   }
   catch(error) {
@@ -140,28 +146,41 @@ export const getUserDataByEmail = async (email: string): Promise<UserData | null
   const userQuery = await getDocs(usersCol);
   const userData = userQuery.docs.find(doc => doc.data().Email === email);
 
-  return userData ? { id: userData.id, ...userData.data() } as UserData : null; // Ensure proper typing
+  if (!userData) {
+    console.error("No user found with the provided email:", email);
+    return null;
+  }
+
+  return userData ? { id: userData.id, ...userData.data() } as UserData : null; 
 };
 
 // Function to update user profile
-export const updateUserProfile = async (id:string, email: string, year: string, name: string, allergens: number[]) => {
+export const updateUserProfile = async (id:string, email: string, name: string, allergens: number[]) => {
     try {
       // Find the user document by email
       const userRef = doc(collection(db, 'users'), id); 
 
       await setDoc(userRef, {
         Email: email,
-        Year: year,
         Name: name,
         Allergens: allergens,
       }, { merge: true }); // Merge to keep other fields intact
-
-      console.log('User profile updated successfully:', { email, year, name, allergens });
+      
       return true;
+
     } catch (error) {
       console.error('Error updating user profile:', error);
       return false;
     }
 };
 
-export default auth;
+//Signs out the currently signed in User
+export const signOutUser = async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error('Error signing out:', error);
+  }
+}
+
+export { auth };
