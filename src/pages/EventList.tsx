@@ -266,7 +266,7 @@ const EventList: React.FC = () => {
                     </IonToolbar>
                 </IonHeader>
                 <IonContent>
-                <p className="no-event-text">No events currently. Considering having an Administrator add an event!</p>
+                <p className="no-event-text">No events currently. Consider having an Administrator add an event!</p>
                 </IonContent>
 
                 {/* Event Creation button   (Displays only if Warning Card is not shown and the user IsAdmin is true) */}
