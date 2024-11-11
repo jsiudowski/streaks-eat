@@ -1,7 +1,7 @@
-// UserContext.tsx
+// UserContext to grab any of the users logged in from our Firebase Auth
 import React, { createContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, User } from 'firebase/auth'; // Ensure correct imports
-import auth from './firebaseConfig'; // Adjust the path to your Firebase config
+import { onAuthStateChanged, User } from 'firebase/auth'; 
+import {auth} from './firebaseConfig'; // Import our firebase config
 
 interface UserContextType {
     user: User | null; // Define user as type User from Firebase

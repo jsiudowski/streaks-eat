@@ -1,8 +1,8 @@
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Import Camera 
 import { defineCustomElements } from '@ionic/pwa-elements/loader'; // Custom camera elements
-import { IonButton, useIonToast, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
-import { addSharp, camera, close } from 'ionicons/icons';
-import React, { useState } from 'react';
+import { IonButton, useIonToast, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar, IonFooter } from '@ionic/react';
+import { addSharp, arrowBack, camera, close } from 'ionicons/icons';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Buildings from '../Data/RoomsEdited.json';
 import { addEvents, uploadImage } from '../firebaseConfig'; // Import Firebase
@@ -10,9 +10,10 @@ import './EventCreation.css';
 
 //Define the type for the structure of the JSON data
 type BuildingsData = {
-  [buildingName: string]: string[] | null; // Map each building name to an array 
+  [buildingName: string]: string[] | null;  
 };
 
+// Sets up the Event Creation Page
 const EventCreation: React.FC = () => {
   const history = useHistory();
 
@@ -28,6 +29,7 @@ const EventCreation: React.FC = () => {
   const [image, setImage] = useState<string | undefined>();// State for image functionality for camera
   const [alertMessage] = useIonToast();
   
+  // Allergy Options listed in their string counterparts
   const allergyOptions = [
     'Dairy',
     'Egg',
@@ -96,17 +98,20 @@ const EventCreation: React.FC = () => {
       }
     });
   };
-
+  
+  // Adds Event to the Event List if validation passes
   const addEventCard = async () => {
      // Validation
-     if (!eventName || !foodItems || !building || !roomNumber) {
-        showAlert('Please fill in all required fields: Title, Food, Building, and Room Number.');
+     const buildingHasRooms = building && buildingsData[building] && buildingsData[building]!.length > 0; // Building with no rooms is not required for creation.
+     if (!eventName || !foodItems || !building || (buildingHasRooms && !roomNumber)) {
+        showAlert('Please fill in all required fields: Title, Food, Building, and Room Number if applicable.');
         return; // Exit the function if validation fails
-  }
-
+    }
+    
   try {
     const foodPictureUrl = image ? await uploadImage(image) : ''; // Upload the image and get URL
 
+    // Structure for our new event
     const newEvent = {
         Building: building,
         EventName: eventName,
@@ -117,8 +122,10 @@ const EventCreation: React.FC = () => {
         ImageURL: foodPictureUrl, // Use the uploaded image URL
     };
 
+    // Add event to firebase
     const success = await addEvents(newEvent);
 
+    // Check if the event was successfully added to Firebase
     if (success) {
         // Reset the form
         setBuilding('');
@@ -145,6 +152,10 @@ const EventCreation: React.FC = () => {
     setRoomNumber(selectedRoom);
     setIsRoomModalOpen(false); // Close the room modal after selection
   };
+
+  const backToEventList = () => {
+    history.push('/pages/EventList', { refresh: true });
+  }
 
   return (
     <IonPage>
@@ -222,19 +233,18 @@ const EventCreation: React.FC = () => {
           </IonContent>
         </IonModal>
 
-        {/* Button to open the custom room selection modal, only if a building is selected */}
-        {building && (
+        {/* Button to open the custom room selection modal, only if a building is selected and has rooms */}
+        {building && buildingsData[building] && buildingsData[building]!.length > 0 && (
           <IonRow class="ion-justify-content-center">
             <IonCol size="10">
-            <IonItem button onClick={() => setIsRoomModalOpen(true)}>
-              <IonLabel>
-                {roomNumber || 'Select Room Number (REQUIRED)'}
-              </IonLabel>
-            </IonItem>
+              <IonItem button onClick={() => setIsRoomModalOpen(true)}>
+                <IonLabel>
+                  {roomNumber || 'Select Room Number (REQUIRED)'}
+                </IonLabel>
+              </IonItem>
             </IonCol>
           </IonRow>
         )}
-
         {/* Custom Modal for Room Selection */}
         <IonModal isOpen={isRoomModalOpen} onDidDismiss={() => setIsRoomModalOpen(false)}>
           <IonHeader>
@@ -272,19 +282,21 @@ const EventCreation: React.FC = () => {
           </IonListHeader>
           <IonRow class="ion-justify-content-center">
             <IonCol size="10">
+              <IonItem>
               <IonInput 
                   label="Food Item (REQUIRED)" labelPlacement="floating"
                   placeholder="List all items at your event:"
                   value={foodItems}
                   onIonInput={e => setFoodItems((e.target as unknown as HTMLInputElement).value)}
                 />
+                </IonItem>
               </IonCol>
             </IonRow>
         </IonGrid>
 
         {/* Provide picture for food */}
         <IonListHeader>
-            <IonLabel className="center"><h2>Insert Photo of Food:</h2></IonLabel>
+            <IonLabel className="center"><h1>Insert Photo of Food:</h1></IonLabel>
         </IonListHeader>
         <IonContent className="custom-content">
             {image ? (
@@ -311,11 +323,6 @@ const EventCreation: React.FC = () => {
             <h1>Allergies Checklist:</h1>
           </IonLabel>
         </IonListHeader>
-        <IonListHeader>
-          <IonLabel className="center">
-            <p>Required: If None Apply, Please Choose Other:</p>
-          </IonLabel>
-        </IonListHeader>
         <IonRow className="ion-justify-content-center">
           {allergyOptions.map((allergy, index) => (
             <IonCol size="5" key={index}>
@@ -329,15 +336,25 @@ const EventCreation: React.FC = () => {
             </IonCol>
           ))}
         </IonRow>
-
-        <IonFab slot="fixed" horizontal="end" vertical="bottom">
-          <IonButton size="default" className="createEventButton" onClick={addEventCard}>
-            <span className="icon-circle">
-              <IonIcon icon={addSharp} />
-            </span>
-            Create Event
-          </IonButton>
-        </IonFab>
+  {/* Footer with "Back" and "Create Event" Buttons */}
+  <IonFooter>
+        <IonToolbar>
+          <IonRow>
+            <IonCol>
+              <IonButton expand="block" color="light" onClick={backToEventList}>
+                <IonIcon slot="start" icon={arrowBack} />
+                Back
+              </IonButton>
+            </IonCol>
+            <IonCol>
+              <IonButton expand="block" color="primary" onClick={addEventCard}>
+                <IonIcon slot="start" icon={addSharp} />
+                Create Event
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        </IonToolbar>
+      </IonFooter>
       </IonContent>
     </IonPage>
   );
