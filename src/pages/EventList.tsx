@@ -74,7 +74,6 @@ const EventList: React.FC = () => {
                 map[allergen.id] = allergen.description; 
             });
             setAllergenMap(map);
-            console.log('Allergen Map:', allergenMap);
         } catch (err) {
             console.error('Failed to load allergens', err);
         }
@@ -135,7 +134,6 @@ const EventList: React.FC = () => {
             } catch (err) {
                 console.error("Failed to load events:");
             } finally {
-                console.log('Setting loading to false...');
                 setLoading(false);
             }
         };

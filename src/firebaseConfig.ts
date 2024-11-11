@@ -58,7 +58,6 @@ export async function addEvents(event: {Building: string, RoomNumber: string, Fo
   try {
     const eventRef = doc(collection(db, 'events'));
     await setDoc(eventRef, event);
-    console.log('Event Added:', event);
     return true;
   }
   catch(error) {
@@ -75,7 +74,6 @@ export async function loginUser(username: string, password: string) {
         return true;
     }
     catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -88,12 +86,10 @@ export async function registerUser(username:string, password:string) {
       if(res) {
         //Creates a user entry in our users collection if the Auth create was successful
         const userCreate = await createUser(email, res.user?.uid);
-        console.log(userCreate);
       }
       return true
   }
   catch(error) {
-      console.log(error)
       return false
   }
 }
