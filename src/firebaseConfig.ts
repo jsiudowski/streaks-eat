@@ -3,9 +3,9 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, getDocs, Firestore, setDoc, doc } from 'firebase/firestore/lite';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getDownloadURL, getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
+import { getFirestore, collection, getDocs, setDoc, doc } from 'firebase/firestore/lite';
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 //This config is safe to leave in this file as the API Key is an identifier and not a security measure
 // needed to communicate with the Firebase DB, Auth, Storage, etc.
@@ -26,12 +26,13 @@ const db = getFirestore(app); // Initialize Database
 const storage = getStorage(app); // Initialize Storage
 const auth = getAuth(app); // Initialize Auth
 
+// Listen for authentication state changes
 // If User Logs in or Logs out
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    const uid = user.uid;
+    // The user is signed in
   } else {
-
+    // The user is signed out
   }
 });
 
@@ -68,12 +69,9 @@ export async function addEvents(event: {Building: string, RoomNumber: string, Fo
 
 //Logs a user in
 export async function loginUser(username: string, password: string) {
-
     const email = `${username}@jcu.edu`
-
     try {
         const res = await firebase.auth().signInWithEmailAndPassword(email, password);
-        console.log(res);
         return true;
     }
     catch (error) {
@@ -85,14 +83,13 @@ export async function loginUser(username: string, password: string) {
 // Registers a user
 export async function registerUser(username:string, password:string) {
   const email = `${username}@jcu.edu`
-
   try {
       const res = await firebase.auth().createUserWithEmailAndPassword(email, password)
-      const user = await createUser(email)
       if(res) {
-        await firebase.auth().signInWithEmailAndPassword(email, password);
+        //Creates a user entry in our users collection if the Auth create was successful
+        const userCreate = await createUser(email, res.user?.uid);
+        console.log(userCreate);
       }
-      console.log(user)
       return true
   }
   catch(error) {
@@ -125,7 +122,7 @@ export const uploadImage = async (imageUri: string): Promise<string> => {
 };
 
 // Creates a new User and adds them to our Users table in the Database
-const createUser = async (email: string) => {
+const createUser = async (email: string, uid: string | undefined) => {
   const newUser = {
     Name: '',
     Email: email.toLowerCase(),
@@ -133,9 +130,8 @@ const createUser = async (email: string) => {
     Allergens: []
   }
   try {
-    const userRef = doc(collection(db, 'users'));
+    const userRef = doc(collection(db, 'users'), uid);
     await setDoc(userRef, newUser);
-    console.log('User Added:', newUser);
     return true;
   }
   catch(error) {
@@ -169,13 +165,22 @@ export const updateUserProfile = async (id:string, email: string, name: string, 
         Name: name,
         Allergens: allergens,
       }, { merge: true }); // Merge to keep other fields intact
-
-      console.log('User profile updated successfully:', { email, name, allergens });
+      
       return true;
+
     } catch (error) {
       console.error('Error updating user profile:', error);
       return false;
     }
 };
+
+//Signs out the currently signed in User
+export const signOutUser = async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error('Error signing out:', error);
+  }
+}
 
 export default auth;

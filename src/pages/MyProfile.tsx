@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonListHeader, IonItem, IonInput, IonLabel, IonGrid, IonCol, IonRow, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonToast, IonCardSubtitle } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { getUserDataByEmail, getAllergens, updateUserProfile } from '../firebaseConfig'; // Adjust the import path as necessary
+import { getUserDataByEmail, getAllergens, updateUserProfile, signOutUser } from '../firebaseConfig'; // Adjust the import path as necessary
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import './MyProfile.css';
 
@@ -97,8 +97,7 @@ const MyProfile: React.FC = () => {
 
   // Handle Sign Out
   const handleSignOut = async () => {
-    const auth = getAuth();
-    await auth.signOut();
+    await signOutUser();
     setToastMessage("Sign Out successful!");
     setToastVisible(true);
     history.replace('/pages/Login');
