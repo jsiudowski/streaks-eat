@@ -1,8 +1,10 @@
+import { IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonImg, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonProgressBar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
 import { useParams } from 'react-router';
-import './AboutUs.css'
+import StreaksEatLogo from '../pages/Photos/StreaksEatLogo.png';
+import './AboutUs.css';
 
+// Sets up the About Us page which describes the Developers who created this app
 const AboutUs: React.FC = () => {
 
     const { name } = useParams<{ name: string; }>();
@@ -26,8 +28,8 @@ const AboutUs: React.FC = () => {
           </IonHeader>
           <IonCard>
             <IonCardHeader>
-                <IonCardTitle>Welcome to Cut-Back Crumbs!</IonCardTitle>
-                <IonCardSubtitle>Developed by Abedelhadi Tawil, Jon Siudowski, Alyssa Augustein, and Gavin Weiser.</IonCardSubtitle>
+                <IonCardTitle>Welcome to Streaks Eat!</IonCardTitle>
+                <IonCardSubtitle>A John Carroll University App Developed by Abedelhadi Tawil, Jon Siudowski, Alyssa Augustein, and Gavin Weiser.</IonCardSubtitle>
             </IonCardHeader>
 
             <IonCardContent>This app will strive to reduce food waste and decrease food insecurity, through the use of a mobile event calendar with real-time notifications.</IonCardContent>
@@ -44,9 +46,13 @@ const AboutUs: React.FC = () => {
               Gavin Weiser: Is a senior Computer Science Major with a Minor in Data Science. He has experience in software development as an intern for the Imaging Informatics Department at the Cleveland Clinic. During this internship, He worked on updating a pre-existing framework used by the Imaging Department, to a more modern look. He interned in this position for 5 months in the spring of 2024 and is currently set to intern again in spring 2025.
             </IonCardContent>
           </IonCard>
+          <div></div>
+          <IonImg src={StreaksEatLogo} alt="Streaks Eat Logo" ></IonImg>   
         </IonContent>
       </IonPage>
+      
     );
 };
+
 
 export default AboutUs;

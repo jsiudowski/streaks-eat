@@ -13,8 +13,10 @@ import {
 } from '@ionic/react';
 import './Map.css';
 import JCUMAP from './Photos/JCUMAP.png' ;
+import { IonImg } from '@ionic/react';
 
 
+//Displays the University Map PNG and corresponding locations via their numbers in a list
 const Map: React.FC = () => {
   return (
     <IonPage>
@@ -28,10 +30,11 @@ const Map: React.FC = () => {
       </IonHeader>
 
       <IonContent className="ion-padding">
-        {/* Image Section */}
-        <IonCard className="ion-card-responsive img">
-          <img src={JCUMAP} alt="Map of John Carroll" />
-        </IonCard>
+      <IonImg
+      src={JCUMAP}
+      alt="Map of John Carroll"
+      ></IonImg>          
+      
 
         {/* Numbered List Section */}
         <h2>ACADEMIC & SERVICE BUILDINGS</h2>

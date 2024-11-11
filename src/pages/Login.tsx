@@ -1,33 +1,131 @@
-import React from 'react';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonCheckbox, IonButton, IonCardTitle } from '@ionic/react';
-import { useParams } from 'react-router';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonLoading, IonPage, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
+import { eye, eyeOff } from 'ionicons/icons';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router';
+import { Link } from 'react-router-dom';
+import { loginUser } from '../firebaseConfig';
+import './Login.css';
+
 const Login: React.FC = () => {
+    const [busy, setBusy] = useState<boolean>(false);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // State to track if login is successful
+    const history = useHistory();
+    const location = useLocation(); // To track navigation state or URL params
+    const [alertMessage] = useIonToast();
+
+    // Displays login success or failure to the user
+    const showAlert = (message: string, position: 'top' | 'bottom' | 'middle' = 'top') => {
+        alertMessage({
+            message,
+            duration: 1500,
+            position,
+        });
+    };
+
+    // Attempts to Log in the User
+    async function LoginUser() {
+        setBusy(true);
+
+        // Validation checks
+        if (username.trim() !== '' && password.trim() === '') {
+            showAlert('Password is required');
+            setBusy(false);
+            return;
+        }
+        if (password.trim() !== '' && username.trim() === '') {
+            showAlert('Username is required');
+            setBusy(false);
+            return;
+        }
+        if (username.trim() === '' || password.trim() === '') {
+            showAlert('Username and Password are required!');
+            setBusy(false);
+            return;
+        }
+
+        // Attempt to log in
+        const res = await loginUser(username, password);
+        console.log(`${res ? 'Login Success' : 'Login Failed'}`);
+        setBusy(false);
+
+        if (res) {
+            // Mark the login as successful
+            setIsLoggedIn(true);
+
+            // Reset the username and password immediately
+            setUsername('');
+            setPassword('');
+
+            // Show success alert
+            showAlert('Login successful.');
+        } else {
+            showAlert('Login failed. Please try again.');
+        }
+    }
+
+    // Clears fields when navigating to the login page (or after sign-out)
+    useEffect(() => {
+        setUsername('');
+        setPassword('');
+        setIsLoggedIn(false);
+    }, [location.pathname]); // Triggered when the component re-renders due to route change
+
+    // Redirects to EventList after successful login
+    useEffect(() => {
+        if (isLoggedIn) {
+            setTimeout(() => {
+                history.push('/pages/EventList');
+            }, 100); // Adds a small delay to ensure state updates
+        }
+    }, [isLoggedIn, history]);
+
+    const handleLoginClick = (e: React.FormEvent) => {
+        e.preventDefault();  // Prevent form submission (if used inside a form)
+        LoginUser();
+    };
+
     return (
         <IonPage>
             <IonHeader>
-        <IonToolbar>
-            <IonButtons slot="start">
-                <IonMenuButton />
-            </IonButtons>
-            <IonTitle>Login</IonTitle>
-            </IonToolbar>
-            <form className="ion-padding">
-                <IonItem>
-                    <IonLabel position="stacked" >Username</IonLabel>
-                    <IonInput />
-                </IonItem>
-                <IonItem> 
-                    <IonLabel position="stacked">Password</IonLabel>
-                    <IonInput type="password" />
-                </IonItem>
-                <IonButton className="ion-margin-top" type="submit" expand="block"> Login </IonButton>
-                <IonItem lines="none">
-                    <IonLabel>Remember me</IonLabel>
-                    <IonCheckbox defaultChecked={true} slot="start" />
-                </IonItem>
-            </form>
-        </IonHeader>
-        </IonPage>
+                <IonToolbar>
+                    <IonTitle>Login</IonTitle>
+                </IonToolbar>
+            </IonHeader>
+            <IonLoading message="Please wait..." duration={0} isOpen={busy} />
+            <IonContent className="ion-padding">
+                <form onSubmit={handleLoginClick}>
+                    <IonInput
+                        type={'text'} /*type is specified so keyboard will pop up? */
+                        placeholder="Username?"
+                        value={username}
+                        onIonChange={(e: any) => setUsername(e.target.value)}
+                    />
+                    <IonInput
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Password?"
+                        value={password}
+                        onIonChange={(e: any) => setPassword(e.detail.value!)}
+                        style={{ flex: 1 }}
+                    />
+                    <IonButton onClick={LoginUser}>Login</IonButton>
+                    <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}>
+                        <IonIcon icon={showPassword ? eyeOff : eye} />
+                    </IonButton>
+                </form>
+
+                <p className="register-text">New here? Create an account! <Link to="/pages/Register">Register</Link></p>
+                
+              <IonCard>
+                  <IonCardHeader>
+                      <IonCardTitle>Login Requirements:</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>Do not include '@jcu.edu' in username.</IonCardContent>
+              </IonCard>
+          </IonContent>
+      </IonPage>
     );
-}
+};
 export default Login;
