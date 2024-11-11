@@ -1,4 +1,4 @@
-import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
+import { IonApp, IonLoading, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Menu from './components/Menu';
@@ -52,8 +52,8 @@ import { auth } from './firebaseConfig';
 
 setupIonicReact();
 const App: React.FC = () => {
-
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Loading state for checking authentication
 
   useEffect(() => {
     // Check user auth state
@@ -63,14 +63,15 @@ const App: React.FC = () => {
       } else {
         setIsAuthenticated(false); // User is not logged in
       }
+      setIsLoading(false);
     });
 
     // Cleanup listener on unmount
     return () => unsubscribe();
   }, []);
 
-  if (isAuthenticated === null) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <IonLoading isOpen={isLoading} message={'Checking authentication...'} />;
   }
   
   return (
