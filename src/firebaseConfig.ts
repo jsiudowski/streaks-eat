@@ -215,3 +215,7 @@ export const signOutUser = async () => {
 
 export { auth, messaging };
 
+// Define setupNotifications function
+export function setupNotifications() {
+  // Add your notification setup logic here
+}
