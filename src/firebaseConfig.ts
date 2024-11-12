@@ -1,11 +1,16 @@
 // Necessary imports
+import { getAnalytics } from "firebase/analytics";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, getDocs, setDoc, doc } from 'firebase/firestore/lite';
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { collection, doc, getDocs, getFirestore, setDoc } from 'firebase/firestore/lite';
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+
+/* for notifications */
+import 'firebase/auth';
+import 'firebase/firestore';
+import { getMessaging, getToken } from 'firebase/messaging';
 
 //This config is safe to leave in this file as the API Key is an identifier and not a security measure
 // needed to communicate with the Firebase DB, Auth, Storage, etc.
@@ -25,6 +30,14 @@ const analytics = getAnalytics(app); // Initialize Analytics
 const db = getFirestore(app); // Initialize Database
 const storage = getStorage(app); // Initialize Storage
 const auth = getAuth(app); // Initialize Auth
+
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+}
+const firestore = firebase.firestore();
+const auth2 = firebase.auth();
+const messaging = getMessaging(app);
 
 // Listen for authentication state changes
 // If User Logs in or Logs out
@@ -58,7 +71,6 @@ export async function addEvents(event: {Building: string, RoomNumber: string, Fo
   try {
     const eventRef = doc(collection(db, 'events'));
     await setDoc(eventRef, event);
-    console.log('Event Added:', event);
     return true;
   }
   catch(error) {
@@ -75,7 +87,6 @@ export async function loginUser(username: string, password: string) {
         return true;
     }
     catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -88,12 +99,10 @@ export async function registerUser(username:string, password:string) {
       if(res) {
         //Creates a user entry in our users collection if the Auth create was successful
         const userCreate = await createUser(email, res.user?.uid);
-        console.log(userCreate);
       }
       return true
   }
   catch(error) {
-      console.log(error)
       return false
   }
 }
@@ -184,3 +193,25 @@ export const signOutUser = async () => {
 }
 
 export { auth };
+
+const setupNotifications = async () => {
+  const permission = await Notification.requestPermission();
+    
+    if (permission === 'granted') {
+        try {
+            // Get the FCM token for the current device
+            const token = await getToken(messaging, { vapidKey: 'BI2LbVIxDr8lK6G-_3QY884BJG_AcpwTA416c-fFsngIwYdfxk4QCjEvnftA886BbYIM9St5GeLUAhxgggEgbUo'  })
+            console.log('FCM Token:', token);
+
+        } catch (error) {
+            console.error("Error getting FCM token:", error);
+        }
+    } else {
+        console.log("Notification permission not granted.");
+    }
+};
+
+  setupNotifications();
+
+  export { auth2, firestore, setupNotifications };
+

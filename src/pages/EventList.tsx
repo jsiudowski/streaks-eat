@@ -51,7 +51,7 @@ interface UserData {
 // Sets up Event List Page for App
 const EventList: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const location = useLocation<LocationState>();
     const history = useHistory();
@@ -74,7 +74,6 @@ const EventList: React.FC = () => {
                 map[allergen.id] = allergen.description; 
             });
             setAllergenMap(map);
-            console.log('Allergen Map:', allergenMap);
         } catch (err) {
             console.error('Failed to load allergens', err);
         }
@@ -133,9 +132,9 @@ const EventList: React.FC = () => {
 
                 setEvents(formattedEvents);
             } catch (err) {
-                    console.error("Failed to load events:");
+                console.error("Failed to load events:");
             } finally {
-                    setLoading(false);
+                setLoading(false);
             }
         };
 
@@ -153,22 +152,34 @@ const EventList: React.FC = () => {
       };
 
     useEffect(() => {
-        fetchAllergens(); // Fetch allergens initially
-        fetchUser(); // Fetch User, returns data if one
-        if (!events.length) {
-            fetchEvents();
-        }
+            const loadData = async () => {
+                await fetchAllergens(); // Fetch allergens initially
+                await fetchUser(); // Fetch User, returns data if one
+                if(!events.length) {
+                    await fetchEvents();
+                }
+            };
+            loadData();
     }, []); // Empty dependency array means it runs once when the component mounts
 
-    // useEffect to check for location state and fetch events if refresh is required
     useEffect(() => {
+        const loadData = async () => {
+            try {
+                await fetchAllergens(); // Fetch allergens
+                await fetchUser(); // Fetch user data
+                await fetchEvents(); // Fetch events
+            } catch (err) {
+                console.error("Error loading data:", err);
+            }
+        };
+    
+        // Check if a refresh is needed based on the location state
         if (location.state?.refresh) {
-            fetchAllergens(); // Fetch allergens initially
-            fetchUser(); // Fetch User if there is one
-            fetchEvents(); // Fetch events if coming from EventCreation with refresh state
+            loadData(); // Call loadData if refresh flag is set
             history.replace({ ...location, state: {} }); // Clear the refresh state to prevent repeated fetching
         }
-    }, [location.state?.refresh]); // Only run if refresh changes
+    }, [location.state?.refresh, history]); // Dependency on location.state?.refresh
+    
 
     const formatDate = (timestamp: { seconds?: number, nanoseconds?: number } | undefined) => {
         if (!timestamp || typeof timestamp.seconds !== 'number') {

@@ -48,7 +48,6 @@ const Login: React.FC = () => {
 
         // Attempt to log in
         const res = await loginUser(username, password);
-        console.log(`${res ? 'Login Success' : 'Login Failed'}`);
         setBusy(false);
 
         if (res) {

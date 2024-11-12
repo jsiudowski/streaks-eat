@@ -53,7 +53,6 @@ const Register: React.FC = () => {
       //Attempt User Registration
       const res = await registerUser(username, password);
       setBusy(false);
-      console.log(`${res ? 'Registration Success' : 'Registration Failed'}`);
         setBusy(false);
         if(res) {
           showAlert('Registration successful.');
