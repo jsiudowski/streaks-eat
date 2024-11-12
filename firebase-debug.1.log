@@ -1,0 +1,21 @@
+[debug] [2024-11-12T06:17:23.034Z] ----------------------------------------------------------------------
+[debug] [2024-11-12T06:17:23.038Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\13302\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-11-12T06:17:23.038Z] CLI Version:   13.24.2
+[debug] [2024-11-12T06:17:23.038Z] Platform:      win32
+[debug] [2024-11-12T06:17:23.038Z] Node Version:  v20.17.0
+[debug] [2024-11-12T06:17:23.039Z] Time:          Tue Nov 12 2024 01:17:23 GMT-0500 (Eastern Standard Time)
+[debug] [2024-11-12T06:17:23.039Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-11-12T06:17:23.049Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-11-12T06:17:23.049Z] > authorizing via signed-in user (streakseat@jcu.edu)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\13302\Documents\Food-FinderCapstone\streaks-eat
+

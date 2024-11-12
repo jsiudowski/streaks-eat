@@ -8,9 +8,9 @@ import { collection, doc, getDocs, getFirestore, setDoc } from 'firebase/firesto
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 /* for notifications */
-import 'firebase/auth';
-import 'firebase/firestore';
-import { getMessaging, getToken } from 'firebase/messaging';
+import 'firebase/compat/messaging';
+import { getToken, onMessage } from "firebase/messaging";
+
 
 //This config is safe to leave in this file as the API Key is an identifier and not a security measure
 // needed to communicate with the Firebase DB, Auth, Storage, etc.
@@ -32,12 +32,8 @@ const storage = getStorage(app); // Initialize Storage
 const auth = getAuth(app); // Initialize Auth
 
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(config);
-}
-const firestore = firebase.firestore();
-const auth2 = firebase.auth();
-const messaging = getMessaging(app);
+const firebaseApp = firebase.initializeApp(config);
+
 
 // Listen for authentication state changes
 // If User Logs in or Logs out
@@ -71,6 +67,7 @@ export async function addEvents(event: {Building: string, RoomNumber: string, Fo
   try {
     const eventRef = doc(collection(db, 'events'));
     await setDoc(eventRef, event);
+    console.log('Event Added:', event);
     return true;
   }
   catch(error) {
@@ -87,6 +84,7 @@ export async function loginUser(username: string, password: string) {
         return true;
     }
     catch (error) {
+        console.log(error);
         return false;
     }
 }
@@ -99,10 +97,12 @@ export async function registerUser(username:string, password:string) {
       if(res) {
         //Creates a user entry in our users collection if the Auth create was successful
         const userCreate = await createUser(email, res.user?.uid);
+        console.log(userCreate);
       }
       return true
   }
   catch(error) {
+      console.log(error)
       return false
   }
 }
@@ -129,6 +129,27 @@ export const uploadImage = async (imageUri: string): Promise<string> => {
   const downloadURL = await getDownloadURL(storageRef);
   return downloadURL;
 };
+
+    const messaging = firebaseApp.messaging();
+    export const getFcmToken = async () => {
+      try {
+        const token = await getToken(messaging, {
+          vapidKey: 'BI2LbVIxDr8lK6G-_3QY884BJG_AcpwTA416c-fFsngIwYdfxk4QCjEvnftA886BbYIM9St5GeLUAhxgggEgbUo '
+        });
+        console.log('FCM Token:', token);
+        return token;
+      } catch (error) {
+        console.error('Error getting token:', error);
+      }
+    };
+    
+    // Handle incoming messages
+    onMessage(messaging, (payload) => {
+      console.log('Message received: ', payload);
+      // Show notification (e.g., a toast)
+    });
+    
+
 
 // Creates a new User and adds them to our Users table in the Database
 const createUser = async (email: string, uid: string | undefined) => {
@@ -192,26 +213,5 @@ export const signOutUser = async () => {
   }
 }
 
-export { auth };
-
-const setupNotifications = async () => {
-  const permission = await Notification.requestPermission();
-    
-    if (permission === 'granted') {
-        try {
-            // Get the FCM token for the current device
-            const token = await getToken(messaging, { vapidKey: 'BI2LbVIxDr8lK6G-_3QY884BJG_AcpwTA416c-fFsngIwYdfxk4QCjEvnftA886BbYIM9St5GeLUAhxgggEgbUo'  })
-            console.log('FCM Token:', token);
-
-        } catch (error) {
-            console.error("Error getting FCM token:", error);
-        }
-    } else {
-        console.log("Notification permission not granted.");
-    }
-};
-
-  setupNotifications();
-
-  export { auth2, firestore, setupNotifications };
+export { auth, messaging };
 

@@ -1,12 +1,13 @@
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Import Camera 
 import { defineCustomElements } from '@ionic/pwa-elements/loader'; // Custom camera elements
-import { IonButton, useIonToast, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar, IonFooter } from '@ionic/react';
+import { IonButton, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonFooter, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
 import { addSharp, arrowBack, camera, close } from 'ionicons/icons';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Buildings from '../Data/RoomsEdited.json';
 import { addEvents, uploadImage } from '../firebaseConfig'; // Import Firebase
 import './EventCreation.css';
+
 
 //Define the type for the structure of the JSON data
 type BuildingsData = {
@@ -98,6 +99,35 @@ const EventCreation: React.FC = () => {
       }
     });
   };
+
+  // add push notifications
+  const sendPushNotificationRequest = async (eventName: string, building: string) => {
+    const message = {
+      eventName,
+      building,
+    };
+    
+    try {
+      const response = await fetch('https://sendnotification-7ea2lpfala-uc.a.run.app', {  // Backend endpoint to handle notification sending found after a deploy statement in terminal
+        //put in terminal to find sending address->      firebase deploy --only functions
+
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+  
+      if (response.ok) {
+        console.log('Push notification request sent');
+      } else {
+        console.error('Failed to send push notification request');
+      }
+    } catch (error) {
+      console.error('Error sending notification request:', error);
+    }
+  };
+  
   
   // Adds Event to the Event List if validation passes
   const addEventCard = async () => {
@@ -125,6 +155,7 @@ const EventCreation: React.FC = () => {
     // Add event to firebase
     const success = await addEvents(newEvent);
 
+
     // Check if the event was successfully added to Firebase
     if (success) {
         // Reset the form
@@ -135,7 +166,12 @@ const EventCreation: React.FC = () => {
         setFoodItems('');
         setImage(undefined); // Reset image
         showAlert('Event Successfully Created');
+
+        await sendPushNotificationRequest(building, eventName);
+
         history.push('/pages/EventList', { refresh: true });
+
+        
     }
   } catch (error) {
       console.error('Error adding event to Firebase:', error);
