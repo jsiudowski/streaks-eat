@@ -217,5 +217,31 @@ export { auth, messaging };
 
 // Define setupNotifications function
 export function setupNotifications() {
-  // Add your notification setup logic here
+  const sendPushNotificationRequest = async (eventName: string, building: string) => {
+    const message = {
+      eventName,
+      building,
+    };
+    
+    try {
+      const response = await fetch('https://sendnotification-7ea2lpfala-uc.a.run.app', {  // Backend endpoint to handle notification sending found after a deploy statement in terminal
+        //put in terminal to find sending address->      firebase deploy --only functions
+
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+  
+      if (response.ok) {
+        console.log('Push notification request sent');
+      } else {
+        console.error('Failed to send push notification request');
+      }
+    } catch (error) {
+      console.error('Error sending notification request:', error);
+    }
+  };
 }
+
