@@ -80,10 +80,10 @@ const Register: React.FC = () => {
                 <IonInput placeholder='Password?' type={showPassword ? 'text' : 'password'} onIonChange={(e: any) => setPassword(e.target.value)}/>
                 <IonInput placeholder='Confirm Password?' type={showPassword ? 'text' : 'password'} onIonChange={(e: any) => setCPassword(e.target.value)}/>
               <IonButton onClick={Register}>Register</IonButton>
-            </form>
               <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}>
                     <IonIcon icon={showPassword ? eyeOff : eye} />
               </IonButton>
+            </form>
 
               <p className="login-text">Already have an account? <Link to="/pages/Login">Login</Link></p>
 
