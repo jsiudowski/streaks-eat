@@ -16,14 +16,14 @@ const AboutUs: React.FC = () => {
             <IonButtons slot="start">
               <IonMenuButton />
             </IonButtons>
-            <IonTitle>About Us</IonTitle>
+            <IonTitle>About The Developers</IonTitle>
           </IonToolbar>
         </IonHeader>
 
         <IonContent fullscreen>
           <IonHeader collapse="condense">
             <IonToolbar>
-              <IonTitle size="large">About Us</IonTitle>
+              <IonTitle size="large">About The Developers</IonTitle>
             </IonToolbar>
           </IonHeader>
           <IonCard>

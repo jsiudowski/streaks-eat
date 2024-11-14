@@ -14,20 +14,20 @@ const Contact: React.FC = () => {
                 <IonButtons slot="start">
                 <IonMenuButton />
                 </IonButtons>
-                <IonTitle>Contact</IonTitle>
+                <IonTitle>Contact Information</IonTitle>
             </IonToolbar>
             </IonHeader>
 
             <IonContent fullscreen>
             <IonHeader collapse="condense">
                 <IonToolbar>
-                <IonTitle size="large">Contact</IonTitle>
+                <IonTitle size="large">Contact Us!</IonTitle>
                 </IonToolbar>
             </IonHeader>
 
             <IonCard>
                 <IonCardHeader>
-                    <IonCardTitle>Contact Information</IonCardTitle>
+                    <IonCardTitle>Phone, email, etc.</IonCardTitle>
                 </IonCardHeader>
             </IonCard>
 
