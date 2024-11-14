@@ -67,6 +67,9 @@ const Register: React.FC = () => {
         <IonPage>
             <IonHeader>
               <IonToolbar>
+                <IonButtons slot="start">
+                  <IonMenuButton />
+                </IonButtons>
                 <IonTitle>Register</IonTitle>
               </IonToolbar>
             </IonHeader>

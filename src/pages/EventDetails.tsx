@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonFooter, IonHeader, IonIcon, IonLabel, IonModal, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonFab, IonFooter, IonHeader, IonIcon, IonLabel, IonMenuButton, IonModal, IonPage, IonRouterLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import { useLocation, useHistory } from 'react-router-dom';
 import './EventDetails.css';
 import { useState, useEffect } from 'react';
@@ -83,6 +83,9 @@ const EventDetails: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot="start">
+                        <IonMenuButton />
+                    </IonButtons>
                     <IonTitle>Event Name: {event.EventName}</IonTitle>
                 </IonToolbar>
             </IonHeader>

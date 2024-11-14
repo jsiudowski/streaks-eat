@@ -21,7 +21,7 @@ const Contact: React.FC = () => {
             <IonContent fullscreen>
             <IonHeader collapse="condense">
                 <IonToolbar>
-                <IonTitle size="large">Contact Us!</IonTitle>
+                    <IonTitle size="large">Contact Us!</IonTitle>
                 </IonToolbar>
             </IonHeader>
 
