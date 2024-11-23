@@ -27,7 +27,12 @@ const Contact: React.FC = () => {
 
             <IonCard>
                 <IonCardHeader>
-                    <IonCardTitle>Phone, email, etc.</IonCardTitle>
+                    <IonCardTitle>Phone</IonCardTitle>
+                    <IonCardContent>(216) 397-4185</IonCardContent>
+                    <IonCardTitle>Email</IonCardTitle>
+                    <IonCardContent>csdi@jcu.edu</IonCardContent>
+                    <IonCardTitle>Instagram</IonCardTitle>
+                    <IonCardContent>@jcucsdi</IonCardContent>
                 </IonCardHeader>
             </IonCard>
 
