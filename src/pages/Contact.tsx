@@ -27,12 +27,13 @@ const Contact: React.FC = () => {
 
             <IonCard>
                 <IonCardHeader>
-                    <IonCardTitle>Phone</IonCardTitle>
-                    <IonCardContent>(216) 397-4185</IonCardContent>
-                    <IonCardTitle>Email</IonCardTitle>
-                    <IonCardContent>csdi@jcu.edu</IonCardContent>
-                    <IonCardTitle>Instagram</IonCardTitle>
-                    <IonCardContent>@jcucsdi</IonCardContent>
+                <IonCardSubtitle>Thank you for utilizing our app! If you have questions about our app or need help with a feature: </IonCardSubtitle>
+                    <IonCardTitle>Contact</IonCardTitle>
+                    <IonCardContent> <b>Email</b>: csdi@jcu.edu.</IonCardContent>
+                    <IonCardTitle>Location:</IonCardTitle>
+                    <IonCardContent><b>Building</b>: Lombardo Student Center</IonCardContent>
+                    <IonCardContent><b>Office</b>: Center For Student Diversity and Inclusion</IonCardContent>
+                    <IonCardContent><b>Room Number</b>: 202 </IonCardContent>
                 </IonCardHeader>
             </IonCard>
 
