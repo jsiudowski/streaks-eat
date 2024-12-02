@@ -48,6 +48,7 @@ import Login from './pages/Login';
 import Map from './pages/Map';
 import MyProfile from './pages/MyProfile';
 import Register from './pages/Register';
+import Contact from './pages/Contact'
 import { UserProvider } from './UserContext';
 
 /* imports for notfications */
@@ -97,6 +98,7 @@ const App: React.FC = () => {
             <Route path="/pages/EventList" component={EventList} key={location.pathname}></Route>
             <Route path="/pages/EventCreation" component={EventCreation}></Route>
             <Route path="/pages/EventDetails" component={EventDetails} exact={true}></Route>
+            <Route path="/pages/Contact" component={Contact}></Route>
             </Switch>
           </IonRouterOutlet>
         </IonSplitPane>

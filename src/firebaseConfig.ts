@@ -30,11 +30,6 @@ const analytics = getAnalytics(app); // Initialize Analytics
 const db = getFirestore(app); // Initialize Database
 const storage = getStorage(app); // Initialize Storage
 const auth = getAuth(app); // Initialize Auth
-
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(config);
-}
 const firestore = firebase.firestore();
 const auth2 = firebase.auth();
 const messaging = getMessaging(app);
@@ -43,9 +38,9 @@ const messaging = getMessaging(app);
 // If User Logs in or Logs out
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // The user is signed in
+    console.log("User is authenticated:", user.uid);
   } else {
-    // The user is signed out
+    console.log("User is not authenticated");
   }
 });
 
@@ -120,14 +115,30 @@ export async function getAllergens() {
 
 // Function to upload images and return the URL
 export const uploadImage = async (imageUri: string): Promise<string> => {
-  const response = await fetch(imageUri);
-  const blob = await response.blob();
+  try {
+    // Ensure the user is authenticated
+    const user = getAuth().currentUser;
+    if (!user) {
+      throw new Error("User is not authenticated.");
+    }
 
-  const storageRef = ref(storage, `images/${Date.now()}.png`);
-  await uploadBytes(storageRef, blob);
-
-  const downloadURL = await getDownloadURL(storageRef);
-  return downloadURL;
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+  
+    // Specify image path in Firebase Storage
+    const storageRef = ref(storage, `images/${Date.now()}.png`);
+    
+    // Attempt to upload the image
+    await uploadBytes(storageRef, blob);
+  
+    // Fetch the image URL after upload
+    const downloadURL = await getDownloadURL(storageRef);
+    console.log("Download URL:", downloadURL);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
+  }
 };
 
 // Creates a new User and adds them to our Users table in the Database
