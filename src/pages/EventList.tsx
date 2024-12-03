@@ -312,13 +312,6 @@ const EventList: React.FC = () => {
     
                 {/* List of all events available */}
                 <IonContent>
-                    {/* Toast notification for new events */}
-                    <IonToast
-                        isOpen={showToast}
-                        onDidDismiss={() => setShowToast(false)}
-                        message={`New event in ${newEventBuilding}`}
-                        duration={3000}
-                    />
                     {Object.keys(groupedEvents).map((building, index) => (
                         <div key={index}>
                             <div className="building-name">{building}</div>
