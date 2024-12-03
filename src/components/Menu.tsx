@@ -8,7 +8,7 @@ import {
   IonMenuToggle
 } from '@ionic/react';
 
-import { alertCircleOutline, calendarOutline, mapOutline, personOutline } from 'ionicons/icons';
+import { alertCircleOutline, calendarOutline, mapOutline, personOutline, callOutline } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
 import JCULogo from '../pages/Photos/JCULogo.png';
 import StreaksEatLogo from '../pages/Photos/StreaksEatLogo.png';
@@ -58,6 +58,12 @@ const appPages: AppPage[] = [
     url: '/pages/AboutUs',
     iosIcon: alertCircleOutline,
     mdIcon: alertCircleOutline
+  },
+  {
+    title: 'Contact',
+    url: '/pages/Contact',
+    iosIcon: callOutline,
+    mdIcon: callOutline
   }
 ];
 

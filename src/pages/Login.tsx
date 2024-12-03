@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonLoading, IonPage, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonLoading, IonMenuButton, IonPage, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
 import { eye, eyeOff } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
@@ -48,7 +48,6 @@ const Login: React.FC = () => {
 
         // Attempt to log in
         const res = await loginUser(username, password);
-        console.log(`${res ? 'Login Success' : 'Login Failed'}`);
         setBusy(false);
 
         if (res) {
@@ -91,6 +90,9 @@ const Login: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot="start">
+                    <IonMenuButton />
+                    </IonButtons>
                     <IonTitle>Login</IonTitle>
                 </IonToolbar>
             </IonHeader>

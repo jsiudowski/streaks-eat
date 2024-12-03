@@ -127,6 +127,8 @@ const EventCreation: React.FC = () => {
 
     // Check if the event was successfully added to Firebase
     if (success) {
+      showAlert('Event Successfully Created');
+      
         // Reset the form
         setBuilding('');
         setRoomNumber('');
@@ -134,7 +136,6 @@ const EventCreation: React.FC = () => {
         setAllergens([]);
         setFoodItems('');
         setImage(undefined); // Reset image
-        showAlert('Event Successfully Created');
         history.push('/pages/EventList', { refresh: true });
     }
   } catch (error) {

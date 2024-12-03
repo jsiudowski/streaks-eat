@@ -53,7 +53,6 @@ const Register: React.FC = () => {
       //Attempt User Registration
       const res = await registerUser(username, password);
       setBusy(false);
-      console.log(`${res ? 'Registration Success' : 'Registration Failed'}`);
         setBusy(false);
         if(res) {
           showAlert('Registration successful.');
@@ -68,6 +67,9 @@ const Register: React.FC = () => {
         <IonPage>
             <IonHeader>
               <IonToolbar>
+                <IonButtons slot="start">
+                  <IonMenuButton />
+                </IonButtons>
                 <IonTitle>Register</IonTitle>
               </IonToolbar>
             </IonHeader>
@@ -78,10 +80,10 @@ const Register: React.FC = () => {
                 <IonInput placeholder='Password?' type={showPassword ? 'text' : 'password'} onIonChange={(e: any) => setPassword(e.target.value)}/>
                 <IonInput placeholder='Confirm Password?' type={showPassword ? 'text' : 'password'} onIonChange={(e: any) => setCPassword(e.target.value)}/>
               <IonButton onClick={Register}>Register</IonButton>
-            </form>
               <IonButton fill="clear" onClick={() => setShowPassword(!showPassword)}>
                     <IonIcon icon={showPassword ? eyeOff : eye} />
               </IonButton>
+            </form>
 
               <p className="login-text">Already have an account? <Link to="/pages/Login">Login</Link></p>
 
