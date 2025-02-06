@@ -1,4 +1,4 @@
-import { IonApp, IonLoading, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
+import { IonApp, IonLoading, IonRouterOutlet, IonSplitPane, isPlatform, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Menu from './components/Menu';
@@ -53,13 +53,32 @@ import { UserProvider } from './UserContext';
 
 /* imports for notfications */
 import { setupNotifications } from './firebaseConfig';
+import { Capacitor } from '@capacitor/core';
 
 setupIonicReact();
+
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true); // Loading state for checking authentication
 
   useEffect(() => {
+
+// Web-specific logic for web platform
+if (Capacitor.getPlatform() === 'web') {
+  console.log('Running on Web');
+  if ('serviceWorker' in navigator) {
+    // Web-specific service worker logic
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then((registration) => {
+        console.log('Service Worker registered:', registration);
+      })
+      .catch((error) => {
+        console.error('Service Worker registration failed:', error);
+      });
+  }
+}
+
     setupNotifications(); // Initialize notifications subscription on app start
     // Check user auth state
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -73,6 +92,8 @@ const App: React.FC = () => {
 
     // Cleanup listener on unmount
     return () => unsubscribe();
+
+    
   }, []);
 
   if (isLoading) {

@@ -13,7 +13,7 @@ const config: CapacitorConfig = {
       style: 'dark',   // change keyboard style if necessary
       inputStyle: 'default', // or 'none'
     },
-  },
+  }
 };
 
 

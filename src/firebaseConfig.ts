@@ -1,6 +1,6 @@
 // Necessary imports
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth/cordova";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -8,9 +8,10 @@ import { collection, doc, getDocs, getFirestore, setDoc } from 'firebase/firesto
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 /* for notifications */
-import 'firebase/auth';
+import 'firebase/auth/cordova';
 import 'firebase/firestore';
-import { getMessaging, getToken } from 'firebase/messaging';
+import { getMessaging, getToken, Messaging } from 'firebase/messaging';
+import { Capacitor } from "@capacitor/core";
 
 //This config is safe to leave in this file as the API Key is an identifier and not a security measure
 // needed to communicate with the Firebase DB, Auth, Storage, etc.
@@ -32,7 +33,12 @@ const storage = getStorage(app); // Initialize Storage
 const auth = getAuth(app); // Initialize Auth
 const firestore = firebase.firestore();
 const auth2 = firebase.auth();
-const messaging = getMessaging(app);
+
+// Conditionally initialize Firebase Messaging based on the platform
+let messaging: Messaging;
+if (Capacitor.getPlatform() === 'web') {
+  messaging = getMessaging(app); // Initialize Firebase messaging for web only
+}
 
 // Listen for authentication state changes
 // If User Logs in or Logs out
@@ -206,7 +212,8 @@ export const signOutUser = async () => {
 export { auth };
 
 const setupNotifications = async () => {
-  const permission = await Notification.requestPermission();
+  if (Capacitor.getPlatform() === 'web') {
+    const permission = await Notification.requestPermission();
     
     if (permission === 'granted') {
         try {
@@ -220,6 +227,8 @@ const setupNotifications = async () => {
     } else {
         console.log("Notification permission not granted.");
     }
+  }
+  
 };
 
   setupNotifications();
