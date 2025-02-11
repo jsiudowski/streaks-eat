@@ -54,6 +54,7 @@ import { UserProvider } from './UserContext';
 /* imports for notfications */
 import { setupNotifications } from './firebaseConfig';
 import { Capacitor } from '@capacitor/core';
+import { StatusBar } from '@capacitor/status-bar';
 
 setupIonicReact();
 
@@ -78,6 +79,10 @@ if (Capacitor.getPlatform() === 'web') {
       });
   }
 }
+
+    if (Capacitor.getPlatform() !== 'web') {
+      StatusBar.setOverlaysWebView({ overlay: false }); // Ensures that the status bar does not overlay the app
+    }
 
     setupNotifications(); // Initialize notifications subscription on app start
     // Check user auth state
