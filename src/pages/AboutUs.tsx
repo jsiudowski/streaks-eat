@@ -56,14 +56,21 @@ const AboutUs: React.FC = () => {
                 <b>Gavin Weiser</b> is a senior Computer Science major with a minor in Data Science. He has interned as a Software Developer in the Imaging Informatics Department at the Cleveland Clinic. During his five-month internship in the spring of 2024, he modernized a legacy framework for the Imaging Department. He is set to return for another internship in the spring of 2025.
               </p>
             </IonCardContent>
+           </IonCard>
 
-            <IonCardContent>This project is designed as a capstone course to fulfill one of the Computer Science (CS) major requirements named Software Engineering Project, CS 4700. In this capstone course, students are grouped into small groups of 3-5 students. Each group works on a large software project for a real client or for an open-source community, where development teams will make widespread use of previously learned tools/techniques, their skills, ingenuity, and research abilities to address various issues and deliver a working, useful system. 
-            </IonCardContent>
-
+          <IonCard>
+            <IonCardHeader>
+              <IonCardTitle> About the project:</IonCardTitle>
+            </IonCardHeader>
             <IonCardContent>
-            In this capstone project, a mobile app has been developed to resolve the food waste issue across John Carroll University (JCU) campus. The idea has been started when Ayşe Selen Zarrelli, the director of Center for Student Diversity and Inclusion at JCU met with Dr. Almabrok Essa, CS professor and intructor for CS 4700, and discussed the possibility of developing an app to encourage community-centric redistribution of surplus food after events on JCU campus, which is aligned with the campus mission and sustainability goals. Finally, after a semester-long endeavor of the above mentioned developers team this idea has become a reality.</IonCardContent>
+              <p>This project is designed as a capstone course to fulfill one of the Computer Science (CS) major requirements named Software Engineering Project, CS 4700. In this capstone course, students are grouped into small groups of 3-5 students. Each group works on a large software project for a real client or for an open-source community, where development teams will make widespread use of previously learned tools/techniques, their skills, ingenuity, and research abilities to address various issues and deliver a working, useful system. </p>
+            </IonCardContent>
+            <IonCardContent>
+            <p>In this capstone project, a mobile app has been developed to resolve the food waste issue across John Carroll University (JCU) campus. The idea has been started when Ayşe Selen Zarrelli, the director of Center for Student Diversity and Inclusion at JCU met with Dr. Almabrok Essa, CS professor and intructor for CS 4700, and discussed the possibility of developing an app to encourage community-centric redistribution of surplus food after events on JCU campus, which is aligned with the campus mission and sustainability goals. Finally, after a semester-long endeavor of the above mentioned developers team this idea has become a reality.</p>
+            </IonCardContent>
           </IonCard>
           <IonCard>
+
             <IonCardHeader>
               <IonCardTitle> Developers from left to right:</IonCardTitle>
             </IonCardHeader>
@@ -81,6 +88,5 @@ const AboutUs: React.FC = () => {
       
     );
 };
-
 
 export default AboutUs;
