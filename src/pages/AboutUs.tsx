@@ -2,7 +2,7 @@ import { IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, Io
 import React from 'react';
 import { useParams } from 'react-router';
 import StreaksEatLogo from '../pages/Photos/StreaksEatLogo.png';
-import Streaks_Eat_Weezer_Group_Photo from '../pages/Photos/Streaks_Eat_Weezer_Group_Photo.png';
+import Streaks_Eat_Group_Photo from '../pages/Photos/Streaks_Eat_Group_Photo.png';
 import './AboutUs.css';
 
 // Sets up the About Us page which describes the Developers who created this app
@@ -66,7 +66,7 @@ const AboutUs: React.FC = () => {
               <p>This project is designed as a capstone course to fulfill one of the Computer Science (CS) major requirements named Software Engineering Project, CS 4700. In this capstone course, students are grouped into small groups of 3-5 students. Each group works on a large software project for a real client or for an open-source community, where development teams will make widespread use of previously learned tools/techniques, their skills, ingenuity, and research abilities to address various issues and deliver a working, useful system. </p>
             </IonCardContent>
             <IonCardContent>
-            <p>In this capstone project, a mobile app has been developed to resolve the food waste issue across John Carroll University (JCU) campus. The idea has been started when Ayşe Selen Zarrelli, the director of Center for Student Diversity and Inclusion at JCU met with Dr. Almabrok Essa, CS professor and intructor for CS 4700, and discussed the possibility of developing an app to encourage community-centric redistribution of surplus food after events on JCU campus, which is aligned with the campus mission and sustainability goals. Finally, after a semester-long endeavor of the above mentioned developers team this idea has become a reality.</p>
+            <p>In this capstone project, a mobile app has been developed to resolve the food waste issue across John Carroll University (JCU) campus. The idea has been started when Ayşe Selen Zarrelli, the director of Center for Student Diversity and Inclusion at JCU met with the assigned capstone group, and discussed the possibility of developing an app to encourage community-centric redistribution of surplus food after events on JCU campus, which is aligned with the campus mission and sustainability goals. Finally, after a semester-long endeavor of the above mentioned developers team this idea has become a reality.</p>
             </IonCardContent>
           </IonCard>
           <IonCard>
@@ -80,7 +80,7 @@ const AboutUs: React.FC = () => {
           </IonCard>
           
           <div></div>
-          <IonImg src={Streaks_Eat_Weezer_Group_Photo} alt="Streaks Eat Group Photo" ></IonImg>  
+          <IonImg src={Streaks_Eat_Group_Photo} alt="Streaks Eat Group Photo" ></IonImg>  
           <div></div>
           <IonImg src={StreaksEatLogo} alt="Streaks Eat Logo" ></IonImg>   
         </IonContent>
