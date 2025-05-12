@@ -154,6 +154,7 @@ const MyProfile: React.FC = () => {
                   <IonCol key={allergen.id} size="5">
                     <IonButton
                       expand="full"
+                      className="outlined-button"
                       color={activeAllergies.includes(allergen.id) ? "secondary" : "light"}
                       onClick={() => toggleAllergy(allergen.id)}
                     >
